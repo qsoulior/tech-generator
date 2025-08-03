@@ -1,0 +1,8 @@
+*.exe
+*.out
+*.log
+*.env
+go.work
+dist/
+.vscode/
+node_modules/
