@@ -1,12 +1,11 @@
 module github.com/qsoulior/tech-generator/backend
 
-go 1.24.5
+go 1.25
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/avito-tech/go-transaction-manager/trm/v2 v2.0.0
 	github.com/brianvoe/gofakeit/v7 v7.3.0
-	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/joho/godotenv v1.5.1
