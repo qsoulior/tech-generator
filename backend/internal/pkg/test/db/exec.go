@@ -41,16 +41,16 @@ func GenerateEntities[T any](n int, opts ...GenerateOption[T]) ([]T, error) {
 	return entities, nil
 }
 
-func insertEntities[T, U any](c *Container, table string, entities []T, col string, idSkip bool) ([]U, error) {
+func insertEntities[U, T any](c *Container, table string, entities []T, column string, columnSkip bool) ([]U, error) {
 	if len(entities) == 0 {
 		return make([]U, 0), nil
 	}
 
 	fieldsSlice := lo.Map(entities, func(item T, _ int) []field {
 		fields := toFields(item)
-		if idSkip {
+		if columnSkip {
 			fields = slices.DeleteFunc(fields, func(field field) bool {
-				return field.key == col
+				return field.key == column
 			})
 		}
 		return fields
@@ -67,7 +67,7 @@ func insertEntities[T, U any](c *Container, table string, entities []T, col stri
 		builder = builder.Values(values...)
 	}
 
-	builder = builder.Suffix("RETURNING " + col)
+	builder = builder.Suffix("RETURNING " + column)
 
 	query, args, err := builder.ToSql()
 	if err != nil {
@@ -83,28 +83,28 @@ func insertEntities[T, U any](c *Container, table string, entities []T, col stri
 	return ids, nil
 }
 
-// InsertEntitiesById skips fields with tag "id", inserts entities into table and returns ids from column "id".
-func InsertEntitiesById[T, U any](c *Container, table string, entities []T) ([]U, error) {
-	return insertEntities[T, U](c, table, entities, "id", true)
+// InsertEntitiesSkipID skips fields with tag "id", inserts entities into table and returns ids from column "id".
+func InsertEntitiesSkipID[U, T any](c *Container, table string, entities []T) ([]U, error) {
+	return insertEntities[U](c, table, entities, "id", true)
 }
 
-// InsertEntitiesByCol skips fields with tag сol, inserts entities into table and returns ids from column сol.
-func InsertEntitiesByCol[T, U any](c *Container, table string, entities []T, сol string) ([]U, error) {
-	return insertEntities[T, U](c, table, entities, сol, true)
+// InsertEntitiesSkipColumn skips fields with tag column, inserts entities into table and returns values from column.
+func InsertEntitiesSkipColumn[U, T any](c *Container, table string, entities []T, column string) ([]U, error) {
+	return insertEntities[U](c, table, entities, column, true)
 }
 
-// InsertEntitiesWithId inserts entities into table and returns ids from column "id".
-func InsertEntitiesWithId[T, U any](c *Container, table string, entities []T) ([]U, error) {
-	return insertEntities[T, U](c, table, entities, "id", false)
+// InsertEntitiesWithID inserts entities into table and returns ids from column "id".
+func InsertEntitiesWithID[U, T any](c *Container, table string, entities []T) ([]U, error) {
+	return insertEntities[U](c, table, entities, "id", false)
 }
 
-// InsertEntitiesWithCol inserts entities into table and returns ids from column сol.
-func InsertEntitiesWithCol[T, U any](c *Container, table string, entities []T, col string) ([]U, error) {
-	return insertEntities[T, U](c, table, entities, col, false)
+// InsertEntitiesWithColumn inserts entities into table and returns values from column.
+func InsertEntitiesWithColumn[U, T any](c *Container, table string, entities []T, column string) ([]U, error) {
+	return insertEntities[U](c, table, entities, column, false)
 }
 
-func insertEntity[T, U any](c *Container, table string, entity T, col string, idSkip bool) (U, error) {
-	ids, err := insertEntities[T, U](c, table, []T{entity}, col, idSkip)
+func insertEntity[U, T any](c *Container, table string, entity T, column string, columnSkip bool) (U, error) {
+	ids, err := insertEntities[U](c, table, []T{entity}, column, columnSkip)
 	if err != nil {
 		var id U
 		return id, err
@@ -112,31 +112,31 @@ func insertEntity[T, U any](c *Container, table string, entity T, col string, id
 	return ids[0], nil
 }
 
-// InsertEntityById skips field with tag "id", inserts entity into table and returns id from column "id".
-func InsertEntityById[T, U any](c *Container, table string, entity T) (U, error) {
-	return insertEntity[T, U](c, table, entity, "id", true)
+// InsertEntitySkipID skips field with tag "id", inserts entity into table and returns id from column "id".
+func InsertEntitySkipID[U, T any](c *Container, table string, entity T) (U, error) {
+	return insertEntity[U](c, table, entity, "id", true)
 }
 
-// InsertEntityByCol skips field with tag сol, inserts entity into table and returns id from column сol.
-func InsertEntityByCol[T, U any](c *Container, table string, entity T, сol string) (U, error) {
-	return insertEntity[T, U](c, table, entity, сol, true)
+// InsertEntitySkipColumn skips field with tag column, inserts entity into table and returns value from column.
+func InsertEntitySkipColumn[U, T any](c *Container, table string, entity T, column string) (U, error) {
+	return insertEntity[U](c, table, entity, column, true)
 }
 
-// InsertEntityWithId inserts entity into table and returns id from column "id".
-func InsertEntityWithId[T, U any](c *Container, table string, entity T) (U, error) {
-	return insertEntity[T, U](c, table, entity, "id", false)
+// InsertEntityWithID inserts entity into table and returns id from column "id".
+func InsertEntityWithID[U, T any](c *Container, table string, entity T) (U, error) {
+	return insertEntity[U](c, table, entity, "id", false)
 }
 
-// InsertEntityWithCol inserts entity into table and returns id from column сol.
-func InsertEntityWithCol[T, U any](c *Container, table string, entity T, сol string) (U, error) {
-	return insertEntity[T, U](c, table, entity, сol, false)
+// InsertEntityWithColumn inserts entity into table and returns value from column.
+func InsertEntityWithColumn[U, T any](c *Container, table string, entity T, column string) (U, error) {
+	return insertEntity[U](c, table, entity, column, false)
 }
 
-// DeleteEntitiesByCol deletes entities from table by ids in column сol.
-func DeleteEntitiesByCol[U any](c *Container, table string, сol string, ids []U) error {
+// DeleteEntitiesByColumn deletes entities from table by ids in column.
+func DeleteEntitiesByColumn[U any](c *Container, table string, column string, values []U) error {
 	builder := c.builder.
 		Delete(table).
-		Where(sq.Eq{сol: ids})
+		Where(sq.Eq{column: values})
 
 	query, args, err := builder.ToSql()
 	if err != nil {
@@ -151,23 +151,23 @@ func DeleteEntitiesByCol[U any](c *Container, table string, сol string, ids []U
 	return nil
 }
 
-// DeleteEntitiesById deletes entities from table by ids in column "id".
-func DeleteEntitiesById[U any](c *Container, table string, ids []U) error {
-	return DeleteEntitiesByCol(c, table, "id", ids)
+// DeleteEntitiesByID deletes entities from table by ids in column "id".
+func DeleteEntitiesByID[U any](c *Container, table string, ids []U) error {
+	return DeleteEntitiesByColumn(c, table, "id", ids)
 }
 
-// DeleteEntityByCol deletes entity from table by id in column сol.
-func DeleteEntityByCol[U any](c *Container, table string, сol string, id U) error {
-	return DeleteEntitiesByCol(c, table, сol, []U{id})
+// DeleteEntityByColumn deletes entity from table by value in column.
+func DeleteEntityByColumn[U any](c *Container, table string, column string, value U) error {
+	return DeleteEntitiesByColumn(c, table, column, []U{value})
 }
 
-// DeleteEntityById deletes entity from table by id in column "id".
-func DeleteEntityById[U any](c *Container, table string, id U) error {
-	return DeleteEntitiesById(c, table, []U{id})
+// DeleteEntityByID deletes entity from table by id in column "id".
+func DeleteEntityByID[U any](c *Container, table string, id U) error {
+	return DeleteEntitiesByID(c, table, []U{id})
 }
 
-// SelectEntitiesByCol selects entities from table by ids in column сol
-func SelectEntitiesByCol[T, U any](c *Container, table string, сol string, ids []U) ([]T, error) {
+// SelectEntitiesByColumn selects entities from table by values in column.
+func SelectEntitiesByColumn[T, U any](c *Container, table string, column string, values []U) ([]T, error) {
 	var entity T
 	fields := toFields(entity)
 	keys := lo.Map(fields, func(item field, _ int) string { return item.key })
@@ -175,7 +175,7 @@ func SelectEntitiesByCol[T, U any](c *Container, table string, сol string, ids 
 	builder := c.builder.
 		Select(keys...).
 		From(table).
-		Where(sq.Eq{сol: ids})
+		Where(sq.Eq{column: values})
 
 	query, args, err := builder.ToSql()
 	if err != nil {
@@ -191,7 +191,7 @@ func SelectEntitiesByCol[T, U any](c *Container, table string, сol string, ids 
 	return entities, nil
 }
 
-// SelectEntitiesById selects entities from table by ids in column "id".
-func SelectEntitiesById[T, U any](c *Container, table string, ids []U) ([]T, error) {
-	return SelectEntitiesByCol[T, U](c, table, "id", ids)
+// SelectEntitiesByID selects entities from table by ids in column "id".
+func SelectEntitiesByID[T, U any](c *Container, table string, ids []U) ([]T, error) {
+	return SelectEntitiesByColumn[T](c, table, "id", ids)
 }

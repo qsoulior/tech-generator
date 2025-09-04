@@ -2,9 +2,14 @@ package test_db
 
 import (
 	"context"
+	"path/filepath"
+	"runtime"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/postgres"
 )
@@ -30,4 +35,33 @@ func NewPsql() (*Container, error) {
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	return &Container{db: db, builder: &builder}, nil
+}
+
+type PsqlTestSuite struct {
+	suite.Suite
+	container *Container
+}
+
+func (s *PsqlTestSuite) C() *Container {
+	return s.container
+}
+
+func (s *PsqlTestSuite) SetupSuite() {
+	_, path, _, _ := runtime.Caller(0)
+	for range 5 {
+		path = filepath.Dir(path)
+	}
+	path = filepath.Join(path, ".env")
+
+	err := godotenv.Overload(path)
+	require.NoError(s.T(), err)
+
+	container, err := NewPsql()
+	require.NoError(s.T(), err)
+
+	s.container = container
+}
+
+func (s *PsqlTestSuite) TearDownSuite() {
+	require.NoError(s.T(), s.container.Close())
 }
