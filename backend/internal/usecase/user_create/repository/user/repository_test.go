@@ -6,9 +6,10 @@ import (
 
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/jackc/pgx/v5/pgconn"
-	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+
+	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
 )
 
 const codeUniqueViolation = "23505"
@@ -72,7 +73,6 @@ func (s *repositorySuite) TestRepository_Create() {
 		require.Equal(t, want.Email, got[0].Email)
 		require.Equal(t, want.Password, got[0].Password)
 	})
-
 }
 
 func (s *repositorySuite) TestRepository_ExistsByNameOrEmail() {

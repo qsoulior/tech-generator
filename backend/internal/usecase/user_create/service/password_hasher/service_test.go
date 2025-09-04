@@ -4,8 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_create/domain"
 	"github.com/stretchr/testify/require"
+
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_create/domain"
 )
 
 func TestService_Hash_Success(t *testing.T) {

@@ -6,15 +6,14 @@ import (
 	"testing"
 
 	"github.com/brianvoe/gofakeit/v7"
-	test_trm "github.com/qsoulior/tech-generator/backend/internal/pkg/test/trm"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_create/domain"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
+
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_create/domain"
 )
 
 func TestUsecase_Handle_Success(t *testing.T) {
 	ctx := context.Background()
-	trCtx := context.WithValue(ctx, test_trm.TrKey{}, struct{}{})
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -28,9 +27,9 @@ func TestUsecase_Handle_Success(t *testing.T) {
 		Password: domain.Password("aB12345-"),
 	}
 
-	userRepo.EXPECT().ExistsByNameOrEmail(trCtx, in.Name, in.Email).Return(false, nil)
+	userRepo.EXPECT().ExistsByNameOrEmail(ctx, in.Name, in.Email).Return(false, nil)
 	hasher.EXPECT().Hash(in.Password).Return([]byte{1, 2, 3}, nil)
-	userRepo.EXPECT().Create(trCtx, in.Name, in.Email, []byte{1, 2, 3}).Return(nil)
+	userRepo.EXPECT().Create(ctx, in.Name, in.Email, []byte{1, 2, 3}).Return(nil)
 
 	usecase := New(userRepo, hasher)
 	err := usecase.Handle(ctx, in)
@@ -39,7 +38,6 @@ func TestUsecase_Handle_Success(t *testing.T) {
 
 func TestUsecase_Handle_Error(t *testing.T) {
 	ctx := context.Background()
-	trCtx := context.WithValue(ctx, test_trm.TrKey{}, struct{}{})
 
 	testErr := errors.New("test error")
 
@@ -64,7 +62,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		{
 			name: "userRepo_ExistsByNameOrEmail",
 			setup: func(userRepo *MockuserRepository, hasher *MockpasswordHasher) {
-				userRepo.EXPECT().ExistsByNameOrEmail(trCtx, gomock.Any(), gomock.Any()).Return(false, testErr)
+				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(false, testErr)
 			},
 			in:   validIn,
 			want: testErr,
@@ -72,7 +70,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		{
 			name: "domain_UserExists",
 			setup: func(userRepo *MockuserRepository, hasher *MockpasswordHasher) {
-				userRepo.EXPECT().ExistsByNameOrEmail(trCtx, gomock.Any(), gomock.Any()).Return(true, nil)
+				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(true, nil)
 			},
 			in:   validIn,
 			want: domain.ErrUserExists,
@@ -80,7 +78,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		{
 			name: "hasher_Hash",
 			setup: func(userRepo *MockuserRepository, hasher *MockpasswordHasher) {
-				userRepo.EXPECT().ExistsByNameOrEmail(trCtx, gomock.Any(), gomock.Any()).Return(false, nil)
+				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(false, nil)
 				hasher.EXPECT().Hash(gomock.Any()).Return(nil, testErr)
 			},
 			in:   validIn,
@@ -89,9 +87,9 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		{
 			name: "userRepo_Create",
 			setup: func(userRepo *MockuserRepository, hasher *MockpasswordHasher) {
-				userRepo.EXPECT().ExistsByNameOrEmail(trCtx, gomock.Any(), gomock.Any()).Return(false, nil)
+				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(false, nil)
 				hasher.EXPECT().Hash(gomock.Any()).Return([]byte{}, nil)
-				userRepo.EXPECT().Create(trCtx, gomock.Any(), gomock.Any(), gomock.Any()).Return(testErr)
+				userRepo.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(testErr)
 			},
 			in:   validIn,
 			want: testErr,

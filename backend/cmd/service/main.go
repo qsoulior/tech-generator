@@ -17,7 +17,7 @@ func main() {
 	os.Exit(run())
 }
 
-func run() int {
+func run() (code int) {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
@@ -36,7 +36,11 @@ func run() int {
 		logger.Error("connect postgres", slog.String("err", err.Error()))
 		return 1
 	}
-	defer db.Close()
+	defer func() {
+		err := db.Close()
+		logger.Error("close postgres connection", slog.String("err", err.Error()))
+		code = 1
+	}()
 
 	server := httpserver.New(nil, logger)
 	if err := server.Run(ctx); err != nil {

@@ -3,12 +3,12 @@ package password_hasher
 import (
 	"fmt"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_create/domain"
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_create/domain"
 )
 
-type Service struct {
-}
+type Service struct{}
 
 func New() *Service {
 	return &Service{}
