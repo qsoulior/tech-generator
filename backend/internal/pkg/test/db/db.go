@@ -2,12 +2,9 @@ package test_db
 
 import (
 	"context"
-	"path/filepath"
-	"runtime"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
@@ -47,15 +44,6 @@ func (s *PsqlTestSuite) C() *Container {
 }
 
 func (s *PsqlTestSuite) SetupSuite() {
-	_, path, _, _ := runtime.Caller(0)
-	for range 5 {
-		path = filepath.Dir(path)
-	}
-	path = filepath.Join(path, ".env")
-
-	err := godotenv.Overload(path)
-	require.NoError(s.T(), err)
-
 	container, err := NewPsql()
 	require.NoError(s.T(), err)
 

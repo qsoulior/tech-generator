@@ -1,0 +1,74 @@
+name: Backend
+
+defaults:
+  run:
+    working-directory: "./backend"
+
+on:
+  push:
+    branches: ["*"]
+    paths: ["backend/**", ".github/workflows/backend.yml"]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.1"
+          cache-dependency-path: ./backend/go.sum
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.4
+          working-directory: ./backend
+
+      - name: Build
+        run: go build -v ./...
+
+  test:
+    needs: build
+    runs-on: ubuntu-24.04
+
+    services:
+      postgres:
+        image: postgres:17.6-alpine3.22
+        env:
+          POSTGRES_DB: master
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 15432:5432
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Run migrations
+        run: find ./migrations/postgres -iname "*.sql" | sort | xargs printf -- ' -f %s' | xargs -t psql -d postgresql://testuser:testpassword@localhost:15432/master -a -v ON_ERROR_STOP=on
+
+      - name: Set up
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.1"
+          cache-dependency-path: ./backend/go.sum
+
+      - name: Test
+        run: go test -v ./...
+        env:
+          PGHOST: localhost
+          PGPORT: 15432
+          PGDATABASE: master
+          PGUSER: testuser
+          PGPASSWORD: testpassword
