@@ -19,7 +19,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 	defer ctrl.Finish()
 
 	userRepo := NewMockuserRepository(ctrl)
-	hasher := NewMockpasswordHasher(ctrl)
+	passwordHasher := NewMockpasswordHasher(ctrl)
 
 	in := domain.UserCreateIn{
 		Name:     gofakeit.Username(),
@@ -28,10 +28,10 @@ func TestUsecase_Handle_Success(t *testing.T) {
 	}
 
 	userRepo.EXPECT().ExistsByNameOrEmail(ctx, in.Name, in.Email).Return(false, nil)
-	hasher.EXPECT().Hash(in.Password).Return([]byte{1, 2, 3}, nil)
+	passwordHasher.EXPECT().Hash(in.Password).Return([]byte{1, 2, 3}, nil)
 	userRepo.EXPECT().Create(ctx, in.Name, in.Email, []byte{1, 2, 3}).Return(nil)
 
-	usecase := New(userRepo, hasher)
+	usecase := New(userRepo, passwordHasher)
 	err := usecase.Handle(ctx, in)
 	require.NoError(t, err)
 }
@@ -49,46 +49,46 @@ func TestUsecase_Handle_Error(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		setup func(userRepo *MockuserRepository, hasher *MockpasswordHasher)
+		setup func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher)
 		in    domain.UserCreateIn
 		want  error
 	}{
 		{
 			name:  "in_Validate",
-			setup: func(userRepo *MockuserRepository, hasher *MockpasswordHasher) {},
+			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {},
 			in:    domain.UserCreateIn{},
 			want:  domain.ErrEmptyValue,
 		},
 		{
 			name: "userRepo_ExistsByNameOrEmail",
-			setup: func(userRepo *MockuserRepository, hasher *MockpasswordHasher) {
+			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {
 				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(false, testErr)
 			},
 			in:   validIn,
 			want: testErr,
 		},
 		{
-			name: "domain_UserExists",
-			setup: func(userRepo *MockuserRepository, hasher *MockpasswordHasher) {
+			name: "userRepo_ExistsByNameOrEmail_UserExists",
+			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {
 				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(true, nil)
 			},
 			in:   validIn,
 			want: domain.ErrUserExists,
 		},
 		{
-			name: "hasher_Hash",
-			setup: func(userRepo *MockuserRepository, hasher *MockpasswordHasher) {
+			name: "passwordHasher_Hash",
+			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {
 				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(false, nil)
-				hasher.EXPECT().Hash(gomock.Any()).Return(nil, testErr)
+				passwordHasher.EXPECT().Hash(gomock.Any()).Return(nil, testErr)
 			},
 			in:   validIn,
 			want: testErr,
 		},
 		{
 			name: "userRepo_Create",
-			setup: func(userRepo *MockuserRepository, hasher *MockpasswordHasher) {
+			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {
 				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(false, nil)
-				hasher.EXPECT().Hash(gomock.Any()).Return([]byte{}, nil)
+				passwordHasher.EXPECT().Hash(gomock.Any()).Return([]byte{}, nil)
 				userRepo.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(testErr)
 			},
 			in:   validIn,
@@ -101,10 +101,10 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			defer ctrl.Finish()
 
 			userRepo := NewMockuserRepository(ctrl)
-			hasher := NewMockpasswordHasher(ctrl)
-			tt.setup(userRepo, hasher)
+			passwordHasher := NewMockpasswordHasher(ctrl)
+			tt.setup(userRepo, passwordHasher)
 
-			usecase := New(userRepo, hasher)
+			usecase := New(userRepo, passwordHasher)
 			err := usecase.Handle(ctx, tt.in)
 			require.ErrorIs(t, err, tt.want)
 		})

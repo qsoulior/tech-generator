@@ -23,7 +23,7 @@ func (in UserCreateIn) Validate() error {
 	}
 
 	if in.Name == "" {
-		return NewValidationError("firstname", ErrEmptyValue)
+		return NewValidationError("name", ErrEmptyValue)
 	}
 
 	if err := in.Password.Validate(); err != nil {

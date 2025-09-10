@@ -24,13 +24,11 @@ var (
 type Password string
 
 func (p Password) Validate() error {
-	cnt := utf8.RuneCountInString(string(p))
-
-	if cnt < PasswordLengthMin {
+	if utf8.RuneCountInString(string(p)) < PasswordLengthMin {
 		return ErrPasswordTooShort
 	}
 
-	if cnt > PasswordLengthMax {
+	if len(p) > PasswordLengthMax {
 		return ErrPasswordTooLong
 	}
 

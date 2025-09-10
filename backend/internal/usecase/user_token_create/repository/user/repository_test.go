@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_get_by_id/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_token_create/domain"
 )
 
 type repositorySuite struct {
@@ -21,7 +21,7 @@ func Test_repositorySuite(t *testing.T) {
 	suite.Run(t, new(repositorySuite))
 }
 
-func (s *repositorySuite) TestRepository_GetByID() {
+func (s *repositorySuite) TestRepository_GetByName() {
 	ctx := context.Background()
 	repo := New(s.C().DB())
 
@@ -34,7 +34,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		require.NoError(s.T(), err)
 		defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "usr", userID)) }()
 
-		got, err := repo.GetByID(ctx, userID)
+		got, err := repo.GetByName(ctx, user.Name)
 		require.NoError(t, err)
 		require.NotNil(t, got)
 
@@ -43,7 +43,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 	})
 
 	s.T().Run("DoesNotExist", func(t *testing.T) {
-		got, err := repo.GetByID(ctx, gofakeit.Int64())
+		got, err := repo.GetByName(ctx, gofakeit.Username())
 		require.NoError(t, err)
 		require.Nil(t, got)
 	})
@@ -51,9 +51,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 
 func testModelToDomain(user test_db.User) domain.User {
 	return domain.User{
-		ID:        user.ID,
-		Name:      user.Name,
-		Email:     user.Email,
-		CreatedAt: user.CreatedAt,
+		ID:       user.ID,
+		Password: user.Password,
 	}
 }
