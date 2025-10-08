@@ -5,11 +5,12 @@ import (
 	"testing"
 
 	"github.com/brianvoe/gofakeit/v7"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
+
 	user_domain "github.com/qsoulior/tech-generator/backend/internal/domain/user"
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/folder_create/domain"
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
 )
 
 type repositorySuite struct {
@@ -34,6 +35,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 
 		// folder
 		folder := test_db.GenerateEntity(func(f *test_db.Folder) {
+			f.ParentID = nil
 			f.AuthorID = users[0].ID
 			f.RootAuthorID = users[1].ID
 		})
@@ -77,12 +79,38 @@ func (s *repositorySuite) TestRepository_Create() {
 	ctx := context.Background()
 	repo := New(s.C().DB())
 
+	// users
+	users := test_db.GenerateEntities[test_db.User](2)
+	userIDs, err := test_db.InsertEntitiesWithID[int64](s.C(), "usr", users)
+	require.NoError(s.T(), err)
+	defer func() { require.NoError(s.T(), test_db.DeleteEntitiesByID(s.C(), "usr", userIDs)) }()
+
+	// parent folder
 	parent := test_db.GenerateEntity(func(f *test_db.Folder) {
 		f.ParentID = nil
-
+		f.AuthorID = userIDs[0]
+		f.RootAuthorID = userIDs[1]
 	})
+	parentID, err := test_db.InsertEntityWithID[int64](s.C(), "folder", parent)
+	require.NoError(s.T(), err)
+	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "folder", parentID)) }()
 
-	want := test_db.GenerateEntity[test_db.Folder]()
+	want := test_db.Folder{
+		ParentID:     &parentID,
+		Name:         gofakeit.UUID(),
+		AuthorID:     userIDs[1],
+		RootAuthorID: userIDs[1],
+	}
 
-	repo.Create(ctx)
+	err = repo.Create(ctx, want.Name, userIDs[1], userIDs[1], &parentID)
+	require.NoError(s.T(), err)
+	defer func() { require.NoError(s.T(), test_db.DeleteEntityByColumn(s.C(), "folder", "author_id", userIDs[1])) }()
+
+	folders, err := test_db.SelectEntitiesByColumn[test_db.Folder](s.C(), "folder", "author_id", []int64{userIDs[1]})
+	require.NoError(s.T(), err)
+	require.Len(s.T(), folders, 1)
+
+	got := folders[0]
+	want.ID = got.ID
+	require.Equal(s.T(), want, got)
 }

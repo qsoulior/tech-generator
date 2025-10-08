@@ -22,5 +22,5 @@ type Folder struct {
 type FolderUser struct {
 	FolderID int64  `db:"folder_id"`
 	UserID   int64  `db:"user_id"`
-	Role     string `db:"role"`
+	Role     string `db:"role" fake:"{randomstring:[read,write,maintain]}"`
 }

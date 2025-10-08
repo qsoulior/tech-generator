@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/samber/lo"
+
 	user_domain "github.com/qsoulior/tech-generator/backend/internal/domain/user"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/folder_create/domain"
-	"github.com/samber/lo"
 )
 
 type Usecase struct {

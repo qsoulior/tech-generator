@@ -6,6 +6,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
+
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/folder_create/domain"
 )
 
@@ -47,7 +48,7 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Folder, err
 	return folders.toDomain(), nil
 }
 
-func (r *Repository) Create(ctx context.Context, parentID int64, name string, authorID int64, rootAuthorID int64) error {
+func (r *Repository) Create(ctx context.Context, name string, authorID int64, rootAuthorID int64, parentID *int64) error {
 	op := "folder - create"
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
