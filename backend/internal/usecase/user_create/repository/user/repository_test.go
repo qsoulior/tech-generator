@@ -27,12 +27,10 @@ func (s *repositorySuite) TestRepository_Create() {
 
 	repo := New(s.C().DB())
 
-	want, err := test_db.GenerateEntity[test_db.User]()
-	require.NoError(s.T(), err)
+	want := test_db.GenerateEntity[test_db.User]()
 
 	s.T().Run("ExistsByName", func(t *testing.T) {
-		user, err := test_db.GenerateEntity[test_db.User]()
-		require.NoError(t, err)
+		user := test_db.GenerateEntity[test_db.User]()
 
 		userID, err := test_db.InsertEntityWithID[int64](s.C(), "usr", user)
 		require.NoError(t, err)
@@ -46,8 +44,7 @@ func (s *repositorySuite) TestRepository_Create() {
 	})
 
 	s.T().Run("ExistsByEmail", func(t *testing.T) {
-		user, err := test_db.GenerateEntity[test_db.User]()
-		require.NoError(t, err)
+		user := test_db.GenerateEntity[test_db.User]()
 
 		userID, err := test_db.InsertEntityWithID[int64](s.C(), "usr", user)
 		require.NoError(t, err)
@@ -80,8 +77,7 @@ func (s *repositorySuite) TestRepository_ExistsByNameOrEmail() {
 	repo := New(s.C().DB())
 
 	s.T().Run("ExistsByName", func(t *testing.T) {
-		user, err := test_db.GenerateEntity[test_db.User]()
-		require.NoError(t, err)
+		user := test_db.GenerateEntity[test_db.User]()
 
 		userID, err := test_db.InsertEntityWithID[int64](s.C(), "usr", user)
 		require.NoError(s.T(), err)
@@ -93,8 +89,7 @@ func (s *repositorySuite) TestRepository_ExistsByNameOrEmail() {
 	})
 
 	s.T().Run("ExistsByEmail", func(t *testing.T) {
-		user, err := test_db.GenerateEntity[test_db.User]()
-		require.NoError(t, err)
+		user := test_db.GenerateEntity[test_db.User]()
 
 		userID, err := test_db.InsertEntityWithID[int64](s.C(), "usr", user)
 		require.NoError(s.T(), err)

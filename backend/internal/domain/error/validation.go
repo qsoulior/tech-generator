@@ -1,8 +1,6 @@
-package domain
+package error_domain
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type ValidationError struct {
 	Field  string
@@ -17,6 +15,4 @@ func (e *ValidationError) Error() string {
 	return fmt.Sprintf("value of field '%s' is invalid: %s", e.Field, e.Reason)
 }
 
-func (e *ValidationError) Unwrap() error {
-	return e.Reason
-}
+func (e *ValidationError) Unwrap() error { return e.Reason }

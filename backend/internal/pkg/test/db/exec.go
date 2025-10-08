@@ -9,36 +9,32 @@ import (
 	"github.com/samber/lo"
 )
 
-type GenerateOption[T any] func(entity *T)
-
 // GenerateEntity creates random entity and returns it.
-func GenerateEntity[T any](opts ...GenerateOption[T]) (T, error) {
+func GenerateEntity[T any](opts ...func(entity *T)) T {
 	var entity T
 
-	if err := gofakeit.Struct(&entity); err != nil {
-		return entity, nil
-	}
+	_ = gofakeit.Struct(&entity)
 
 	for _, opt := range opts {
 		opt(&entity)
 	}
 
-	return entity, nil
+	return entity
 }
 
 // GenerateEntities creates n random entities and returns them.
-func GenerateEntities[T any](n int, opts ...GenerateOption[T]) ([]T, error) {
+func GenerateEntities[T any](n int, opts ...func(entity *T, i int)) []T {
 	entities := make([]T, n)
 
-	var err error
 	for i := range entities {
-		entities[i], err = GenerateEntity(opts...)
-		if err != nil {
-			return nil, err
+		_ = gofakeit.Struct(&entities[i])
+
+		for _, opt := range opts {
+			opt(&entities[i], i)
 		}
 	}
 
-	return entities, nil
+	return entities
 }
 
 func insertEntities[U, T any](c *Container, table string, entities []T, column string, columnSkip bool) ([]U, error) {

@@ -1,8 +1,8 @@
 package domain
 
-import base_domain "github.com/qsoulior/tech-generator/backend/internal/domain"
+import error_domain "github.com/qsoulior/tech-generator/backend/internal/domain/error"
 
-var ErrUserDoesNotExist = base_domain.NewError("user does not exist")
+var ErrUserDoesNotExist = error_domain.NewBaseError("user does not exist")
 
 type User struct {
 	ID       int64
