@@ -3,7 +3,7 @@ package domain
 import (
 	"unicode/utf8"
 
-	base_domain "github.com/qsoulior/tech-generator/backend/internal/domain"
+	error_domain "github.com/qsoulior/tech-generator/backend/internal/domain/error"
 )
 
 const (
@@ -12,9 +12,9 @@ const (
 )
 
 var (
-	ErrPasswordTooShort  = base_domain.NewError("password is too short")
-	ErrPasswordTooLong   = base_domain.NewError("password is too long")
-	ErrPasswordIncorrect = base_domain.NewError("password is incorrect")
+	ErrPasswordTooShort  = error_domain.NewBaseError("password is too short")
+	ErrPasswordTooLong   = error_domain.NewBaseError("password is too long")
+	ErrPasswordIncorrect = error_domain.NewBaseError("password is incorrect")
 )
 
 type Password string

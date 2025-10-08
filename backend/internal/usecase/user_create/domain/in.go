@@ -3,12 +3,12 @@ package domain
 import (
 	"errors"
 
-	base_domain "github.com/qsoulior/tech-generator/backend/internal/domain"
+	error_domain "github.com/qsoulior/tech-generator/backend/internal/domain/error"
 )
 
 var (
 	ErrEmptyValue = errors.New("value is empty")
-	ErrUserExists = base_domain.NewError("user with name or email exists")
+	ErrUserExists = error_domain.NewBaseError("user with name or email exists")
 )
 
 type UserCreateIn struct {
@@ -19,15 +19,15 @@ type UserCreateIn struct {
 
 func (in UserCreateIn) Validate() error {
 	if in.Email == "" {
-		return NewValidationError("email", ErrEmptyValue)
+		return error_domain.NewValidationError("email", ErrEmptyValue)
 	}
 
 	if in.Name == "" {
-		return NewValidationError("name", ErrEmptyValue)
+		return error_domain.NewValidationError("name", ErrEmptyValue)
 	}
 
 	if err := in.Password.Validate(); err != nil {
-		return NewValidationError("password", err)
+		return error_domain.NewValidationError("password", err)
 	}
 
 	return nil

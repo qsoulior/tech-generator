@@ -26,8 +26,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 	repo := New(s.C().DB())
 
 	s.T().Run("Exists", func(t *testing.T) {
-		user, err := test_db.GenerateEntity[test_db.User]()
-		require.NoError(t, err)
+		user := test_db.GenerateEntity[test_db.User]()
 		user.CreatedAt = user.CreatedAt.Truncate(1 * time.Second)
 
 		userID, err := test_db.InsertEntityWithID[int64](s.C(), "usr", user)

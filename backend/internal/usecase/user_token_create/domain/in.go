@@ -1,15 +1,13 @@
 package domain
 
-import (
-	base_domain "github.com/qsoulior/tech-generator/backend/internal/domain"
-)
+import error_domain "github.com/qsoulior/tech-generator/backend/internal/domain/error"
 
 type UserCreateTokenIn struct {
 	Name     string
 	Password Password
 }
 
-var ErrNameEmptyValue = base_domain.NewError("name is empty")
+var ErrNameEmptyValue = error_domain.NewBaseError("name is empty")
 
 func (in UserCreateTokenIn) Validate() error {
 	if in.Name == "" {
