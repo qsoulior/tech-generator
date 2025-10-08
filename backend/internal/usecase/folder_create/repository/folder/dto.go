@@ -32,3 +32,12 @@ func (f folders) toDomain() *domain.Folder {
 		}),
 	}
 }
+
+func toValues(f domain.FolderToCreate) []any {
+	return []any{
+		f.ParentID,
+		f.Name,
+		f.AuthorID,
+		f.RootAuthorID,
+	}
+}

@@ -33,7 +33,14 @@ func (u *Usecase) Handle(ctx context.Context, in domain.FolderCreateIn) error {
 }
 
 func (u *Usecase) createWithoutParent(ctx context.Context, in domain.FolderCreateIn) error {
-	err := u.folderRepo.Create(ctx, in.Name, in.AuthorID, in.AuthorID, in.ParentID)
+	folderToCreate := domain.FolderToCreate{
+		ParentID:     nil,
+		Name:         in.Name,
+		AuthorID:     in.AuthorID,
+		RootAuthorID: in.AuthorID,
+	}
+
+	err := u.folderRepo.Create(ctx, folderToCreate)
 	if err != nil {
 		return fmt.Errorf("folder repo - create: %w", err)
 	}
@@ -42,24 +49,31 @@ func (u *Usecase) createWithoutParent(ctx context.Context, in domain.FolderCreat
 }
 
 func (u *Usecase) createWithParent(ctx context.Context, in domain.FolderCreateIn) error {
-	folder, err := u.folderRepo.GetByID(ctx, *in.ParentID)
+	folderParent, err := u.folderRepo.GetByID(ctx, *in.ParentID)
 	if err != nil {
 		return fmt.Errorf("folder repo - get by id: %w", err)
 	}
 
-	if folder == nil {
+	if folderParent == nil {
 		return domain.ErrParentNotFound
 	}
 
-	isMaintainer := lo.SomeBy(folder.Users, func(user domain.FolderUser) bool {
+	isMaintainer := lo.SomeBy(folderParent.Users, func(user domain.FolderUser) bool {
 		return user.ID == in.AuthorID && user.Role == user_domain.RoleMaintain
 	})
 
-	if folder.RootAuthorID != in.AuthorID && folder.AuthorID != in.AuthorID && !isMaintainer {
+	if folderParent.RootAuthorID != in.AuthorID && folderParent.AuthorID != in.AuthorID && !isMaintainer {
 		return domain.ErrParentInvalid
 	}
 
-	err = u.folderRepo.Create(ctx, in.Name, in.AuthorID, folder.RootAuthorID, in.ParentID)
+	folderToCreate := domain.FolderToCreate{
+		ParentID:     in.ParentID,
+		Name:         in.Name,
+		AuthorID:     in.AuthorID,
+		RootAuthorID: folderParent.RootAuthorID,
+	}
+
+	err = u.folderRepo.Create(ctx, folderToCreate)
 	if err != nil {
 		return fmt.Errorf("folder repo - create: %w", err)
 	}

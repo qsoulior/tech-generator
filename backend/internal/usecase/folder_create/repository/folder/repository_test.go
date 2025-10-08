@@ -102,7 +102,13 @@ func (s *repositorySuite) TestRepository_Create() {
 		RootAuthorID: userIDs[1],
 	}
 
-	err = repo.Create(ctx, want.Name, userIDs[1], userIDs[1], &parentID)
+	folder := domain.FolderToCreate{
+		ParentID:     &parentID,
+		Name:         want.Name,
+		AuthorID:     userIDs[1],
+		RootAuthorID: userIDs[1],
+	}
+	err = repo.Create(ctx, folder)
 	require.NoError(s.T(), err)
 	defer func() { require.NoError(s.T(), test_db.DeleteEntityByColumn(s.C(), "folder", "author_id", userIDs[1])) }()
 

@@ -42,17 +42,17 @@ func (m *MockfolderRepository) EXPECT() *MockfolderRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockfolderRepository) Create(ctx context.Context, name string, authorID, rootAuthorID int64, parentID *int64) error {
+func (m *MockfolderRepository) Create(ctx context.Context, folder domain.FolderToCreate) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, name, authorID, rootAuthorID, parentID)
+	ret := m.ctrl.Call(m, "Create", ctx, folder)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockfolderRepositoryMockRecorder) Create(ctx, name, authorID, rootAuthorID, parentID any) *gomock.Call {
+func (mr *MockfolderRepositoryMockRecorder) Create(ctx, folder any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockfolderRepository)(nil).Create), ctx, name, authorID, rootAuthorID, parentID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockfolderRepository)(nil).Create), ctx, folder)
 }
 
 // GetByID mocks base method.

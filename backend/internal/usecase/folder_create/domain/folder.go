@@ -12,3 +12,10 @@ type FolderUser struct {
 	ID   int64
 	Role user_domain.Role
 }
+
+type FolderToCreate struct {
+	ParentID     *int64
+	Name         string
+	AuthorID     int64
+	RootAuthorID int64
+}

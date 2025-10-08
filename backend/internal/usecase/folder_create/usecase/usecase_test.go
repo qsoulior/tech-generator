@@ -30,7 +30,13 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				AuthorID: 1,
 			},
 			setup: func(folderRepo *MockfolderRepository) {
-				folderRepo.EXPECT().Create(ctx, "test", int64(1), int64(1), nil).Return(nil)
+				folderToCreate := domain.FolderToCreate{
+					ParentID:     nil,
+					Name:         "test",
+					AuthorID:     1,
+					RootAuthorID: 1,
+				}
+				folderRepo.EXPECT().Create(ctx, folderToCreate).Return(nil)
 			},
 		},
 		{
@@ -41,12 +47,19 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				AuthorID: 1,
 			},
 			setup: func(folderRepo *MockfolderRepository) {
-				folder := domain.Folder{
+				folderParent := domain.Folder{
 					AuthorID:     1,
 					RootAuthorID: 3,
 				}
-				folderRepo.EXPECT().GetByID(ctx, int64(2)).Return(&folder, nil)
-				folderRepo.EXPECT().Create(ctx, "test", int64(1), int64(3), lo.ToPtr[int64](2)).Return(nil)
+				folderRepo.EXPECT().GetByID(ctx, int64(2)).Return(&folderParent, nil)
+
+				folderToCreate := domain.FolderToCreate{
+					ParentID:     lo.ToPtr[int64](2),
+					Name:         "test",
+					AuthorID:     1,
+					RootAuthorID: 3,
+				}
+				folderRepo.EXPECT().Create(ctx, folderToCreate).Return(nil)
 			},
 		},
 		{
@@ -57,12 +70,19 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				AuthorID: 1,
 			},
 			setup: func(folderRepo *MockfolderRepository) {
-				folder := domain.Folder{
+				folderParent := domain.Folder{
 					AuthorID:     3,
 					RootAuthorID: 1,
 				}
-				folderRepo.EXPECT().GetByID(ctx, int64(2)).Return(&folder, nil)
-				folderRepo.EXPECT().Create(ctx, "test", int64(1), int64(1), lo.ToPtr[int64](2)).Return(nil)
+				folderRepo.EXPECT().GetByID(ctx, int64(2)).Return(&folderParent, nil)
+
+				folderToCreate := domain.FolderToCreate{
+					ParentID:     lo.ToPtr[int64](2),
+					Name:         "test",
+					AuthorID:     1,
+					RootAuthorID: 1,
+				}
+				folderRepo.EXPECT().Create(ctx, folderToCreate).Return(nil)
 			},
 		},
 		{
@@ -73,13 +93,20 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				AuthorID: 1,
 			},
 			setup: func(folderRepo *MockfolderRepository) {
-				folder := domain.Folder{
+				folderParent := domain.Folder{
 					AuthorID:     3,
 					RootAuthorID: 4,
 					Users:        []domain.FolderUser{{ID: 1, Role: user_domain.RoleMaintain}},
 				}
-				folderRepo.EXPECT().GetByID(ctx, int64(2)).Return(&folder, nil)
-				folderRepo.EXPECT().Create(ctx, "test", int64(1), int64(4), lo.ToPtr[int64](2)).Return(nil)
+				folderRepo.EXPECT().GetByID(ctx, int64(2)).Return(&folderParent, nil)
+
+				folderToCreate := domain.FolderToCreate{
+					ParentID:     lo.ToPtr[int64](2),
+					Name:         "test",
+					AuthorID:     1,
+					RootAuthorID: 4,
+				}
+				folderRepo.EXPECT().Create(ctx, folderToCreate).Return(nil)
 			},
 		},
 	}
@@ -132,12 +159,12 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		{
 			name: "domain_ErrParentInvalid",
 			setup: func(folderRepo *MockfolderRepository) {
-				folder := domain.Folder{
+				folderParent := domain.Folder{
 					AuthorID:     gofakeit.Int64(),
 					RootAuthorID: gofakeit.Int64(),
 					Users:        []domain.FolderUser{},
 				}
-				folderRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&folder, nil)
+				folderRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&folderParent, nil)
 			},
 			in:   domain.FolderCreateIn{Name: "test", AuthorID: 1, ParentID: lo.ToPtr[int64](2)},
 			want: domain.ErrParentInvalid.Error(),
@@ -145,13 +172,13 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		{
 			name: "folderRepo_Create#1",
 			setup: func(folderRepo *MockfolderRepository) {
-				folder := domain.Folder{
+				folderParent := domain.Folder{
 					AuthorID:     1,
 					RootAuthorID: gofakeit.Int64(),
 					Users:        []domain.FolderUser{},
 				}
-				folderRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&folder, nil)
-				folderRepo.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("test2"))
+				folderRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&folderParent, nil)
+				folderRepo.EXPECT().Create(ctx, gomock.Any()).Return(errors.New("test2"))
 			},
 			in:   domain.FolderCreateIn{Name: "test", AuthorID: 1, ParentID: lo.ToPtr[int64](2)},
 			want: "test2",
@@ -159,7 +186,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		{
 			name: "folderRepo_Create#2",
 			setup: func(folderRepo *MockfolderRepository) {
-				folderRepo.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("test3"))
+				folderRepo.EXPECT().Create(ctx, gomock.Any()).Return(errors.New("test3"))
 			},
 			in:   domain.FolderCreateIn{Name: "test", AuthorID: 1, ParentID: nil},
 			want: "test3",

@@ -48,13 +48,13 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Folder, err
 	return folders.toDomain(), nil
 }
 
-func (r *Repository) Create(ctx context.Context, name string, authorID int64, rootAuthorID int64, parentID *int64) error {
+func (r *Repository) Create(ctx context.Context, folder domain.FolderToCreate) error {
 	op := "folder - create"
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Insert("folder").
 		Columns("parent_id", "name", "author_id", "root_author_id").
-		Values(parentID, name, authorID, rootAuthorID)
+		Values(toValues(folder)...)
 
 	query, args, err := builder.ToSql()
 	if err != nil {

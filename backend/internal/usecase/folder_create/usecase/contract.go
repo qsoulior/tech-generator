@@ -10,5 +10,5 @@ import (
 
 type folderRepository interface {
 	GetByID(ctx context.Context, id int64) (*domain.Folder, error)
-	Create(ctx context.Context, name string, authorID int64, rootAuthorID int64, parentID *int64) error
+	Create(ctx context.Context, folder domain.FolderToCreate) error
 }
