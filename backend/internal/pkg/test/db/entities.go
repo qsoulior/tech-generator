@@ -24,3 +24,14 @@ type FolderUser struct {
 	UserID   int64  `db:"user_id"`
 	Role     string `db:"role" fake:"{randomstring:[read,write,maintain]}"`
 }
+
+type Template struct {
+	ID           int64      `db:"id"`
+	Name         string     `db:"name"`
+	IsDefault    bool       `db:"is_default"`
+	CreatedAt    time.Time  `db:"created_at"`
+	UpdatedAt    *time.Time `db:"updated_at"`
+	FolderID     *int64     `db:"folder_id"`
+	AuthorID     *int64     `db:"author_id"`
+	RootAuthorID *int64     `db:"root_author_id"`
+}

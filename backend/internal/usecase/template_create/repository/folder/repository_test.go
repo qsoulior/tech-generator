@@ -10,7 +10,7 @@ import (
 
 	user_domain "github.com/qsoulior/tech-generator/backend/internal/domain/user"
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/folder_create/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_create/domain"
 )
 
 type repositorySuite struct {
@@ -73,50 +73,4 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		require.NoError(t, err)
 		require.Nil(t, got)
 	})
-}
-
-func (s *repositorySuite) TestRepository_Create() {
-	ctx := context.Background()
-	repo := New(s.C().DB())
-
-	// users
-	users := test_db.GenerateEntities[test_db.User](2)
-	userIDs, err := test_db.InsertEntitiesWithID[int64](s.C(), "usr", users)
-	require.NoError(s.T(), err)
-	defer func() { require.NoError(s.T(), test_db.DeleteEntitiesByID(s.C(), "usr", userIDs)) }()
-
-	// parent folder
-	parent := test_db.GenerateEntity(func(f *test_db.Folder) {
-		f.ParentID = nil
-		f.AuthorID = userIDs[0]
-		f.RootAuthorID = userIDs[1]
-	})
-	parentID, err := test_db.InsertEntityWithID[int64](s.C(), "folder", parent)
-	require.NoError(s.T(), err)
-	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "folder", parentID)) }()
-
-	want := test_db.Folder{
-		ParentID:     &parentID,
-		Name:         gofakeit.UUID(),
-		AuthorID:     userIDs[1],
-		RootAuthorID: userIDs[1],
-	}
-
-	folder := domain.FolderToCreate{
-		ParentID:     &parentID,
-		Name:         want.Name,
-		AuthorID:     userIDs[1],
-		RootAuthorID: userIDs[1],
-	}
-	err = repo.Create(ctx, folder)
-	require.NoError(s.T(), err)
-	defer func() { require.NoError(s.T(), test_db.DeleteEntityByColumn(s.C(), "folder", "name", folder.Name)) }()
-
-	folders, err := test_db.SelectEntitiesByColumn[test_db.Folder](s.C(), "folder", "name", []string{folder.Name})
-	require.NoError(s.T(), err)
-	require.Len(s.T(), folders, 1)
-
-	got := folders[0]
-	want.ID = got.ID
-	require.Equal(s.T(), want, got)
 }

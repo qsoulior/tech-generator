@@ -5,7 +5,8 @@ CREATE TABLE template (
     created_at TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
     updated_at TIMESTAMP,
     folder_id BIGINT REFERENCES folder (id),
-    author_id BIGINT REFERENCES usr (id)
+    author_id BIGINT REFERENCES usr (id),
+    root_author_id BIGINT REFERENCES usr (id)
 );
 
 CREATE INDEX template__name__idx ON template (name);
