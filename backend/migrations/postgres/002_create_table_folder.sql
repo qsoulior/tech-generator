@@ -10,6 +10,8 @@ CREATE INDEX folder__name__idx ON folder (name);
 
 CREATE INDEX folder__author_id__idx ON folder (author_id);
 
+CREATE INDEX folder__root_author_id__idx ON folder (root_author_id);
+
 CREATE TABLE folder_user (
     folder_id BIGINT NOT NULL REFERENCES folder (id),
     user_id BIGINT NOT NULL REFERENCES usr (id),

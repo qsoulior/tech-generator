@@ -6,12 +6,15 @@ CREATE TABLE template (
     updated_at TIMESTAMP,
     folder_id BIGINT REFERENCES folder (id),
     author_id BIGINT REFERENCES usr (id),
-    root_author_id BIGINT REFERENCES usr (id)
+    root_author_id BIGINT REFERENCES usr (id),
+    last_version_id BIGINT REFERENCES template_version (id)
 );
 
 CREATE INDEX template__name__idx ON template (name);
 
 CREATE INDEX template__author_id__idx ON template (author_id);
+
+CREATE INDEX template__root_author_id__idx ON template (root_author_id);
 
 CREATE TABLE template_user (
     template_id BIGINT NOT NULL REFERENCES template (id),
