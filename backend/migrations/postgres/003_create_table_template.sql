@@ -7,7 +7,7 @@ CREATE TABLE template (
     folder_id BIGINT REFERENCES folder (id),
     author_id BIGINT REFERENCES usr (id),
     root_author_id BIGINT REFERENCES usr (id),
-    last_version_id BIGINT REFERENCES template_version (id)
+    last_version_id BIGINT
 );
 
 CREATE INDEX template__name__idx ON template (name);

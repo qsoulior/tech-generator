@@ -68,7 +68,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			setup: func(userRepo *MockuserRepository, passwordVerifier *MockpasswordVerifier, tokenBuilder *MocktokenBuilder) {
 			},
 			in:   domain.UserCreateTokenIn{},
-			want: domain.ErrNameEmptyValue,
+			want: domain.ErrNameEmpty,
 		},
 		{
 			name: "userRepo_GetByName",

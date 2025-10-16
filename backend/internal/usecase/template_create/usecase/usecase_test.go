@@ -70,7 +70,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			},
 		},
 		{
-			name: "IsMaintainer",
+			name: "IsWriter",
 			in: domain.TemplateCreateIn{
 				Name:     "test",
 				FolderID: 2,
@@ -124,7 +124,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name:  "in_Validate",
 			setup: func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository) {},
 			in:    domain.TemplateCreateIn{Name: ""},
-			want:  domain.ErrEmptyValue.Error(),
+			want:  domain.ErrValueEmpty.Error(),
 		},
 		{
 			name: "folderRepo_GetByID",

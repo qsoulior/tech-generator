@@ -36,3 +36,34 @@ type Template struct {
 	RootAuthorID  *int64     `db:"root_author_id"`
 	LastVersionID *int64     `db:"last_version_id"`
 }
+
+type TemplateUser struct {
+	TemplateID int64  `db:"template_id"`
+	UserID     int64  `db:"user_id"`
+	Role       string `db:"role" fake:"{randomstring:[read,write]}"`
+}
+
+type TemplateVersion struct {
+	ID         int64     `db:"id"`
+	Number     int64     `db:"number"`
+	TemplateID int64     `db:"template_id"`
+	AuthorID   *int64    `db:"author_id"`
+	CreatedAt  time.Time `db:"created_at"`
+	Data       []byte    `db:"data"`
+}
+
+type Variable struct {
+	ID         int64  `db:"id"`
+	VersionID  int64  `db:"version_id"`
+	Name       string `db:"name"`
+	Type       string `db:"type" fake:"{randomstring:[integer,float,string]}"`
+	Expression string `db:"expression"`
+}
+
+type VariableConstraint struct {
+	ID         int64  `db:"id"`
+	VariableID int64  `db:"variable_id"`
+	Name       string `db:"name"`
+	Expression string `db:"expression"`
+	IsActive   bool   `db:"is_active"`
+}

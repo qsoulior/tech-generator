@@ -54,7 +54,12 @@ func (r *Repository) Create(ctx context.Context, folder domain.FolderToCreate) e
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Insert("folder").
 		Columns("parent_id", "name", "author_id", "root_author_id").
-		Values(toValues(folder)...)
+		Values(
+			folder.ParentID,
+			folder.Name,
+			folder.AuthorID,
+			folder.RootAuthorID,
+		)
 
 	query, args, err := builder.ToSql()
 	if err != nil {

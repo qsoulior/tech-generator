@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrEmptyValue = errors.New("value is empty")
+	ErrValueEmpty = errors.New("value is empty")
 	ErrUserExists = error_domain.NewBaseError("user with name or email exists")
 )
 
@@ -19,11 +19,11 @@ type UserCreateIn struct {
 
 func (in UserCreateIn) Validate() error {
 	if in.Email == "" {
-		return error_domain.NewValidationError("email", ErrEmptyValue)
+		return error_domain.NewValidationError("email", ErrValueEmpty)
 	}
 
 	if in.Name == "" {
-		return error_domain.NewValidationError("name", ErrEmptyValue)
+		return error_domain.NewValidationError("name", ErrValueEmpty)
 	}
 
 	if err := in.Password.Validate(); err != nil {

@@ -1,4 +1,4 @@
-package folder_create_usecase
+package template_create_usecase
 
 import (
 	"github.com/jmoiron/sqlx"

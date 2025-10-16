@@ -7,11 +7,11 @@ type UserCreateTokenIn struct {
 	Password Password
 }
 
-var ErrNameEmptyValue = error_domain.NewBaseError("name is empty")
+var ErrNameEmpty = error_domain.NewBaseError("name is empty")
 
 func (in UserCreateTokenIn) Validate() error {
 	if in.Name == "" {
-		return ErrNameEmptyValue
+		return ErrNameEmpty
 	}
 
 	return in.Password.Validate()

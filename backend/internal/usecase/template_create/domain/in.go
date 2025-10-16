@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrEmptyValue     = errors.New("value is empty")
+	ErrValueEmpty     = errors.New("value is empty")
 	ErrFolderNotFound = error_domain.NewBaseError("folder not found")
 	ErrFolderInvalid  = error_domain.NewBaseError("folder is invalid")
 )
@@ -20,7 +20,7 @@ type TemplateCreateIn struct {
 
 func (in TemplateCreateIn) Validate() error {
 	if in.Name == "" {
-		return error_domain.NewValidationError("name", ErrEmptyValue)
+		return error_domain.NewValidationError("name", ErrValueEmpty)
 	}
 
 	return nil

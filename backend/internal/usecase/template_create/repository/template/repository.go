@@ -24,7 +24,13 @@ func (r *Repository) Create(ctx context.Context, template domain.Template) error
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Insert("template").
 		Columns("name", "is_default", "folder_id", "author_id", "root_author_id").
-		Values(toValues(template)...)
+		Values(
+			template.Name,
+			template.IsDefault,
+			template.FolderID,
+			template.AuthorID,
+			template.RootAuthorID,
+		)
 
 	query, args, err := builder.ToSql()
 	if err != nil {

@@ -57,7 +57,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name:  "in_Validate",
 			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {},
 			in:    domain.UserCreateIn{},
-			want:  domain.ErrEmptyValue,
+			want:  domain.ErrValueEmpty,
 		},
 		{
 			name: "userRepo_ExistsByNameOrEmail",

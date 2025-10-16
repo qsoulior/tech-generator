@@ -44,9 +44,9 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		defer func() { require.NoError(t, test_db.DeleteEntityByID(s.C(), "folder", folderID)) }()
 
 		// folder users
-		folderUsers := test_db.GenerateEntities(2, func(entity *test_db.FolderUser, i int) {
-			entity.FolderID = folderID
-			entity.UserID = userIDs[2:][i]
+		folderUsers := test_db.GenerateEntities(2, func(u *test_db.FolderUser, i int) {
+			u.FolderID = folderID
+			u.UserID = userIDs[2:][i]
 		})
 		_, err = test_db.InsertEntitiesWithColumn[int64](s.C(), "folder_user", folderUsers, "folder_id")
 		require.NoError(t, err)

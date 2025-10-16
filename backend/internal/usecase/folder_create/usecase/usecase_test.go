@@ -138,7 +138,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name:  "in_Validate",
 			setup: func(folderRepo *MockfolderRepository) {},
 			in:    domain.FolderCreateIn{Name: ""},
-			want:  domain.ErrEmptyValue.Error(),
+			want:  domain.ErrValueEmpty.Error(),
 		},
 		{
 			name: "folderRepo_GetByID",
