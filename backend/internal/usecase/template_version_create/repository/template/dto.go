@@ -16,15 +16,15 @@ type template struct {
 
 type templates []template
 
-func (f templates) toDomain() *domain.Template {
-	if len(f) == 0 {
+func (t templates) toDomain() *domain.Template {
+	if len(t) == 0 {
 		return nil
 	}
 
 	return &domain.Template{
-		AuthorID:     f[0].AuthorID,
-		RootAuthorID: f[0].RootAuthorID,
-		Users: lo.Map(f, func(folder template, _ int) domain.TemplateUser {
+		AuthorID:     t[0].AuthorID,
+		RootAuthorID: t[0].RootAuthorID,
+		Users: lo.Map(t, func(folder template, _ int) domain.TemplateUser {
 			return domain.TemplateUser{
 				ID:   folder.UserID,
 				Role: user_domain.Role(folder.Role),
