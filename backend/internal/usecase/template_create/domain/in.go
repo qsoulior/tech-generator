@@ -7,15 +7,15 @@ import (
 )
 
 var (
-	ErrValueEmpty     = errors.New("value is empty")
-	ErrFolderNotFound = error_domain.NewBaseError("folder not found")
-	ErrFolderInvalid  = error_domain.NewBaseError("folder is invalid")
+	ErrValueEmpty      = errors.New("value is empty")
+	ErrProjectNotFound = error_domain.NewBaseError("project not found")
+	ErrProjectInvalid  = error_domain.NewBaseError("project is invalid")
 )
 
 type TemplateCreateIn struct {
-	Name     string
-	FolderID int64
-	AuthorID int64
+	Name      string
+	ProjectID int64
+	AuthorID  int64
 }
 
 func (in TemplateCreateIn) Validate() error {

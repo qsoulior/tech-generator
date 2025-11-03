@@ -30,31 +30,27 @@ func (s *repositorySuite) TestRepository_Create() {
 	require.NoError(s.T(), err)
 	defer func() { require.NoError(s.T(), test_db.DeleteEntitiesByID(s.C(), "usr", userIDs)) }()
 
-	// folder
-	folder := test_db.GenerateEntity(func(f *test_db.Folder) {
-		f.ParentID = nil
-		f.AuthorID = userIDs[0]
-		f.RootAuthorID = userIDs[1]
+	// project
+	project := test_db.GenerateEntity(func(p *test_db.Project) {
+		p.AuthorID = userIDs[0]
 	})
-	folderID, err := test_db.InsertEntityWithID[int64](s.C(), "folder", folder)
+	projectID, err := test_db.InsertEntityWithID[int64](s.C(), "project", project)
 	require.NoError(s.T(), err)
-	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "folder", folderID)) }()
+	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "project", projectID)) }()
 
 	// template
 	want := test_db.Template{
-		Name:         gofakeit.UUID(),
-		IsDefault:    false,
-		FolderID:     &folderID,
-		AuthorID:     &userIDs[1],
-		RootAuthorID: &userIDs[1],
+		Name:      gofakeit.UUID(),
+		IsDefault: false,
+		ProjectID: &projectID,
+		AuthorID:  &userIDs[1],
 	}
 
 	template := domain.Template{
-		Name:         want.Name,
-		IsDefault:    false,
-		FolderID:     folderID,
-		AuthorID:     userIDs[1],
-		RootAuthorID: userIDs[1],
+		Name:      want.Name,
+		IsDefault: false,
+		ProjectID: projectID,
+		AuthorID:  userIDs[1],
 	}
 
 	err = repo.Create(ctx, template)

@@ -11,18 +11,16 @@ type User struct {
 	UpdatedAt *time.Time `db:"updated_at"`
 }
 
-type Folder struct {
-	ID           int64  `db:"id"`
-	ParentID     *int64 `db:"parent_id"`
-	Name         string `db:"name"`
-	AuthorID     int64  `db:"author_id"`
-	RootAuthorID int64  `db:"root_author_id"`
+type Project struct {
+	ID       int64  `db:"id"`
+	Name     string `db:"name"`
+	AuthorID int64  `db:"author_id"`
 }
 
-type FolderUser struct {
-	FolderID int64  `db:"folder_id"`
-	UserID   int64  `db:"user_id"`
-	Role     string `db:"role" fake:"{randomstring:[read,write,maintain]}"`
+type ProjectUser struct {
+	ProjectID int64  `db:"project_id"`
+	UserID    int64  `db:"user_id"`
+	Role      string `db:"role" fake:"{randomstring:[read,write,maintain]}"`
 }
 
 type Template struct {
@@ -31,9 +29,8 @@ type Template struct {
 	IsDefault     bool       `db:"is_default"`
 	CreatedAt     time.Time  `db:"created_at"`
 	UpdatedAt     *time.Time `db:"updated_at"`
-	FolderID      *int64     `db:"folder_id"`
+	ProjectID     *int64     `db:"project_id"`
 	AuthorID      *int64     `db:"author_id"`
-	RootAuthorID  *int64     `db:"root_author_id"`
 	LastVersionID *int64     `db:"last_version_id"`
 }
 

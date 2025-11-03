@@ -19,52 +19,24 @@ func TestUsecase_Handle_Success(t *testing.T) {
 	tests := []struct {
 		name  string
 		in    domain.TemplateCreateIn
-		setup func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository)
+		setup func(projectRepo *MockprojectRepository, templateRepo *MocktemplateRepository)
 	}{
 		{
 			name: "IsAuthor",
 			in: domain.TemplateCreateIn{
-				Name:     "test",
-				FolderID: 2,
-				AuthorID: 1,
+				Name:      "test",
+				ProjectID: 2,
+				AuthorID:  1,
 			},
-			setup: func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository) {
-				folder := domain.Folder{
-					AuthorID:     1,
-					RootAuthorID: 3,
-				}
-				folderRepo.EXPECT().GetByID(ctx, int64(2)).Return(&folder, nil)
+			setup: func(projectRepo *MockprojectRepository, templateRepo *MocktemplateRepository) {
+				project := domain.Project{AuthorID: 1}
+				projectRepo.EXPECT().GetByID(ctx, int64(2)).Return(&project, nil)
 
 				template := domain.Template{
-					Name:         "test",
-					IsDefault:    false,
-					FolderID:     2,
-					AuthorID:     1,
-					RootAuthorID: 3,
-				}
-				templateRepo.EXPECT().Create(ctx, template).Return(nil)
-			},
-		},
-		{
-			name: "IsRootAuthor",
-			in: domain.TemplateCreateIn{
-				Name:     "test",
-				FolderID: 2,
-				AuthorID: 1,
-			},
-			setup: func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository) {
-				folder := domain.Folder{
-					AuthorID:     3,
-					RootAuthorID: 1,
-				}
-				folderRepo.EXPECT().GetByID(ctx, int64(2)).Return(&folder, nil)
-
-				template := domain.Template{
-					Name:         "test",
-					IsDefault:    false,
-					FolderID:     2,
-					AuthorID:     1,
-					RootAuthorID: 1,
+					Name:      "test",
+					IsDefault: false,
+					ProjectID: 2,
+					AuthorID:  1,
 				}
 				templateRepo.EXPECT().Create(ctx, template).Return(nil)
 			},
@@ -72,24 +44,22 @@ func TestUsecase_Handle_Success(t *testing.T) {
 		{
 			name: "IsWriter",
 			in: domain.TemplateCreateIn{
-				Name:     "test",
-				FolderID: 2,
-				AuthorID: 1,
+				Name:      "test",
+				ProjectID: 2,
+				AuthorID:  1,
 			},
-			setup: func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository) {
-				folder := domain.Folder{
-					AuthorID:     3,
-					RootAuthorID: 4,
-					Users:        []domain.FolderUser{{ID: 1, Role: user_domain.RoleWrite}},
+			setup: func(projectRepo *MockprojectRepository, templateRepo *MocktemplateRepository) {
+				project := domain.Project{
+					AuthorID: 3,
+					Users:    []domain.ProjectUser{{ID: 1, Role: user_domain.RoleWrite}},
 				}
-				folderRepo.EXPECT().GetByID(ctx, int64(2)).Return(&folder, nil)
+				projectRepo.EXPECT().GetByID(ctx, int64(2)).Return(&project, nil)
 
 				template := domain.Template{
-					Name:         "test",
-					IsDefault:    false,
-					FolderID:     2,
-					AuthorID:     1,
-					RootAuthorID: 4,
+					Name:      "test",
+					IsDefault: false,
+					ProjectID: 2,
+					AuthorID:  1,
 				}
 				templateRepo.EXPECT().Create(ctx, template).Return(nil)
 			},
@@ -100,11 +70,11 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			folderRepo := NewMockfolderRepository(ctrl)
+			projectRepo := NewMockprojectRepository(ctrl)
 			templateRepo := NewMocktemplateRepository(ctrl)
-			tt.setup(folderRepo, templateRepo)
+			tt.setup(projectRepo, templateRepo)
 
-			usecase := New(folderRepo, templateRepo)
+			usecase := New(projectRepo, templateRepo)
 			err := usecase.Handle(ctx, tt.in)
 			require.NoError(t, err)
 		})
@@ -116,57 +86,55 @@ func TestUsecase_Handle_Error(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		setup func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository)
+		setup func(projectRepo *MockprojectRepository, templateRepo *MocktemplateRepository)
 		in    domain.TemplateCreateIn
 		want  string
 	}{
 		{
 			name:  "in_Validate",
-			setup: func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository) {},
+			setup: func(projectRepo *MockprojectRepository, templateRepo *MocktemplateRepository) {},
 			in:    domain.TemplateCreateIn{Name: ""},
 			want:  domain.ErrValueEmpty.Error(),
 		},
 		{
-			name: "folderRepo_GetByID",
-			setup: func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository) {
-				folderRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(nil, errors.New("test1"))
+			name: "projectRepo_GetByID",
+			setup: func(projectRepo *MockprojectRepository, templateRepo *MocktemplateRepository) {
+				projectRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(nil, errors.New("test1"))
 			},
-			in:   domain.TemplateCreateIn{Name: "test", FolderID: 2, AuthorID: 1},
+			in:   domain.TemplateCreateIn{Name: "test", ProjectID: 2, AuthorID: 1},
 			want: "test1",
 		},
 		{
-			name: "domain_ErrFolderNotFound",
-			setup: func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository) {
-				folderRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(nil, nil)
+			name: "domain_ErrProjectNotFound",
+			setup: func(projectRepo *MockprojectRepository, templateRepo *MocktemplateRepository) {
+				projectRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(nil, nil)
 			},
-			in:   domain.TemplateCreateIn{Name: "test", FolderID: 2, AuthorID: 1},
-			want: domain.ErrFolderNotFound.Error(),
+			in:   domain.TemplateCreateIn{Name: "test", ProjectID: 2, AuthorID: 1},
+			want: domain.ErrProjectNotFound.Error(),
 		},
 		{
-			name: "domain_ErrFolderInvalid",
-			setup: func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository) {
-				folder := domain.Folder{
-					AuthorID:     gofakeit.Int64(),
-					RootAuthorID: gofakeit.Int64(),
-					Users:        []domain.FolderUser{},
+			name: "domain_ErrProjectInvalid",
+			setup: func(projectRepo *MockprojectRepository, templateRepo *MocktemplateRepository) {
+				project := domain.Project{
+					AuthorID: gofakeit.Int64(),
+					Users:    []domain.ProjectUser{},
 				}
-				folderRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&folder, nil)
+				projectRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&project, nil)
 			},
-			in:   domain.TemplateCreateIn{Name: "test", FolderID: 2, AuthorID: 1},
-			want: domain.ErrFolderInvalid.Error(),
+			in:   domain.TemplateCreateIn{Name: "test", ProjectID: 2, AuthorID: 1},
+			want: domain.ErrProjectInvalid.Error(),
 		},
 		{
 			name: "templateRepo_Create",
-			setup: func(folderRepo *MockfolderRepository, templateRepo *MocktemplateRepository) {
-				folder := domain.Folder{
-					AuthorID:     1,
-					RootAuthorID: gofakeit.Int64(),
-					Users:        []domain.FolderUser{},
+			setup: func(projectRepo *MockprojectRepository, templateRepo *MocktemplateRepository) {
+				project := domain.Project{
+					AuthorID: 1,
+					Users:    []domain.ProjectUser{},
 				}
-				folderRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&folder, nil)
+				projectRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&project, nil)
 				templateRepo.EXPECT().Create(ctx, gomock.Any()).Return(errors.New("test2"))
 			},
-			in:   domain.TemplateCreateIn{Name: "test", FolderID: 2, AuthorID: 1},
+			in:   domain.TemplateCreateIn{Name: "test", ProjectID: 2, AuthorID: 1},
 			want: "test2",
 		},
 	}
@@ -175,11 +143,11 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			folderRepo := NewMockfolderRepository(ctrl)
+			projectRepo := NewMockprojectRepository(ctrl)
 			templateRepo := NewMocktemplateRepository(ctrl)
-			tt.setup(folderRepo, templateRepo)
+			tt.setup(projectRepo, templateRepo)
 
-			usecase := New(folderRepo, templateRepo)
+			usecase := New(projectRepo, templateRepo)
 			err := usecase.Handle(ctx, tt.in)
 			require.ErrorContains(t, err, tt.want)
 		})

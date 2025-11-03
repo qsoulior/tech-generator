@@ -32,22 +32,19 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		require.NoError(t, err)
 		defer func() { require.NoError(t, test_db.DeleteEntitiesByID(s.C(), "usr", userIDs)) }()
 
-		// folder
-		folder := test_db.GenerateEntity(func(f *test_db.Folder) {
-			f.ParentID = nil
-			f.AuthorID = users[0].ID
-			f.RootAuthorID = users[1].ID
+		// project
+		project := test_db.GenerateEntity(func(p *test_db.Project) {
+			p.AuthorID = users[0].ID
 		})
-		folderID, err := test_db.InsertEntityWithID[int64](s.C(), "folder", folder)
+		projectID, err := test_db.InsertEntityWithID[int64](s.C(), "project", project)
 		require.NoError(t, err)
-		defer func() { require.NoError(t, test_db.DeleteEntityByID(s.C(), "folder", folderID)) }()
+		defer func() { require.NoError(t, test_db.DeleteEntityByID(s.C(), "project", projectID)) }()
 
 		// template
 		template := test_db.GenerateEntity(func(t *test_db.Template) {
 			t.IsDefault = false
-			t.FolderID = &folderID
-			t.AuthorID = &users[0].ID
-			t.RootAuthorID = &users[1].ID
+			t.ProjectID = &projectID
+			t.AuthorID = &users[1].ID
 		})
 		templateID, err := test_db.InsertEntityWithID[int64](s.C(), "template", template)
 		require.NoError(t, err)
@@ -57,8 +54,8 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		require.NoError(t, err)
 
 		want := domain.Template{
-			AuthorID:     *template.AuthorID,
-			RootAuthorID: *template.RootAuthorID,
+			AuthorID:        *template.AuthorID,
+			ProjectAuthorID: project.AuthorID,
 		}
 		require.Equal(t, want, *got)
 	})
@@ -66,9 +63,8 @@ func (s *repositorySuite) TestRepository_GetByID() {
 	s.T().Run("IsDefault", func(t *testing.T) {
 		template := test_db.GenerateEntity(func(t *test_db.Template) {
 			t.IsDefault = true
-			t.FolderID = nil
+			t.ProjectID = nil
 			t.AuthorID = nil
-			t.RootAuthorID = nil
 		})
 		templateID, err := test_db.InsertEntityWithID[int64](s.C(), "template", template)
 		require.NoError(t, err)

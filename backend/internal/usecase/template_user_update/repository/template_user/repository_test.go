@@ -32,22 +32,19 @@ func (s *repositorySuite) TestRepository_GetByTemplateID() {
 	require.NoError(s.T(), err)
 	defer func() { require.NoError(s.T(), test_db.DeleteEntitiesByID(s.C(), "usr", userIDs)) }()
 
-	// folder
-	folder := test_db.GenerateEntity(func(f *test_db.Folder) {
-		f.ParentID = nil
-		f.AuthorID = users[0].ID
-		f.RootAuthorID = users[1].ID
+	// project
+	project := test_db.GenerateEntity(func(p *test_db.Project) {
+		p.AuthorID = users[0].ID
 	})
-	folderID, err := test_db.InsertEntityWithID[int64](s.C(), "folder", folder)
+	projectID, err := test_db.InsertEntityWithID[int64](s.C(), "project", project)
 	require.NoError(s.T(), err)
-	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "folder", folderID)) }()
+	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "project", projectID)) }()
 
 	// template
 	template := test_db.GenerateEntity(func(t *test_db.Template) {
 		t.IsDefault = false
-		t.FolderID = &folderID
+		t.ProjectID = &projectID
 		t.AuthorID = &users[0].ID
-		t.RootAuthorID = &users[1].ID
 	})
 	templateID, err := test_db.InsertEntityWithID[int64](s.C(), "template", template)
 	require.NoError(s.T(), err)
@@ -84,22 +81,19 @@ func (s *repositorySuite) TestRepository_Upsert() {
 	require.NoError(s.T(), err)
 	defer func() { require.NoError(s.T(), test_db.DeleteEntitiesByID(s.C(), "usr", userIDs)) }()
 
-	// folder
-	folder := test_db.GenerateEntity(func(f *test_db.Folder) {
-		f.ParentID = nil
-		f.AuthorID = users[0].ID
-		f.RootAuthorID = users[0].ID
+	// project
+	project := test_db.GenerateEntity(func(p *test_db.Project) {
+		p.AuthorID = users[0].ID
 	})
-	folderID, err := test_db.InsertEntityWithID[int64](s.C(), "folder", folder)
+	projectID, err := test_db.InsertEntityWithID[int64](s.C(), "project", project)
 	require.NoError(s.T(), err)
-	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "folder", folderID)) }()
+	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "project", projectID)) }()
 
 	// template
 	template := test_db.GenerateEntity(func(t *test_db.Template) {
 		t.IsDefault = false
-		t.FolderID = &folderID
+		t.ProjectID = &projectID
 		t.AuthorID = &users[0].ID
-		t.RootAuthorID = &users[0].ID
 	})
 	templateID, err := test_db.InsertEntityWithID[int64](s.C(), "template", template)
 	require.NoError(s.T(), err)
@@ -152,22 +146,19 @@ func (s *repositorySuite) TestRepository_Delete() {
 	require.NoError(s.T(), err)
 	defer func() { require.NoError(s.T(), test_db.DeleteEntitiesByID(s.C(), "usr", userIDs)) }()
 
-	// folder
-	folder := test_db.GenerateEntity(func(f *test_db.Folder) {
-		f.ParentID = nil
-		f.AuthorID = users[0].ID
-		f.RootAuthorID = users[0].ID
+	// project
+	project := test_db.GenerateEntity(func(p *test_db.Project) {
+		p.AuthorID = users[0].ID
 	})
-	folderID, err := test_db.InsertEntityWithID[int64](s.C(), "folder", folder)
+	projectID, err := test_db.InsertEntityWithID[int64](s.C(), "project", project)
 	require.NoError(s.T(), err)
-	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "folder", folderID)) }()
+	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "project", projectID)) }()
 
 	// template
 	template := test_db.GenerateEntity(func(t *test_db.Template) {
 		t.IsDefault = false
-		t.FolderID = &folderID
+		t.ProjectID = &projectID
 		t.AuthorID = &users[0].ID
-		t.RootAuthorID = &users[0].ID
 	})
 	templateID, err := test_db.InsertEntityWithID[int64](s.C(), "template", template)
 	require.NoError(s.T(), err)

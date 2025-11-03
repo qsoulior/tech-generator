@@ -29,11 +29,12 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Template, e
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
 			"t.author_id",
-			"t.root_author_id",
+			"p.author_id as project_author_id",
 			"tu.user_id",
 			"tu.role",
 		).
 		From("template t").
+		Join("project p ON t.project_id = p.id").
 		LeftJoin("template_user tu ON t.id = tu.template_id").
 		Where(sq.Eq{"t.id": id, "t.is_default": false})
 
@@ -44,13 +45,13 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Template, e
 
 	query = fmt.Sprintf("-- %s\n%s", op, query)
 
-	var templates templates
-	err = r.db.SelectContext(ctx, &templates, query, args...)
+	var dtos templates
+	err = r.db.SelectContext(ctx, &dtos, query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("exec query %q: %w", op, err)
 	}
 
-	return templates.toDomain(), nil
+	return dtos.toDomain(), nil
 }
 
 func (r *Repository) UpdateByID(ctx context.Context, template domain.TemplateToUpdate) error {

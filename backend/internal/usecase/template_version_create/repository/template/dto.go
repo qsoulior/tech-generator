@@ -8,26 +8,26 @@ import (
 )
 
 type template struct {
-	AuthorID     int64  `db:"author_id"`
-	RootAuthorID int64  `db:"root_author_id"`
-	UserID       int64  `db:"user_id"`
-	Role         string `db:"role"`
+	AuthorID        int64  `db:"author_id"`
+	ProjectAuthorID int64  `db:"project_author_id"`
+	UserID          int64  `db:"user_id"`
+	Role            string `db:"role"`
 }
 
 type templates []template
 
-func (t templates) toDomain() *domain.Template {
-	if len(t) == 0 {
+func (ts templates) toDomain() *domain.Template {
+	if len(ts) == 0 {
 		return nil
 	}
 
 	return &domain.Template{
-		AuthorID:     t[0].AuthorID,
-		RootAuthorID: t[0].RootAuthorID,
-		Users: lo.Map(t, func(folder template, _ int) domain.TemplateUser {
+		AuthorID:        ts[0].AuthorID,
+		ProjectAuthorID: ts[0].ProjectAuthorID,
+		Users: lo.Map(ts, func(t template, _ int) domain.TemplateUser {
 			return domain.TemplateUser{
-				ID:   folder.UserID,
-				Role: user_domain.Role(folder.Role),
+				ID:   t.UserID,
+				Role: user_domain.Role(t.Role),
 			}
 		}),
 	}

@@ -5,9 +5,9 @@ import (
 )
 
 type Template struct {
-	AuthorID     int64
-	RootAuthorID int64
-	Users        []TemplateUser
+	AuthorID        int64
+	ProjectAuthorID int64
+	Users           []TemplateUser
 }
 
 type TemplateUser struct {

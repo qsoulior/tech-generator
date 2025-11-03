@@ -4,17 +4,14 @@ CREATE TABLE template (
     is_default BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
     updated_at TIMESTAMP,
-    folder_id BIGINT REFERENCES folder (id),
+    project_id BIGINT REFERENCES project (id),
     author_id BIGINT REFERENCES usr (id),
-    root_author_id BIGINT REFERENCES usr (id),
     last_version_id BIGINT
 );
 
 CREATE INDEX template__name__idx ON template (name);
 
 CREATE INDEX template__author_id__idx ON template (author_id);
-
-CREATE INDEX template__root_author_id__idx ON template (root_author_id);
 
 CREATE TABLE template_user (
     template_id BIGINT NOT NULL REFERENCES template (id),

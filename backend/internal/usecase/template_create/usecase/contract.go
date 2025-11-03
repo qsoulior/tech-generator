@@ -8,8 +8,8 @@ import (
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_create/domain"
 )
 
-type folderRepository interface {
-	GetByID(ctx context.Context, id int64) (*domain.Folder, error)
+type projectRepository interface {
+	GetByID(ctx context.Context, id int64) (*domain.Project, error)
 }
 
 type templateRepository interface {

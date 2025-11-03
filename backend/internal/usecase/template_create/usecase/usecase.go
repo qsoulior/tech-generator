@@ -11,13 +11,13 @@ import (
 )
 
 type Usecase struct {
-	folderRepo   folderRepository
+	projectRepo  projectRepository
 	templateRepo templateRepository
 }
 
-func New(folderRepo folderRepository, templateRepo templateRepository) *Usecase {
+func New(projectRepo projectRepository, templateRepo templateRepository) *Usecase {
 	return &Usecase{
-		folderRepo:   folderRepo,
+		projectRepo:  projectRepo,
 		templateRepo: templateRepo,
 	}
 }
@@ -27,29 +27,28 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TemplateCreateIn) error 
 		return err
 	}
 
-	folder, err := u.folderRepo.GetByID(ctx, in.FolderID)
+	project, err := u.projectRepo.GetByID(ctx, in.ProjectID)
 	if err != nil {
-		return fmt.Errorf("folder repo - get by id: %w", err)
+		return fmt.Errorf("project repo - get by id: %w", err)
 	}
 
-	if folder == nil {
-		return domain.ErrFolderNotFound
+	if project == nil {
+		return domain.ErrProjectNotFound
 	}
 
-	isWriter := lo.SomeBy(folder.Users, func(user domain.FolderUser) bool {
+	isWriter := lo.SomeBy(project.Users, func(user domain.ProjectUser) bool {
 		return user.ID == in.AuthorID && user.Role == user_domain.RoleWrite
 	})
 
-	if folder.RootAuthorID != in.AuthorID && folder.AuthorID != in.AuthorID && !isWriter {
-		return domain.ErrFolderInvalid
+	if project.AuthorID != in.AuthorID && !isWriter {
+		return domain.ErrProjectInvalid
 	}
 
 	template := domain.Template{
-		Name:         in.Name,
-		IsDefault:    false,
-		FolderID:     in.FolderID,
-		AuthorID:     in.AuthorID,
-		RootAuthorID: folder.RootAuthorID,
+		Name:      in.Name,
+		IsDefault: false,
+		ProjectID: in.ProjectID,
+		AuthorID:  in.AuthorID,
 	}
 
 	err = u.templateRepo.Create(ctx, template)

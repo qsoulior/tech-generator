@@ -50,7 +50,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				},
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateVersionRepo *MocktemplateVersionRepository, variableRepo *MockvariableRepository, variableConstraintRepo *MockvariableConstraintRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 2}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 2}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 
 				templateVersion := domain.TemplateVersion{
@@ -93,7 +93,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				},
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateVersionRepo *MocktemplateVersionRepository, variableRepo *MockvariableRepository, variableConstraintRepo *MockvariableConstraintRepository) {
-				template := domain.Template{AuthorID: 2, RootAuthorID: 1}
+				template := domain.Template{AuthorID: 2, ProjectAuthorID: 1}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 
 				templateVersion := domain.TemplateVersion{
@@ -122,9 +122,9 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateVersionRepo *MocktemplateVersionRepository, variableRepo *MockvariableRepository, variableConstraintRepo *MockvariableConstraintRepository) {
 				template := domain.Template{
-					AuthorID:     2,
-					RootAuthorID: 3,
-					Users:        []domain.TemplateUser{{ID: 1, Role: user_domain.RoleWrite}},
+					AuthorID:        2,
+					ProjectAuthorID: 3,
+					Users:           []domain.TemplateUser{{ID: 1, Role: user_domain.RoleWrite}},
 				}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 
@@ -230,7 +230,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "domain_ErrTemplateInvalid",
 			in:   validIn,
 			setup: func(templateRepo *MocktemplateRepository, templateVersionRepo *MocktemplateVersionRepository, variableRepo *MockvariableRepository, variableConstraintRepo *MockvariableConstraintRepository) {
-				template := domain.Template{AuthorID: 2, RootAuthorID: 3}
+				template := domain.Template{AuthorID: 2, ProjectAuthorID: 3}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 			},
 			want: domain.ErrTemplateInvalid.Error(),
@@ -239,7 +239,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "templateVersionRepo_Create",
 			in:   validIn,
 			setup: func(templateRepo *MocktemplateRepository, templateVersionRepo *MocktemplateVersionRepository, variableRepo *MockvariableRepository, variableConstraintRepo *MockvariableConstraintRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 2}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 2}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 				templateVersionRepo.EXPECT().Create(trCtx, gomock.Any()).Return(int64(0), errors.New("test2"))
 			},
@@ -249,7 +249,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "variableRepo_Create",
 			in:   validIn,
 			setup: func(templateRepo *MocktemplateRepository, templateVersionRepo *MocktemplateVersionRepository, variableRepo *MockvariableRepository, variableConstraintRepo *MockvariableConstraintRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 2}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 2}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 				templateVersionRepo.EXPECT().Create(trCtx, gomock.Any()).Return(int64(20), nil)
 				variableRepo.EXPECT().Create(trCtx, gomock.Any()).Return(nil, errors.New("test3"))
@@ -260,7 +260,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "domain_ErrVariableIDsInvalid",
 			in:   validIn,
 			setup: func(templateRepo *MocktemplateRepository, templateVersionRepo *MocktemplateVersionRepository, variableRepo *MockvariableRepository, variableConstraintRepo *MockvariableConstraintRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 2}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 2}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 				templateVersionRepo.EXPECT().Create(trCtx, gomock.Any()).Return(int64(20), nil)
 				variableRepo.EXPECT().Create(trCtx, gomock.Any()).Return([]int64{}, nil)
@@ -271,7 +271,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "variableConstraintRepo_Create",
 			in:   validIn,
 			setup: func(templateRepo *MocktemplateRepository, templateVersionRepo *MocktemplateVersionRepository, variableRepo *MockvariableRepository, variableConstraintRepo *MockvariableConstraintRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 2}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 2}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 				templateVersionRepo.EXPECT().Create(trCtx, gomock.Any()).Return(int64(20), nil)
 				variableRepo.EXPECT().Create(trCtx, gomock.Any()).Return([]int64{31}, nil)
@@ -283,7 +283,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "templateRepo_UpdateByID",
 			in:   validIn,
 			setup: func(templateRepo *MocktemplateRepository, templateVersionRepo *MocktemplateVersionRepository, variableRepo *MockvariableRepository, variableConstraintRepo *MockvariableConstraintRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 2}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 2}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 				templateVersionRepo.EXPECT().Create(trCtx, gomock.Any()).Return(int64(20), nil)
 				variableRepo.EXPECT().Create(trCtx, gomock.Any()).Return([]int64{31}, nil)

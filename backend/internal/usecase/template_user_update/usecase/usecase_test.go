@@ -35,7 +35,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				},
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateUserRepo *MocktemplateUserRepository, userRepo *MockuserRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 9}
+				template := domain.Template{AuthorID: 1}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 
 				userExistingIDs := []int64{2, 3, 4}
@@ -59,14 +59,14 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			},
 		},
 		{
-			name: "IsRootAuthor/NoUpdates",
+			name: "IsProjectAuthor/NoUpdates",
 			in: domain.TemplateUserUpdateIn{
 				UserID:     1,
 				TemplateID: 10,
 				Users:      []domain.TemplateUser{{ID: 2, Role: user_domain.RoleRead}},
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateUserRepo *MocktemplateUserRepository, userRepo *MockuserRepository) {
-				template := domain.Template{AuthorID: 9, RootAuthorID: 1}
+				template := domain.Template{AuthorID: 9, ProjectAuthorID: 1}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 
 				userRepo.EXPECT().GetByIDs(ctx, []int64{2}).Return([]int64{2}, nil)
@@ -137,7 +137,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 				Users:      []domain.TemplateUser{},
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateUserRepo *MocktemplateUserRepository, userRepo *MockuserRepository) {
-				template := domain.Template{AuthorID: 8, RootAuthorID: 9}
+				template := domain.Template{AuthorID: 8, ProjectAuthorID: 9}
 				templateRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&template, nil)
 			},
 		},
@@ -149,7 +149,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 				Users:      []domain.TemplateUser{{ID: 2, Role: user_domain.RoleRead}},
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateUserRepo *MocktemplateUserRepository, userRepo *MockuserRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 9}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 9}
 				templateRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&template, nil)
 				userRepo.EXPECT().GetByIDs(ctx, gomock.Any()).Return(nil, errors.New("test2"))
 			},
@@ -163,7 +163,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 				Users:      []domain.TemplateUser{{ID: 2, Role: user_domain.RoleRead}},
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateUserRepo *MocktemplateUserRepository, userRepo *MockuserRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 9}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 9}
 				templateRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&template, nil)
 				userRepo.EXPECT().GetByIDs(ctx, gomock.Any()).Return([]int64{2}, nil)
 				templateUserRepo.EXPECT().GetByTemplateID(ctx, gomock.Any()).Return(nil, errors.New("test4"))
@@ -178,7 +178,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 				Users:      []domain.TemplateUser{{ID: 2, Role: user_domain.RoleRead}},
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateUserRepo *MocktemplateUserRepository, userRepo *MockuserRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 9}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 9}
 				templateRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&template, nil)
 				userRepo.EXPECT().GetByIDs(ctx, gomock.Any()).Return([]int64{2}, nil)
 
@@ -196,7 +196,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 				Users:      []domain.TemplateUser{{ID: 2, Role: user_domain.RoleRead}},
 			},
 			setup: func(templateRepo *MocktemplateRepository, templateUserRepo *MocktemplateUserRepository, userRepo *MockuserRepository) {
-				template := domain.Template{AuthorID: 1, RootAuthorID: 9}
+				template := domain.Template{AuthorID: 1, ProjectAuthorID: 9}
 				templateRepo.EXPECT().GetByID(ctx, gomock.Any()).Return(&template, nil)
 
 				userExistingIDs := []int64{2, 3, 4}

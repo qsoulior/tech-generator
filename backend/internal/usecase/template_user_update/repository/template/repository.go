@@ -27,11 +27,12 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Template, e
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
-			"author_id",
-			"root_author_id",
+			"t.author_id",
+			"p.author_id as project_author_id",
 		).
-		From("template").
-		Where(sq.Eq{"id": id, "is_default": false})
+		From("template t").
+		Join("project p ON t.project_id = p.id").
+		Where(sq.Eq{"t.id": id, "t.is_default": false})
 
 	query, args, err := builder.ToSql()
 	if err != nil {

@@ -30,22 +30,11 @@ func (s *repositorySuite) TestRepository_Create() {
 	require.NoError(s.T(), err)
 	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "usr", userID)) }()
 
-	// folder
-	folder := test_db.GenerateEntity(func(f *test_db.Folder) {
-		f.ParentID = nil
-		f.AuthorID = userID
-		f.RootAuthorID = userID
-	})
-	folderID, err := test_db.InsertEntityWithID[int64](s.C(), "folder", folder)
-	require.NoError(s.T(), err)
-	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "folder", folderID)) }()
-
 	// template
 	template := test_db.GenerateEntity(func(t *test_db.Template) {
 		t.IsDefault = false
-		t.FolderID = &folderID
+		t.ProjectID = nil
 		t.AuthorID = &userID
-		t.RootAuthorID = &userID
 	})
 	templateID, err := test_db.InsertEntityWithID[int64](s.C(), "template", template)
 	require.NoError(s.T(), err)

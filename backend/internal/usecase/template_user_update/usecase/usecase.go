@@ -37,7 +37,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TemplateUserUpdateIn) er
 		return domain.ErrTemplateNotFound
 	}
 
-	if template.RootAuthorID != in.UserID && template.AuthorID != in.UserID {
+	if template.ProjectAuthorID != in.UserID && template.AuthorID != in.UserID {
 		return domain.ErrTemplateInvalid
 	}
 

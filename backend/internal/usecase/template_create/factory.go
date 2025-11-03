@@ -3,13 +3,13 @@ package template_create_usecase
 import (
 	"github.com/jmoiron/sqlx"
 
-	folder_repository "github.com/qsoulior/tech-generator/backend/internal/usecase/template_create/repository/folder"
+	project_repository "github.com/qsoulior/tech-generator/backend/internal/usecase/template_create/repository/project"
 	template_repository "github.com/qsoulior/tech-generator/backend/internal/usecase/template_create/repository/template"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_create/usecase"
 )
 
 func New(db *sqlx.DB) *usecase.Usecase {
-	folderRepo := folder_repository.New(db)
+	projectRepo := project_repository.New(db)
 	templateRepo := template_repository.New(db)
-	return usecase.New(folderRepo, templateRepo)
+	return usecase.New(projectRepo, templateRepo)
 }

@@ -56,7 +56,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TemplateVersionCreateIn)
 		return user.ID == in.AuthorID && user.Role == user_domain.RoleWrite
 	})
 
-	if template.RootAuthorID != in.AuthorID && template.AuthorID != in.AuthorID && !isWriter {
+	if template.ProjectAuthorID != in.AuthorID && template.AuthorID != in.AuthorID && !isWriter {
 		return domain.ErrTemplateInvalid
 	}
 
