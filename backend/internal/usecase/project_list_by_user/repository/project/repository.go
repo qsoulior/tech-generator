@@ -8,6 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/samber/lo"
 
+	sorting_domain "github.com/qsoulior/tech-generator/backend/internal/domain/sorting"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/project_list_by_user/domain"
 )
 
@@ -21,19 +22,34 @@ func New(db *sqlx.DB) *Repository {
 	}
 }
 
-func (r *Repository) ListByAuthorID(ctx context.Context, in domain.ProjectListByUserIn) ([]domain.Project, error) {
-	op := "project - list by author id"
+func (r *Repository) ListByUserID(ctx context.Context, in domain.ProjectListByUserIn) ([]domain.Project, error) {
+	op := "project - list by user id"
+
+	subBuilder := sq.
+		Select(
+			"p.id",
+			"p.name as project_name",
+			"p.author_id",
+			"u.name as author_name",
+			"array_agg(pu.user_id) as project_user_ids",
+		).
+		From("project p").
+		Join("usr u ON p.author_id = u.id").
+		LeftJoin("project_user pu ON p.id = pu.project_id").
+		GroupBy("p.id", "u.name")
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
 			"id",
-			"name",
+			"project_name",
+			"author_name",
 		).
-		From("project").
-		Where(sq.Eq{"author_id": in.UserID}).
-		OrderBy("name ASC").
-		Offset((in.Page - 1) * in.Size).
-		Limit(in.Size)
+		From("p").
+		Where(getWherePred(in.Filter)).
+		OrderBy(getOrderByPred(in.Sorting)).
+		Limit(uint64(in.Size)).              //nolint:gosec
+		Offset(uint64((in.Page-1)*in.Size)). //nolint:gosec
+		Prefix("WITH p AS (?)", subBuilder)
 
 	query, args, err := builder.ToSql()
 	if err != nil {
@@ -52,33 +68,64 @@ func (r *Repository) ListByAuthorID(ctx context.Context, in domain.ProjectListBy
 	return projects, nil
 }
 
-func (r *Repository) ListByProjectUserID(ctx context.Context, in domain.ProjectListByUserIn) ([]domain.Project, error) {
-	op := "project - list by author id"
+func (r *Repository) GetTotalByUserID(ctx context.Context, in domain.ProjectListByUserIn) (int64, error) {
+	op := "project - get total by user id"
 
-	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
+	subBuilder := sq.
 		Select(
-			"p.id",
-			"p.name",
+			"p.name as project_name",
+			"p.author_id",
+			"array_agg(pu.user_id) as project_user_ids",
 		).
 		From("project p").
-		Join("project_user pu ON p.id = pu.project_id AND pu.user_id = ?", in.UserID).
-		OrderBy("name ASC").
-		Offset((in.Page - 1) * in.Size).
-		Limit(in.Size)
+		LeftJoin("project_user pu ON p.id = pu.project_id").
+		GroupBy("p.id")
+
+	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
+		Select("COUNT(*)").
+		From("p").
+		Where(getWherePred(in.Filter)).
+		Prefix("WITH p AS (?)", subBuilder)
 
 	query, args, err := builder.ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("build query %q: %w", op, err)
+		return 0, fmt.Errorf("build query %q: %w", op, err)
 	}
 
 	query = fmt.Sprintf("-- %s\n%s", op, query)
 
-	var dtos []project
-	err = r.db.SelectContext(ctx, &dtos, query, args...)
+	var count int64
+	err = r.db.GetContext(ctx, &count, query, args...)
 	if err != nil {
-		return nil, fmt.Errorf("exec query %q: %w", op, err)
+		return 0, fmt.Errorf("exec query %q: %w", op, err)
 	}
 
-	projects := lo.Map(dtos, func(dto project, _ int) domain.Project { return dto.toDomain() })
-	return projects, nil
+	return count, nil
+}
+
+func getWherePred(filter domain.ProjectListByUserFilter) sq.Sqlizer {
+	wherePred := sq.And{}
+
+	wherePred = append(wherePred, sq.Or{
+		sq.Eq{"author_id": filter.UserID},
+		sq.Expr("? = ANY(project_user_ids)", filter.UserID),
+	})
+
+	if filter.ProjectName != nil {
+		wherePred = append(wherePred, sq.ILike{"project_name": fmt.Sprintf("%%%s%%", *filter.ProjectName)})
+	}
+
+	return wherePred
+}
+
+func getOrderByPred(sorting *sorting_domain.Sorting) string {
+	if sorting == nil {
+		return "id DESC"
+	}
+
+	if _, ok := sortingAttributes[sorting.Attribute]; !ok {
+		return "id DESC"
+	}
+
+	return fmt.Sprintf("%s %s", sorting.Attribute, sorting.Direction)
 }

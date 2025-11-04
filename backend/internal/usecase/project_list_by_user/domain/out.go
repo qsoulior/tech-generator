@@ -1,6 +1,7 @@
 package domain
 
 type ProjectListByUserOut struct {
-	Owned  []Project
-	Shared []Project
+	Projects      []Project
+	TotalProjects int64
+	TotalPages    int64
 }

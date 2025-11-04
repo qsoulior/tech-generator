@@ -9,6 +9,6 @@ import (
 )
 
 type projectRepository interface {
-	ListByAuthorID(ctx context.Context, in domain.ProjectListByUserIn) ([]domain.Project, error)
-	ListByProjectUserID(ctx context.Context, in domain.ProjectListByUserIn) ([]domain.Project, error)
+	ListByUserID(ctx context.Context, in domain.ProjectListByUserIn) ([]domain.Project, error)
+	GetTotalByUserID(ctx context.Context, in domain.ProjectListByUserIn) (int64, error)
 }

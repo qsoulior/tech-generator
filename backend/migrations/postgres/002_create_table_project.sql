@@ -15,3 +15,5 @@ CREATE TABLE project_user (
     CHECK (role IN ('read', 'write', 'maintain')),
     PRIMARY KEY (project_id, user_id)
 );
+
+CREATE INDEX project_user__project_id__idx ON project_user (project_id);

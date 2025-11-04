@@ -41,32 +41,32 @@ func (m *MockprojectRepository) EXPECT() *MockprojectRepositoryMockRecorder {
 	return m.recorder
 }
 
-// ListByAuthorID mocks base method.
-func (m *MockprojectRepository) ListByAuthorID(ctx context.Context, in domain.ProjectListByUserIn) ([]domain.Project, error) {
+// GetTotalByUserID mocks base method.
+func (m *MockprojectRepository) GetTotalByUserID(ctx context.Context, in domain.ProjectListByUserIn) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListByAuthorID", ctx, in)
+	ret := m.ctrl.Call(m, "GetTotalByUserID", ctx, in)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTotalByUserID indicates an expected call of GetTotalByUserID.
+func (mr *MockprojectRepositoryMockRecorder) GetTotalByUserID(ctx, in any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTotalByUserID", reflect.TypeOf((*MockprojectRepository)(nil).GetTotalByUserID), ctx, in)
+}
+
+// ListByUserID mocks base method.
+func (m *MockprojectRepository) ListByUserID(ctx context.Context, in domain.ProjectListByUserIn) ([]domain.Project, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByUserID", ctx, in)
 	ret0, _ := ret[0].([]domain.Project)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListByAuthorID indicates an expected call of ListByAuthorID.
-func (mr *MockprojectRepositoryMockRecorder) ListByAuthorID(ctx, in any) *gomock.Call {
+// ListByUserID indicates an expected call of ListByUserID.
+func (mr *MockprojectRepositoryMockRecorder) ListByUserID(ctx, in any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByAuthorID", reflect.TypeOf((*MockprojectRepository)(nil).ListByAuthorID), ctx, in)
-}
-
-// ListByProjectUserID mocks base method.
-func (m *MockprojectRepository) ListByProjectUserID(ctx context.Context, in domain.ProjectListByUserIn) ([]domain.Project, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListByProjectUserID", ctx, in)
-	ret0, _ := ret[0].([]domain.Project)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListByProjectUserID indicates an expected call of ListByProjectUserID.
-func (mr *MockprojectRepositoryMockRecorder) ListByProjectUserID(ctx, in any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByProjectUserID", reflect.TypeOf((*MockprojectRepository)(nil).ListByProjectUserID), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByUserID", reflect.TypeOf((*MockprojectRepository)(nil).ListByUserID), ctx, in)
 }

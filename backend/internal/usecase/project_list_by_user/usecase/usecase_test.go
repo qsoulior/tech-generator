@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 
+	sorting_domain "github.com/qsoulior/tech-generator/backend/internal/domain/sorting"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/project_list_by_user/domain"
 )
 
@@ -18,15 +19,26 @@ func TestUsecase_Handle_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	var in domain.ProjectListByUserIn
-	require.NoError(t, gofakeit.Struct(&in))
+	in := domain.ProjectListByUserIn{
+		Page:   2,
+		Size:   5,
+		Filter: domain.ProjectListByUserFilter{UserID: 10},
+		Sorting: &sorting_domain.Sorting{
+			Attribute: "attr",
+			Direction: "asc",
+		},
+	}
 
-	var want domain.ProjectListByUserOut
-	require.NoError(t, gofakeit.Struct(&want))
+	want := domain.ProjectListByUserOut{
+		Projects:      make([]domain.Project, 5),
+		TotalProjects: 11,
+		TotalPages:    3,
+	}
+	gofakeit.Slice(&want.Projects)
 
 	projectRepo := NewMockprojectRepository(ctrl)
-	projectRepo.EXPECT().ListByAuthorID(ctx, in).Return(want.Owned, nil)
-	projectRepo.EXPECT().ListByProjectUserID(ctx, in).Return(want.Shared, nil)
+	projectRepo.EXPECT().ListByUserID(ctx, in).Return(want.Projects, nil)
+	projectRepo.EXPECT().GetTotalByUserID(ctx, in).Return(want.TotalProjects, nil)
 
 	usecase := New(projectRepo)
 	got, err := usecase.Handle(ctx, in)
@@ -50,20 +62,20 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			want:  domain.ErrValueInvalid.Error(),
 		},
 		{
-			name: "",
+			name: "projectRepo_ListByAuthorID",
 			setup: func(projectRepo *MockprojectRepository) {
-				projectRepo.EXPECT().ListByAuthorID(ctx, gomock.Any()).Return(nil, errors.New("test1"))
+				projectRepo.EXPECT().ListByUserID(ctx, gomock.Any()).Return(nil, errors.New("test1"))
 			},
-			in:   domain.ProjectListByUserIn{UserID: 10, Page: 1, Size: 1},
+			in:   domain.ProjectListByUserIn{Page: 1, Size: 1, Filter: domain.ProjectListByUserFilter{UserID: 10}},
 			want: "test1",
 		},
 		{
-			name: "",
+			name: "projectRepo_GetTotalByUserID",
 			setup: func(projectRepo *MockprojectRepository) {
-				projectRepo.EXPECT().ListByAuthorID(ctx, gomock.Any()).Return([]domain.Project{}, nil)
-				projectRepo.EXPECT().ListByProjectUserID(ctx, gomock.Any()).Return(nil, errors.New("test2"))
+				projectRepo.EXPECT().ListByUserID(ctx, gomock.Any()).Return([]domain.Project{}, nil)
+				projectRepo.EXPECT().GetTotalByUserID(ctx, gomock.Any()).Return(int64(0), errors.New("test2"))
 			},
-			in:   domain.ProjectListByUserIn{UserID: 10, Page: 1, Size: 1},
+			in:   domain.ProjectListByUserIn{Page: 1, Size: 1, Filter: domain.ProjectListByUserFilter{UserID: 10}},
 			want: "test2",
 		},
 	}

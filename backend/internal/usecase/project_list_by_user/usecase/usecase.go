@@ -22,19 +22,21 @@ func (u *Usecase) Handle(ctx context.Context, in domain.ProjectListByUserIn) (*d
 		return nil, err
 	}
 
-	projectsOwned, err := u.projectRepo.ListByAuthorID(ctx, in)
+	projects, err := u.projectRepo.ListByUserID(ctx, in)
 	if err != nil {
-		return nil, fmt.Errorf("project repo - list by author id: %w", err)
+		return nil, fmt.Errorf("project repo - list by user id: %w", err)
 	}
 
-	projectsShared, err := u.projectRepo.ListByProjectUserID(ctx, in)
+	totalProjects, err := u.projectRepo.GetTotalByUserID(ctx, in)
 	if err != nil {
-		return nil, fmt.Errorf("project repo - list by project user id: %w", err)
+		return nil, fmt.Errorf("project repo - count by user id: %w", err)
 	}
 
 	out := domain.ProjectListByUserOut{
-		Owned:  projectsOwned,
-		Shared: projectsShared,
+		Projects:      projects,
+		TotalProjects: totalProjects,
+		TotalPages:    (totalProjects + in.Size - 1) / in.Size,
 	}
+
 	return &out, nil
 }
