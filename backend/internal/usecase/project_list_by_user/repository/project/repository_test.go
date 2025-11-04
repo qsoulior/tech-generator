@@ -117,7 +117,7 @@ func (s *repositorySuite) TestRepository_ListByUserID_Filter() {
 	tests := []struct {
 		name       string
 		filter     domain.ProjectListByUserFilter
-		filterPred func(project domain.Project) bool
+		filterPred func(p domain.Project) bool
 	}{
 		{
 			name: "ProjectName",
@@ -125,8 +125,8 @@ func (s *repositorySuite) TestRepository_ListByUserID_Filter() {
 				UserID:      userID,
 				ProjectName: lo.ToPtr(lo.Substring(randomProject.Name, 1, 3)),
 			},
-			filterPred: func(project domain.Project) bool {
-				return project.AuthorName == user.Name && project.Name == randomProject.Name
+			filterPred: func(p domain.Project) bool {
+				return p.AuthorName == user.Name && p.Name == randomProject.Name
 			},
 		},
 	}
