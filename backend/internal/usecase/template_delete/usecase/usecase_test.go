@@ -88,7 +88,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			want: domain.ErrTemplateInvalid.Error(),
 		},
 		{
-			name: "domain_ErrTemplateInvalid",
+			name: "templateRepo_DeleteByID",
 			in:   domain.TemplateDeleteIn{TemplateID: 10, UserID: 1},
 			setup: func(templateRepo *MocktemplateRepository) {
 				template := domain.Template{AuthorID: 1, ProjectAuthorID: 2}

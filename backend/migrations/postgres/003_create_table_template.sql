@@ -4,7 +4,7 @@ CREATE TABLE template (
     is_default BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
     updated_at TIMESTAMP,
-    project_id BIGINT REFERENCES project (id),
+    project_id BIGINT REFERENCES project (id) ON DELETE CASCADE,
     author_id BIGINT REFERENCES usr (id),
     last_version_id BIGINT
 );
