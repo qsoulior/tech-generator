@@ -43,9 +43,9 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "template", templateID)) }()
 
 		// template version
-		templateVersion := test_db.GenerateEntity(func(t *test_db.TemplateVersion) {
-			t.TemplateID = templateID
-			t.AuthorID = &userID
+		templateVersion := test_db.GenerateEntity(func(v *test_db.TemplateVersion) {
+			v.TemplateID = templateID
+			v.AuthorID = &userID
 		})
 		templateVersionID, err := test_db.InsertEntityWithID[int64](s.C(), "template_version", templateVersion)
 		require.NoError(s.T(), err)
