@@ -1,4 +1,4 @@
-package template_version_repository
+package version_repository
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/samber/lo"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_list/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/version_list/domain"
 )
 
 type Repository struct {
@@ -21,8 +21,8 @@ func New(db *sqlx.DB) *Repository {
 	}
 }
 
-func (r *Repository) ListByTemplateID(ctx context.Context, templateID int64) ([]domain.TemplateVersion, error) {
-	op := "template version - list by template id"
+func (r *Repository) ListByTemplateID(ctx context.Context, templateID int64) ([]domain.Version, error) {
+	op := "version - list by template id"
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
@@ -49,6 +49,6 @@ func (r *Repository) ListByTemplateID(ctx context.Context, templateID int64) ([]
 		return nil, fmt.Errorf("exec query %q: %w", op, err)
 	}
 
-	versions := lo.Map(dtos, func(dto templateVersion, _ int) domain.TemplateVersion { return dto.toDomain() })
+	versions := lo.Map(dtos, func(dto templateVersion, _ int) domain.Version { return dto.toDomain() })
 	return versions, nil
 }

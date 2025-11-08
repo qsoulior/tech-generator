@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_list/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/version_list/domain"
 )
 
 type repositorySuite struct {

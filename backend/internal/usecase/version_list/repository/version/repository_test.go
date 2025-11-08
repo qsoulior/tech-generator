@@ -1,4 +1,4 @@
-package template_version_repository
+package version_repository
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_list/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/version_list/domain"
 )
 
 type repositorySuite struct {
@@ -60,14 +60,14 @@ func (s *repositorySuite) TestRepository_ListByTemplateID() {
 	got, err := repo.ListByTemplateID(ctx, templateIDs[0])
 	require.NoError(s.T(), err)
 
-	want := lo.Map(versions[:3], func(v test_db.TemplateVersion, _ int) domain.TemplateVersion {
-		return domain.TemplateVersion{
+	want := lo.Map(versions[:3], func(v test_db.TemplateVersion, _ int) domain.Version {
+		return domain.Version{
 			ID:         v.ID,
 			Number:     v.Number,
 			AuthorName: user.Name,
 			CreatedAt:  v.CreatedAt.Truncate(1 * time.Microsecond),
 		}
 	})
-	slices.SortFunc(want, func(a, b domain.TemplateVersion) int { return int(b.ID - a.ID) })
+	slices.SortFunc(want, func(a, b domain.Version) int { return int(b.ID - a.ID) })
 	require.Equal(s.T(), want, got)
 }

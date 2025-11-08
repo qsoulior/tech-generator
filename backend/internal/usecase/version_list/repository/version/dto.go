@@ -1,9 +1,9 @@
-package template_version_repository
+package version_repository
 
 import (
 	"time"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_list/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/version_list/domain"
 )
 
 type templateVersion struct {
@@ -13,8 +13,8 @@ type templateVersion struct {
 	CreatedAt  time.Time `db:"created_at"`
 }
 
-func (v *templateVersion) toDomain() domain.TemplateVersion {
-	return domain.TemplateVersion{
+func (v *templateVersion) toDomain() domain.Version {
+	return domain.Version{
 		ID:         v.ID,
 		Number:     v.Number,
 		AuthorName: v.AuthorName,

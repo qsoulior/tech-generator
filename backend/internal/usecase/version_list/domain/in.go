@@ -9,7 +9,7 @@ var (
 	ErrTemplateInvalid  = error_domain.NewBaseError("template is invalid")
 )
 
-type TemplateVersionListIn struct {
+type VersionListIn struct {
 	TemplateID int64
 	UserID     int64
 }

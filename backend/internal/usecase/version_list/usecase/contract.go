@@ -5,13 +5,13 @@ package usecase
 import (
 	"context"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_list/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/version_list/domain"
 )
 
 type templateRepository interface {
 	GetByID(ctx context.Context, id int64) (*domain.Template, error)
 }
 
-type templateVersionRepository interface {
-	ListByTemplateID(ctx context.Context, templateID int64) ([]domain.TemplateVersion, error)
+type versionRepository interface {
+	ListByTemplateID(ctx context.Context, templateID int64) ([]domain.Version, error)
 }

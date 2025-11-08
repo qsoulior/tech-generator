@@ -1,6 +1,6 @@
 package template_repository
 
-import "github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_list/domain"
+import "github.com/qsoulior/tech-generator/backend/internal/usecase/version_list/domain"
 
 type template struct {
 	AuthorID        int64 `db:"author_id"`
