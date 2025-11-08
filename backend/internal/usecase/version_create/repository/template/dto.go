@@ -4,7 +4,7 @@ import (
 	"github.com/samber/lo"
 
 	user_domain "github.com/qsoulior/tech-generator/backend/internal/domain/user"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_create/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/version_create/domain"
 )
 
 type template struct {

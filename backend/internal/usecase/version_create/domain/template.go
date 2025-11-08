@@ -1,7 +1,13 @@
 package domain
 
 import (
+	error_domain "github.com/qsoulior/tech-generator/backend/internal/domain/error"
 	user_domain "github.com/qsoulior/tech-generator/backend/internal/domain/user"
+)
+
+var (
+	ErrTemplateNotFound = error_domain.NewBaseError("template not found")
+	ErrTemplateInvalid  = error_domain.NewBaseError("template is invalid")
 )
 
 type Template struct {
@@ -13,15 +19,4 @@ type Template struct {
 type TemplateUser struct {
 	ID   int64
 	Role user_domain.Role
-}
-
-type TemplateToUpdate struct {
-	ID            int64
-	LastVersionID int64
-}
-
-type TemplateVersion struct {
-	TemplateID int64
-	AuthorID   int64
-	Data       []byte
 }

@@ -1,4 +1,4 @@
-package variable_constraint_repository
+package constraint_repository
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	trmsqlx "github.com/avito-tech/go-transaction-manager/drivers/sqlx/v2"
 	"github.com/jmoiron/sqlx"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_create/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_create/domain"
 )
 
 type Repository struct {
@@ -23,8 +23,8 @@ func New(db *sqlx.DB, trGetter *trmsqlx.CtxGetter) *Repository {
 	}
 }
 
-func (r *Repository) Create(ctx context.Context, constraints []domain.VariableConstraintToCreate) error {
-	op := "variable constraint - create"
+func (r *Repository) Create(ctx context.Context, constraints []domain.ConstraintToCreate) error {
+	op := "constraint - create"
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Insert("variable_constraint").

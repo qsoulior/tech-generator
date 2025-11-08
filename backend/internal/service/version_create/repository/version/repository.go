@@ -1,4 +1,4 @@
-package template_version_repository
+package version_repository
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	trmsqlx "github.com/avito-tech/go-transaction-manager/drivers/sqlx/v2"
 	"github.com/jmoiron/sqlx"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_create/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_create/domain"
 )
 
 type Repository struct {
@@ -23,8 +23,8 @@ func New(db *sqlx.DB, trGetter *trmsqlx.CtxGetter) *Repository {
 	}
 }
 
-func (r *Repository) Create(ctx context.Context, templateVersion domain.TemplateVersion) (int64, error) {
-	op := "template version - create"
+func (r *Repository) Create(ctx context.Context, templateVersion domain.Version) (int64, error) {
+	op := "version - create"
 
 	numberExpr := sq.Expr("(SELECT COALESCE(MAX(number), 0) FROM template_version WHERE template_id = ?) + 1", templateVersion.TemplateID)
 

@@ -36,7 +36,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TemplateGetByIDIn) (*dom
 	// get last version
 	version, err := u.versionGetService.Handle(ctx, *template.LastVersionID)
 	if err != nil {
-		return nil, fmt.Errorf("version get service - handle: %w", err)
+		return nil, err
 	}
 
 	return &domain.TemplateGetByIDOut{Version: version}, nil

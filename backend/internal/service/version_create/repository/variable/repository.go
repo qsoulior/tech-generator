@@ -8,7 +8,7 @@ import (
 	trmsqlx "github.com/avito-tech/go-transaction-manager/drivers/sqlx/v2"
 	"github.com/jmoiron/sqlx"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_create/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_create/domain"
 )
 
 type Repository struct {

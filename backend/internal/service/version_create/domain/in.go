@@ -9,19 +9,17 @@ import (
 
 var (
 	ErrValueInvalid       = errors.New("value is invalid")
-	ErrTemplateNotFound   = error_domain.NewBaseError("template not found")
-	ErrTemplateInvalid    = error_domain.NewBaseError("template is invalid")
 	ErrVariableIDsInvalid = errors.New("variable ids length is invalid")
 )
 
-type TemplateVersionCreateIn struct {
+type VersionCreateIn struct {
 	AuthorID   int64
 	TemplateID int64
 	Data       []byte
 	Variables  []Variable
 }
 
-func (in TemplateVersionCreateIn) Validate() error {
+func (in VersionCreateIn) Validate() error {
 	for i, v := range in.Variables {
 		if !v.Type.Valid() {
 			field := fmt.Sprintf("variables.%d.type", i)

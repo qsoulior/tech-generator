@@ -1,4 +1,4 @@
-package template_version_repository
+package version_repository
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_create/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_create/domain"
 )
 
 type repositorySuite struct {
@@ -47,7 +47,7 @@ func (s *repositorySuite) TestRepository_Create() {
 		v.Number = 1
 	})
 
-	templateVersion := domain.TemplateVersion{
+	templateVersion := domain.Version{
 		TemplateID: templateID,
 		AuthorID:   userID,
 		Data:       want.Data,

@@ -8,7 +8,7 @@ type Variable struct {
 	Name        string
 	Type        variable_domain.Type
 	Expression  string
-	Constraints []VariableConstraint
+	Constraints []Constraint
 }
 
 type VariableToCreate struct {
@@ -16,17 +16,4 @@ type VariableToCreate struct {
 	Name       string
 	Type       variable_domain.Type
 	Expression string
-}
-
-type VariableConstraint struct {
-	Name       string
-	Expression string
-	IsActive   bool
-}
-
-type VariableConstraintToCreate struct {
-	VariableID int64
-	Name       string
-	Expression string
-	IsActive   bool
 }

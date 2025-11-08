@@ -8,7 +8,7 @@ import (
 	trmsqlx "github.com/avito-tech/go-transaction-manager/drivers/sqlx/v2"
 	"github.com/jmoiron/sqlx"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_version_create/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_create/domain"
 )
 
 type Repository struct {
@@ -21,37 +21,6 @@ func New(db *sqlx.DB, trGetter *trmsqlx.CtxGetter) *Repository {
 		db:       db,
 		trGetter: trGetter,
 	}
-}
-
-func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Template, error) {
-	op := "template - get by id"
-
-	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
-		Select(
-			"t.author_id",
-			"p.author_id as project_author_id",
-			"tu.user_id",
-			"tu.role",
-		).
-		From("template t").
-		Join("project p ON t.project_id = p.id").
-		LeftJoin("template_user tu ON t.id = tu.template_id").
-		Where(sq.Eq{"t.id": id, "t.is_default": false})
-
-	query, args, err := builder.ToSql()
-	if err != nil {
-		return nil, fmt.Errorf("build query %q: %w", op, err)
-	}
-
-	query = fmt.Sprintf("-- %s\n%s", op, query)
-
-	var dtos templates
-	err = r.db.SelectContext(ctx, &dtos, query, args...)
-	if err != nil {
-		return nil, fmt.Errorf("exec query %q: %w", op, err)
-	}
-
-	return dtos.toDomain(), nil
 }
 
 func (r *Repository) UpdateByID(ctx context.Context, template domain.TemplateToUpdate) error {
