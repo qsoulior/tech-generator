@@ -81,7 +81,7 @@ func (s *repositorySuite) TestRepository_DeleteByID() {
 	require.NoError(s.T(), err)
 
 	// template version
-	templateVersion := test_db.GenerateEntity(func(v *test_db.TemplateVersion) {
+	templateVersion := test_db.GenerateEntity(func(v *test_db.Version) {
 		v.TemplateID = templateID
 		v.AuthorID = &userID
 		v.Number = 1
@@ -97,7 +97,7 @@ func (s *repositorySuite) TestRepository_DeleteByID() {
 	require.NoError(s.T(), err)
 
 	// variable constraint
-	variableConstraint := test_db.GenerateEntity(func(v *test_db.VariableConstraint) {
+	variableConstraint := test_db.GenerateEntity(func(v *test_db.Constraint) {
 		v.VariableID = variableID
 	})
 	variableConstraintID, err := test_db.InsertEntityWithID[int64](s.C(), "variable_constraint", variableConstraint)
@@ -115,7 +115,7 @@ func (s *repositorySuite) TestRepository_DeleteByID() {
 	require.NoError(s.T(), err)
 	require.Empty(s.T(), templates)
 
-	versions, err := test_db.SelectEntitiesByID[test_db.TemplateVersion](s.C(), "template_version", []int64{templateVersionID})
+	versions, err := test_db.SelectEntitiesByID[test_db.Version](s.C(), "template_version", []int64{templateVersionID})
 	require.NoError(s.T(), err)
 	require.Empty(s.T(), versions)
 
@@ -123,7 +123,7 @@ func (s *repositorySuite) TestRepository_DeleteByID() {
 	require.NoError(s.T(), err)
 	require.Empty(s.T(), variables)
 
-	variableConstraints, err := test_db.SelectEntitiesByID[test_db.VariableConstraint](s.C(), "variable_constraint", []int64{variableConstraintID})
+	variableConstraints, err := test_db.SelectEntitiesByID[test_db.Constraint](s.C(), "variable_constraint", []int64{variableConstraintID})
 	require.NoError(s.T(), err)
 	require.Empty(s.T(), variableConstraints)
 }

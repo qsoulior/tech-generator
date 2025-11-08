@@ -36,7 +36,7 @@ func (s *repositorySuite) TestRepository_Create() {
 	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "template", templateID)) }()
 
 	// template version
-	templateVersion := test_db.GenerateEntity(func(v *test_db.TemplateVersion) {
+	templateVersion := test_db.GenerateEntity(func(v *test_db.Version) {
 		v.TemplateID = templateID
 		v.AuthorID = nil
 		v.Number = 1
@@ -54,11 +54,11 @@ func (s *repositorySuite) TestRepository_Create() {
 	defer func() { require.NoError(s.T(), test_db.DeleteEntitiesByID(s.C(), "variable", variableIDs)) }()
 
 	// variable constraints
-	wantConstraints := test_db.GenerateEntities(5, func(c *test_db.VariableConstraint, i int) {
+	wantConstraints := test_db.GenerateEntities(5, func(c *test_db.Constraint, i int) {
 		c.VariableID = lo.Sample(variableIDs)
 	})
 
-	constraints := lo.Map(wantConstraints, func(c test_db.VariableConstraint, _ int) domain.ConstraintToCreate {
+	constraints := lo.Map(wantConstraints, func(c test_db.Constraint, _ int) domain.ConstraintToCreate {
 		return domain.ConstraintToCreate{
 			VariableID: c.VariableID,
 			Name:       c.Name,
@@ -73,7 +73,7 @@ func (s *repositorySuite) TestRepository_Create() {
 		require.NoError(s.T(), test_db.DeleteEntitiesByColumn(s.C(), "variable_constraint", "variable_id", variableIDs))
 	}()
 
-	gotConstraints, err := test_db.SelectEntitiesByColumn[test_db.VariableConstraint](s.C(), "variable_constraint", "variable_id", variableIDs)
+	gotConstraints, err := test_db.SelectEntitiesByColumn[test_db.Constraint](s.C(), "variable_constraint", "variable_id", variableIDs)
 	require.NoError(s.T(), err)
 
 	require.Len(s.T(), gotConstraints, len(wantConstraints))

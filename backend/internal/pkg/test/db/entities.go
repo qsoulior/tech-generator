@@ -40,7 +40,7 @@ type TemplateUser struct {
 	Role       string `db:"role" fake:"{randomstring:[read,write]}"`
 }
 
-type TemplateVersion struct {
+type Version struct {
 	ID         int64     `db:"id"`
 	Number     int64     `db:"number"`
 	TemplateID int64     `db:"template_id"`
@@ -57,7 +57,7 @@ type Variable struct {
 	Expression string `db:"expression"`
 }
 
-type VariableConstraint struct {
+type Constraint struct {
 	ID         int64  `db:"id"`
 	VariableID int64  `db:"variable_id"`
 	Name       string `db:"name"`

@@ -41,7 +41,7 @@ func (s *repositorySuite) TestRepository_Create() {
 	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "template", templateID)) }()
 
 	// template version
-	want := test_db.GenerateEntity(func(v *test_db.TemplateVersion) {
+	want := test_db.GenerateEntity(func(v *test_db.Version) {
 		v.TemplateID = templateID
 		v.AuthorID = &userID
 		v.Number = 1
@@ -59,7 +59,7 @@ func (s *repositorySuite) TestRepository_Create() {
 		require.NoError(s.T(), test_db.DeleteEntityByColumn(s.C(), "template_version", "template_id", templateID))
 	}()
 
-	templates, err := test_db.SelectEntitiesByID[test_db.TemplateVersion](s.C(), "template_version", []int64{templateVersionID})
+	templates, err := test_db.SelectEntitiesByID[test_db.Version](s.C(), "template_version", []int64{templateVersionID})
 	require.NoError(s.T(), err)
 	require.Len(s.T(), templates, 1)
 

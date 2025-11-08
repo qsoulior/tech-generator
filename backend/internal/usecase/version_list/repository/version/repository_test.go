@@ -44,11 +44,11 @@ func (s *repositorySuite) TestRepository_ListByTemplateID() {
 
 	// template version
 	versions := slices.Concat(
-		test_db.GenerateEntities(3, func(v *test_db.TemplateVersion, _ int) {
+		test_db.GenerateEntities(3, func(v *test_db.Version, _ int) {
 			v.TemplateID = templateIDs[0]
 			v.AuthorID = &userID
 		}),
-		test_db.GenerateEntities(2, func(v *test_db.TemplateVersion, _ int) {
+		test_db.GenerateEntities(2, func(v *test_db.Version, _ int) {
 			v.TemplateID = templateIDs[1]
 			v.AuthorID = &userID
 		}),
@@ -60,7 +60,7 @@ func (s *repositorySuite) TestRepository_ListByTemplateID() {
 	got, err := repo.ListByTemplateID(ctx, templateIDs[0])
 	require.NoError(s.T(), err)
 
-	want := lo.Map(versions[:3], func(v test_db.TemplateVersion, _ int) domain.Version {
+	want := lo.Map(versions[:3], func(v test_db.Version, _ int) domain.Version {
 		return domain.Version{
 			ID:         v.ID,
 			Number:     v.Number,

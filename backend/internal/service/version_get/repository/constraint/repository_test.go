@@ -36,7 +36,7 @@ func (s *repositorySuite) TestRepository_ListByVariableIDs() {
 	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "template", templateID)) }()
 
 	// template version
-	version := test_db.GenerateEntity(func(v *test_db.TemplateVersion) {
+	version := test_db.GenerateEntity(func(v *test_db.Version) {
 		v.TemplateID = templateID
 		v.AuthorID = nil
 	})
@@ -54,13 +54,13 @@ func (s *repositorySuite) TestRepository_ListByVariableIDs() {
 
 	// variable constraints
 	constraints := slices.Concat(
-		test_db.GenerateEntities(3, func(c *test_db.VariableConstraint, i int) {
+		test_db.GenerateEntities(3, func(c *test_db.Constraint, i int) {
 			c.VariableID = variableIDs[0]
 		}),
-		test_db.GenerateEntities(2, func(c *test_db.VariableConstraint, i int) {
+		test_db.GenerateEntities(2, func(c *test_db.Constraint, i int) {
 			c.VariableID = variableIDs[1]
 		}),
-		test_db.GenerateEntities(2, func(c *test_db.VariableConstraint, i int) {
+		test_db.GenerateEntities(2, func(c *test_db.Constraint, i int) {
 			c.VariableID = variableIDs[2]
 		}),
 	)
@@ -73,7 +73,7 @@ func (s *repositorySuite) TestRepository_ListByVariableIDs() {
 	got, err := repo.ListByVariableIDs(ctx, variableIDs[:2])
 	require.NoError(s.T(), err)
 
-	want := lo.Map(constraints[:5], func(c test_db.VariableConstraint, _ int) domain.Constraint {
+	want := lo.Map(constraints[:5], func(c test_db.Constraint, _ int) domain.Constraint {
 		return domain.Constraint{
 			ID:         c.ID,
 			VariableID: c.VariableID,
