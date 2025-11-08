@@ -1,4 +1,4 @@
-package version_repository
+package template_repository
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 
-	"github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/version_create_from/domain"
 )
 
 type Repository struct {
@@ -22,19 +22,17 @@ func New(db *sqlx.DB) *Repository {
 	}
 }
 
-func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Version, error) {
-	op := "version - get by id"
+func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Template, error) {
+	op := "template - get by id"
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
-			"id",
-			"template_id",
-			"number",
-			"created_at",
-			"data",
+			"t.author_id",
+			"p.author_id as project_author_id",
 		).
-		From("template_version").
-		Where(sq.Eq{"id": id})
+		From("template t").
+		Join("project p ON t.project_id = p.id").
+		Where(sq.Eq{"t.id": id, "t.is_default": false})
 
 	query, args, err := builder.ToSql()
 	if err != nil {
@@ -43,8 +41,8 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Version, er
 
 	query = fmt.Sprintf("-- %s\n%s", op, query)
 
-	var dto version
-	err = r.db.GetContext(ctx, &dto, query, args...)
+	var template template
+	err = r.db.GetContext(ctx, &template, query, args...)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -52,5 +50,5 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Version, er
 		return nil, fmt.Errorf("exec query %q: %w", op, err)
 	}
 
-	return dto.toDomain(), nil
+	return template.toDomain(), nil
 }

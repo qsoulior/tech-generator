@@ -7,17 +7,19 @@ import (
 )
 
 type version struct {
-	ID        int64     `db:"id"`
-	Number    int64     `db:"number"`
-	CreatedAt time.Time `db:"created_at"`
-	Data      []byte    `db:"data"`
+	ID         int64     `db:"id"`
+	TemplateID int64     `db:"template_id"`
+	Number     int64     `db:"number"`
+	CreatedAt  time.Time `db:"created_at"`
+	Data       []byte    `db:"data"`
 }
 
 func (v *version) toDomain() *domain.Version {
 	return &domain.Version{
-		ID:        v.ID,
-		Number:    v.Number,
-		CreatedAt: v.CreatedAt,
-		Data:      v.Data,
+		ID:         v.ID,
+		TemplateID: v.TemplateID,
+		Number:     v.Number,
+		CreatedAt:  v.CreatedAt,
+		Data:       v.Data,
 	}
 }

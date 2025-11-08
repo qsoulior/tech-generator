@@ -20,12 +20,13 @@ func New(templateRepo templateRepository, templateVersionRepo versionRepository)
 }
 
 func (u *Usecase) Handle(ctx context.Context, in domain.VersionListIn) (*domain.VersionListOut, error) {
-	// get template
+	// validate template
 	err := u.validateTemplate(ctx, in)
 	if err != nil {
 		return nil, err
 	}
 
+	// list versions
 	versions, err := u.versionRepo.ListByTemplateID(ctx, in.TemplateID)
 	if err != nil {
 		return nil, fmt.Errorf("version repo - list by template id: %w", err)

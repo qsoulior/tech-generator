@@ -27,10 +27,11 @@ func TestService_Handle_Success(t *testing.T) {
 			name: "Variables",
 			setup: func(versionRepo *MockversionRepository, variableRepo *MockvariableRepository, constraintRepo *MockconstraintRepository) {
 				version := domain.Version{
-					ID:        versionID,
-					Number:    2,
-					CreatedAt: createdAt,
-					Data:      []byte{1, 2, 3},
+					ID:         versionID,
+					TemplateID: 1,
+					Number:     2,
+					CreatedAt:  createdAt,
+					Data:       []byte{1, 2, 3},
 				}
 				versionRepo.EXPECT().GetByID(ctx, versionID).Return(&version, nil)
 
@@ -76,10 +77,11 @@ func TestService_Handle_Success(t *testing.T) {
 				constraintRepo.EXPECT().ListByVariableIDs(ctx, []int64{31, 32}).Return(constraints, nil)
 			},
 			want: domain.Version{
-				ID:        versionID,
-				Number:    2,
-				CreatedAt: createdAt,
-				Data:      []byte{1, 2, 3},
+				ID:         versionID,
+				TemplateID: 1,
+				Number:     2,
+				CreatedAt:  createdAt,
+				Data:       []byte{1, 2, 3},
 				Variables: []domain.Variable{
 					{
 						ID:         31,
@@ -125,10 +127,11 @@ func TestService_Handle_Success(t *testing.T) {
 			name: "NoVariables",
 			setup: func(versionRepo *MockversionRepository, variableRepo *MockvariableRepository, constraintRepo *MockconstraintRepository) {
 				version := domain.Version{
-					ID:        versionID,
-					Number:    2,
-					CreatedAt: createdAt,
-					Data:      []byte{1, 2, 3},
+					ID:         versionID,
+					TemplateID: 1,
+					Number:     2,
+					CreatedAt:  createdAt,
+					Data:       []byte{1, 2, 3},
 				}
 				versionRepo.EXPECT().GetByID(ctx, versionID).Return(&version, nil)
 
@@ -136,11 +139,12 @@ func TestService_Handle_Success(t *testing.T) {
 				variableRepo.EXPECT().ListByVersionID(ctx, versionID).Return(variables, nil)
 			},
 			want: domain.Version{
-				ID:        versionID,
-				Number:    2,
-				CreatedAt: createdAt,
-				Data:      []byte{1, 2, 3},
-				Variables: []domain.Variable{},
+				ID:         versionID,
+				TemplateID: 1,
+				Number:     2,
+				CreatedAt:  createdAt,
+				Data:       []byte{1, 2, 3},
+				Variables:  []domain.Variable{},
 			},
 		},
 	}

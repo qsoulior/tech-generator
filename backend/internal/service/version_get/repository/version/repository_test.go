@@ -55,10 +55,11 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		require.NoError(t, err)
 
 		want := domain.Version{
-			ID:        templateVersionID,
-			Number:    templateVersion.Number,
-			CreatedAt: templateVersion.CreatedAt.Truncate(1 * time.Microsecond),
-			Data:      templateVersion.Data,
+			ID:         templateVersionID,
+			TemplateID: templateID,
+			Number:     templateVersion.Number,
+			CreatedAt:  templateVersion.CreatedAt.Truncate(1 * time.Microsecond),
+			Data:       templateVersion.Data,
 		}
 		require.Equal(t, want, *got)
 	})
