@@ -2,7 +2,7 @@ package variable_repository
 
 import (
 	variable_domain "github.com/qsoulior/tech-generator/backend/internal/domain/variable"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
 )
 
 type variable struct {

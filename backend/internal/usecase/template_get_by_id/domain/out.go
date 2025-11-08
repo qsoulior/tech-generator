@@ -1,11 +1,7 @@
 package domain
 
-import "time"
+import version_get_domain "github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
 
 type TemplateGetByIDOut struct {
-	VersionID     int64
-	VersionNumber int64
-	CreatedAt     time.Time
-	Data          []byte
-	Variables     []Variable
+	Version *version_get_domain.Version
 }

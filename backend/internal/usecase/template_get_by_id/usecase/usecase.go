@@ -11,23 +11,14 @@ import (
 )
 
 type Usecase struct {
-	templateRepo           templateRepository
-	templateVersionRepo    templateVersionRepository
-	variableRepo           variableRepository
-	variableConstraintRepo variableConstraintRepository
+	templateRepo      templateRepository
+	versionGetService versionGetService
 }
 
-func New(
-	templateRepo templateRepository,
-	templateVersionRepo templateVersionRepository,
-	variableRepo variableRepository,
-	variableConstraintRepo variableConstraintRepository,
-) *Usecase {
+func New(templateRepo templateRepository, versionGetService versionGetService) *Usecase {
 	return &Usecase{
-		templateRepo:           templateRepo,
-		templateVersionRepo:    templateVersionRepo,
-		variableRepo:           variableRepo,
-		variableConstraintRepo: variableConstraintRepo,
+		templateRepo:      templateRepo,
+		versionGetService: versionGetService,
 	}
 }
 
@@ -39,39 +30,16 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TemplateGetByIDIn) (*dom
 	}
 
 	if template.LastVersionID == nil {
-		return &domain.TemplateGetByIDOut{VersionID: 0, VersionNumber: 0}, nil
+		return &domain.TemplateGetByIDOut{Version: nil}, nil
 	}
 
 	// get last version
-	version, err := u.templateVersionRepo.GetByID(ctx, *template.LastVersionID)
+	version, err := u.versionGetService.Handle(ctx, *template.LastVersionID)
 	if err != nil {
-		return nil, fmt.Errorf("template version repo - get by id: %w", err)
+		return nil, fmt.Errorf("version get service - handle: %w", err)
 	}
 
-	if version == nil {
-		return nil, domain.ErrTemplateVersionNotFound
-	}
-
-	// get variables
-	variables, err := u.variableRepo.ListByVersionID(ctx, version.ID)
-	if err != nil {
-		return nil, fmt.Errorf("variable repo - list by version id: %w", err)
-	}
-
-	err = u.fillVariableConstraints(ctx, variables)
-	if err != nil {
-		return nil, err
-	}
-
-	out := domain.TemplateGetByIDOut{
-		VersionID:     version.ID,
-		VersionNumber: version.Number,
-		CreatedAt:     version.CreatedAt,
-		Data:          version.Data,
-		Variables:     variables,
-	}
-
-	return &out, nil
+	return &domain.TemplateGetByIDOut{Version: version}, nil
 }
 
 func (u *Usecase) getTemplate(ctx context.Context, in domain.TemplateGetByIDIn) (*domain.Template, error) {
@@ -95,25 +63,4 @@ func (u *Usecase) getTemplate(ctx context.Context, in domain.TemplateGetByIDIn) 
 	}
 
 	return template, nil
-}
-
-func (u *Usecase) fillVariableConstraints(ctx context.Context, variables []domain.Variable) error {
-	variableIDs := lo.Map(variables, func(v domain.Variable, _ int) int64 { return v.ID })
-
-	if len(variableIDs) == 0 {
-		return nil
-	}
-
-	constraints, err := u.variableConstraintRepo.ListByVariableIDs(ctx, variableIDs)
-	if err != nil {
-		return fmt.Errorf("variable constraint repo - list by variables ids: %w", err)
-	}
-
-	constraintsByVariable := lo.GroupBy(constraints, func(c domain.VariableConstraint) int64 { return c.VariableID })
-
-	for i := range variables {
-		variables[i].Constraints = constraintsByVariable[variables[i].ID]
-	}
-
-	return nil
 }

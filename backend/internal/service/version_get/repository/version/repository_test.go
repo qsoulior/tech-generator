@@ -1,4 +1,4 @@
-package template_version_repository
+package version_repository
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
 )
 
 type repositorySuite struct {
@@ -54,7 +54,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		got, err := repo.GetByID(ctx, templateVersionID)
 		require.NoError(t, err)
 
-		want := domain.TemplateVersion{
+		want := domain.Version{
 			ID:        templateVersionID,
 			Number:    templateVersion.Number,
 			CreatedAt: templateVersion.CreatedAt.Truncate(1 * time.Microsecond),

@@ -1,15 +1,12 @@
 package domain
 
 import (
-	"errors"
-
 	error_domain "github.com/qsoulior/tech-generator/backend/internal/domain/error"
 )
 
 var (
-	ErrTemplateNotFound        = error_domain.NewBaseError("template not found")
-	ErrTemplateInvalid         = error_domain.NewBaseError("template is invalid")
-	ErrTemplateVersionNotFound = errors.New("template version not found")
+	ErrTemplateNotFound = error_domain.NewBaseError("template not found")
+	ErrTemplateInvalid  = error_domain.NewBaseError("template is invalid")
 )
 
 type TemplateGetByIDIn struct {

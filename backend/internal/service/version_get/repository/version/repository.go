@@ -1,4 +1,4 @@
-package template_version_repository
+package version_repository
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
 )
 
 type Repository struct {
@@ -22,8 +22,8 @@ func New(db *sqlx.DB) *Repository {
 	}
 }
 
-func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.TemplateVersion, error) {
-	op := "template version - get by id"
+func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Version, error) {
+	op := "version - get by id"
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
@@ -42,7 +42,7 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.TemplateVer
 
 	query = fmt.Sprintf("-- %s\n%s", op, query)
 
-	var dto templateVersion
+	var dto version
 	err = r.db.GetContext(ctx, &dto, query, args...)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

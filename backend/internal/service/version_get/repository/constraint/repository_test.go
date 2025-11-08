@@ -1,4 +1,4 @@
-package variable_constraint_repository
+package constraint_repository
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
 )
 
 type repositorySuite struct {
@@ -73,8 +73,8 @@ func (s *repositorySuite) TestRepository_ListByVariableIDs() {
 	got, err := repo.ListByVariableIDs(ctx, variableIDs[:2])
 	require.NoError(s.T(), err)
 
-	want := lo.Map(constraints[:5], func(c test_db.VariableConstraint, _ int) domain.VariableConstraint {
-		return domain.VariableConstraint{
+	want := lo.Map(constraints[:5], func(c test_db.VariableConstraint, _ int) domain.Constraint {
+		return domain.Constraint{
 			ID:         c.ID,
 			VariableID: c.VariableID,
 			Name:       c.Name,
@@ -82,6 +82,6 @@ func (s *repositorySuite) TestRepository_ListByVariableIDs() {
 			IsActive:   c.IsActive,
 		}
 	})
-	slices.SortFunc(want, func(a, b domain.VariableConstraint) int { return int(a.ID - b.ID) })
+	slices.SortFunc(want, func(a, b domain.Constraint) int { return int(a.ID - b.ID) })
 	require.Equal(s.T(), want, got)
 }

@@ -1,10 +1,10 @@
-package variable_constraint_repository
+package constraint_repository
 
 import (
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
 )
 
-type variableConstraint struct {
+type сonstraint struct {
 	ID         int64  `db:"id"`
 	VariableID int64  `db:"variable_id"`
 	Name       string `db:"name"`
@@ -12,8 +12,8 @@ type variableConstraint struct {
 	IsActive   bool   `db:"is_active"`
 }
 
-func (c *variableConstraint) toDomain() domain.VariableConstraint {
-	return domain.VariableConstraint{
+func (c *сonstraint) toDomain() domain.Constraint {
+	return domain.Constraint{
 		ID:         c.ID,
 		VariableID: c.VariableID,
 		Name:       c.Name,

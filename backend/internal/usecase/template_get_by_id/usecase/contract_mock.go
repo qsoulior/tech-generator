@@ -13,7 +13,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	domain "github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id/domain"
+	domain "github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
+	domain0 "github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id/domain"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -42,10 +43,10 @@ func (m *MocktemplateRepository) EXPECT() *MocktemplateRepositoryMockRecorder {
 }
 
 // GetByID mocks base method.
-func (m *MocktemplateRepository) GetByID(ctx context.Context, id int64) (*domain.Template, error) {
+func (m *MocktemplateRepository) GetByID(ctx context.Context, id int64) (*domain0.Template, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(*domain.Template)
+	ret0, _ := ret[0].(*domain0.Template)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -56,119 +57,41 @@ func (mr *MocktemplateRepositoryMockRecorder) GetByID(ctx, id any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MocktemplateRepository)(nil).GetByID), ctx, id)
 }
 
-// MocktemplateVersionRepository is a mock of templateVersionRepository interface.
-type MocktemplateVersionRepository struct {
+// MockversionGetService is a mock of versionGetService interface.
+type MockversionGetService struct {
 	ctrl     *gomock.Controller
-	recorder *MocktemplateVersionRepositoryMockRecorder
+	recorder *MockversionGetServiceMockRecorder
 	isgomock struct{}
 }
 
-// MocktemplateVersionRepositoryMockRecorder is the mock recorder for MocktemplateVersionRepository.
-type MocktemplateVersionRepositoryMockRecorder struct {
-	mock *MocktemplateVersionRepository
+// MockversionGetServiceMockRecorder is the mock recorder for MockversionGetService.
+type MockversionGetServiceMockRecorder struct {
+	mock *MockversionGetService
 }
 
-// NewMocktemplateVersionRepository creates a new mock instance.
-func NewMocktemplateVersionRepository(ctrl *gomock.Controller) *MocktemplateVersionRepository {
-	mock := &MocktemplateVersionRepository{ctrl: ctrl}
-	mock.recorder = &MocktemplateVersionRepositoryMockRecorder{mock}
+// NewMockversionGetService creates a new mock instance.
+func NewMockversionGetService(ctrl *gomock.Controller) *MockversionGetService {
+	mock := &MockversionGetService{ctrl: ctrl}
+	mock.recorder = &MockversionGetServiceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MocktemplateVersionRepository) EXPECT() *MocktemplateVersionRepositoryMockRecorder {
+func (m *MockversionGetService) EXPECT() *MockversionGetServiceMockRecorder {
 	return m.recorder
 }
 
-// GetByID mocks base method.
-func (m *MocktemplateVersionRepository) GetByID(ctx context.Context, id int64) (*domain.TemplateVersion, error) {
+// Handle mocks base method.
+func (m *MockversionGetService) Handle(ctx context.Context, versionID int64) (*domain.Version, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(*domain.TemplateVersion)
+	ret := m.ctrl.Call(m, "Handle", ctx, versionID)
+	ret0, _ := ret[0].(*domain.Version)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetByID indicates an expected call of GetByID.
-func (mr *MocktemplateVersionRepositoryMockRecorder) GetByID(ctx, id any) *gomock.Call {
+// Handle indicates an expected call of Handle.
+func (mr *MockversionGetServiceMockRecorder) Handle(ctx, versionID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MocktemplateVersionRepository)(nil).GetByID), ctx, id)
-}
-
-// MockvariableRepository is a mock of variableRepository interface.
-type MockvariableRepository struct {
-	ctrl     *gomock.Controller
-	recorder *MockvariableRepositoryMockRecorder
-	isgomock struct{}
-}
-
-// MockvariableRepositoryMockRecorder is the mock recorder for MockvariableRepository.
-type MockvariableRepositoryMockRecorder struct {
-	mock *MockvariableRepository
-}
-
-// NewMockvariableRepository creates a new mock instance.
-func NewMockvariableRepository(ctrl *gomock.Controller) *MockvariableRepository {
-	mock := &MockvariableRepository{ctrl: ctrl}
-	mock.recorder = &MockvariableRepositoryMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockvariableRepository) EXPECT() *MockvariableRepositoryMockRecorder {
-	return m.recorder
-}
-
-// ListByVersionID mocks base method.
-func (m *MockvariableRepository) ListByVersionID(ctx context.Context, versionID int64) ([]domain.Variable, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListByVersionID", ctx, versionID)
-	ret0, _ := ret[0].([]domain.Variable)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListByVersionID indicates an expected call of ListByVersionID.
-func (mr *MockvariableRepositoryMockRecorder) ListByVersionID(ctx, versionID any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByVersionID", reflect.TypeOf((*MockvariableRepository)(nil).ListByVersionID), ctx, versionID)
-}
-
-// MockvariableConstraintRepository is a mock of variableConstraintRepository interface.
-type MockvariableConstraintRepository struct {
-	ctrl     *gomock.Controller
-	recorder *MockvariableConstraintRepositoryMockRecorder
-	isgomock struct{}
-}
-
-// MockvariableConstraintRepositoryMockRecorder is the mock recorder for MockvariableConstraintRepository.
-type MockvariableConstraintRepositoryMockRecorder struct {
-	mock *MockvariableConstraintRepository
-}
-
-// NewMockvariableConstraintRepository creates a new mock instance.
-func NewMockvariableConstraintRepository(ctrl *gomock.Controller) *MockvariableConstraintRepository {
-	mock := &MockvariableConstraintRepository{ctrl: ctrl}
-	mock.recorder = &MockvariableConstraintRepositoryMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockvariableConstraintRepository) EXPECT() *MockvariableConstraintRepositoryMockRecorder {
-	return m.recorder
-}
-
-// ListByVariableIDs mocks base method.
-func (m *MockvariableConstraintRepository) ListByVariableIDs(ctx context.Context, variableIDs []int64) ([]domain.VariableConstraint, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListByVariableIDs", ctx, variableIDs)
-	ret0, _ := ret[0].([]domain.VariableConstraint)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListByVariableIDs indicates an expected call of ListByVariableIDs.
-func (mr *MockvariableConstraintRepositoryMockRecorder) ListByVariableIDs(ctx, variableIDs any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByVariableIDs", reflect.TypeOf((*MockvariableConstraintRepository)(nil).ListByVariableIDs), ctx, variableIDs)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Handle", reflect.TypeOf((*MockversionGetService)(nil).Handle), ctx, versionID)
 }

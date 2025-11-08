@@ -11,7 +11,7 @@ import (
 
 	variable_domain "github.com/qsoulior/tech-generator/backend/internal/domain/variable"
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
 )
 
 type repositorySuite struct {

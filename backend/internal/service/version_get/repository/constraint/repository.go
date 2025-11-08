@@ -1,4 +1,4 @@
-package variable_repository
+package constraint_repository
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/samber/lo"
 
-	"github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id/domain"
+	"github.com/qsoulior/tech-generator/backend/internal/service/version_get/domain"
 )
 
 type Repository struct {
@@ -21,18 +21,19 @@ func New(db *sqlx.DB) *Repository {
 	}
 }
 
-func (r *Repository) ListByVersionID(ctx context.Context, versionID int64) ([]domain.Variable, error) {
-	op := "variable - list by version id"
+func (r *Repository) ListByVariableIDs(ctx context.Context, variableIDs []int64) ([]domain.Constraint, error) {
+	op := "constraint - list by variable ids"
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
 			"id",
+			"variable_id",
 			"name",
-			"type",
 			"expression",
+			"is_active",
 		).
-		From("variable").
-		Where(sq.Eq{"version_id": versionID}).
+		From("variable_constraint").
+		Where(sq.Eq{"variable_id": variableIDs}).
 		OrderBy("id")
 
 	query, args, err := builder.ToSql()
@@ -42,12 +43,12 @@ func (r *Repository) ListByVersionID(ctx context.Context, versionID int64) ([]do
 
 	query = fmt.Sprintf("-- %s\n%s", op, query)
 
-	var dtos []variable
+	var dtos []сonstraint
 	err = r.db.SelectContext(ctx, &dtos, query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("exec query %q: %w", op, err)
 	}
 
-	variables := lo.Map(dtos, func(dto variable, _ int) domain.Variable { return dto.toDomain() })
-	return variables, nil
+	constraints := lo.Map(dtos, func(dto сonstraint, _ int) domain.Constraint { return dto.toDomain() })
+	return constraints, nil
 }
