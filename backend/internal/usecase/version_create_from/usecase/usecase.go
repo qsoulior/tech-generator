@@ -83,6 +83,7 @@ func convertVariables(variables []version_get_domain.Variable) []version_create_
 			Name:        v.Name,
 			Type:        v.Type,
 			Expression:  v.Expression,
+			IsInput:     v.IsInput,
 			Constraints: convertConstraints(v.Constraints),
 		}
 	})

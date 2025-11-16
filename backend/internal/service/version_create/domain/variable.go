@@ -7,7 +7,8 @@ import (
 type Variable struct {
 	Name        string
 	Type        variable_domain.Type
-	Expression  string
+	Expression  *string
+	IsInput     bool
 	Constraints []Constraint
 }
 
@@ -15,5 +16,6 @@ type VariableToCreate struct {
 	VersionID  int64
 	Name       string
 	Type       variable_domain.Type
-	Expression string
+	Expression *string
+	IsInput    bool
 }

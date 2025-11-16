@@ -30,6 +30,7 @@ func (r *Repository) ListByVersionID(ctx context.Context, versionID int64) ([]do
 			"name",
 			"type",
 			"expression",
+			"is_input",
 		).
 		From("variable").
 		Where(sq.Eq{"version_id": versionID}).

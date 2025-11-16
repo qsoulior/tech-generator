@@ -57,6 +57,7 @@ func (s *repositorySuite) TestRepository_Create() {
 			Name:       v.Name,
 			Type:       variable_domain.Type(v.Type),
 			Expression: v.Expression,
+			IsInput:    v.IsInput,
 		}
 	})
 

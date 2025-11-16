@@ -6,6 +6,7 @@ type Variable struct {
 	ID          int64
 	Name        string
 	Type        variable_domain.Type
-	Expression  string
+	Expression  *string
+	IsInput     bool
 	Constraints []Constraint
 }

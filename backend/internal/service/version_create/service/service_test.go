@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 
@@ -32,7 +33,8 @@ func TestService_Handle_Success(t *testing.T) {
 					{
 						Name:       "var_1",
 						Type:       variable_domain.TypeString,
-						Expression: "expr_1",
+						Expression: lo.ToPtr("expr_1"),
+						IsInput:    false,
 						Constraints: []domain.Constraint{
 							{Name: "constraint_1_1", Expression: "expr_1_1", IsActive: true},
 							{Name: "constraint_1_2", Expression: "expr_1_2", IsActive: false},
@@ -41,7 +43,8 @@ func TestService_Handle_Success(t *testing.T) {
 					{
 						Name:       "var_2",
 						Type:       variable_domain.TypeFloat,
-						Expression: "expr_2",
+						Expression: lo.ToPtr("expr_2"),
+						IsInput:    false,
 						Constraints: []domain.Constraint{
 							{Name: "constraint_2_1", Expression: "expr_2_1", IsActive: true},
 						},
@@ -57,8 +60,8 @@ func TestService_Handle_Success(t *testing.T) {
 				versionRepo.EXPECT().Create(trCtx, templateVersion).Return(int64(20), nil)
 
 				variables := []domain.VariableToCreate{
-					{VersionID: 20, Name: "var_1", Type: variable_domain.TypeString, Expression: "expr_1"},
-					{VersionID: 20, Name: "var_2", Type: variable_domain.TypeFloat, Expression: "expr_2"},
+					{VersionID: 20, Name: "var_1", Type: variable_domain.TypeString, Expression: lo.ToPtr("expr_1")},
+					{VersionID: 20, Name: "var_2", Type: variable_domain.TypeFloat, Expression: lo.ToPtr("expr_2")},
 				}
 				variableRepo.EXPECT().Create(trCtx, variables).Return([]int64{31, 32}, nil)
 
@@ -83,7 +86,7 @@ func TestService_Handle_Success(t *testing.T) {
 					{
 						Name:        "var_1",
 						Type:        variable_domain.TypeString,
-						Expression:  "expr_1",
+						Expression:  lo.ToPtr("expr_1"),
 						Constraints: []domain.Constraint{},
 					},
 				},
@@ -97,7 +100,7 @@ func TestService_Handle_Success(t *testing.T) {
 				versionRepo.EXPECT().Create(trCtx, templateVersion).Return(int64(20), nil)
 
 				variables := []domain.VariableToCreate{
-					{VersionID: 20, Name: "var_1", Type: variable_domain.TypeString, Expression: "expr_1"},
+					{VersionID: 20, Name: "var_1", Type: variable_domain.TypeString, Expression: lo.ToPtr("expr_1")},
 				}
 				variableRepo.EXPECT().Create(trCtx, variables).Return([]int64{31}, nil)
 
@@ -159,7 +162,7 @@ func TestService_Handle_Error(t *testing.T) {
 			{
 				Name:       "var_1",
 				Type:       variable_domain.TypeString,
-				Expression: "expr_1",
+				Expression: lo.ToPtr("expr_1"),
 				Constraints: []domain.Constraint{
 					{
 						Name:       "constraint_1_1",
@@ -187,7 +190,7 @@ func TestService_Handle_Error(t *testing.T) {
 					{
 						Name:        "var",
 						Type:        "invalid",
-						Expression:  "expr",
+						Expression:  lo.ToPtr("expr"),
 						Constraints: []domain.Constraint{},
 					},
 				},

@@ -28,11 +28,11 @@ func (r *Repository) Create(ctx context.Context, variables []domain.VariableToCr
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Insert("variable").
-		Columns("version_id", "name", "type", "expression").
+		Columns("version_id", "name", "type", "expression", "is_input").
 		Suffix("RETURNING id")
 
 	for _, v := range variables {
-		builder = builder.Values(v.VersionID, v.Name, v.Type, v.Expression)
+		builder = builder.Values(v.VersionID, v.Name, v.Type, v.Expression, v.IsInput)
 	}
 
 	query, args, err := builder.ToSql()

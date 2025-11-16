@@ -67,6 +67,7 @@ func (s *repositorySuite) TestRepository_ListByVersionID() {
 			Name:       v.Name,
 			Type:       variable_domain.Type(v.Type),
 			Expression: v.Expression,
+			IsInput:    v.IsInput,
 		}
 	})
 	slices.SortFunc(want, func(a, b domain.Variable) int { return int(a.ID - b.ID) })

@@ -3,7 +3,8 @@ CREATE TABLE variable (
     version_id BIGINT NOT NULL REFERENCES template_version (id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
     type VARCHAR(50) NOT NULL DEFAULT 'string',
-    expression VARCHAR NOT NULL,
+    expression VARCHAR,
+    is_input BOOLEAN NOT NULL,
     CHECK (type IN ('integer', 'float', 'string')),
     UNIQUE (version_id, name)
 );

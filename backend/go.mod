@@ -7,6 +7,7 @@ require (
 	github.com/avito-tech/go-transaction-manager/drivers/sqlx/v2 v2.0.1
 	github.com/avito-tech/go-transaction-manager/trm/v2 v2.0.1
 	github.com/brianvoe/gofakeit/v7 v7.3.0
+	github.com/expr-lang/expr v1.17.6
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/jmoiron/sqlx v1.4.0

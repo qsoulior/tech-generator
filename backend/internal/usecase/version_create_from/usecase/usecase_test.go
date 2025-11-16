@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 
@@ -40,7 +41,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 						{
 							Name:       "var1",
 							Type:       variable_domain.TypeString,
-							Expression: "expr1",
+							Expression: lo.ToPtr("expr1"),
 							Constraints: []version_get_domain.Constraint{
 								{Name: "constraint1", Expression: "expr11", IsActive: false},
 							},
@@ -48,7 +49,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 						{
 							Name:       "var2",
 							Type:       variable_domain.TypeInteger,
-							Expression: "expr2",
+							Expression: lo.ToPtr("expr2"),
 							Constraints: []version_get_domain.Constraint{
 								{Name: "constraint2", Expression: "expr12", IsActive: true},
 							},
@@ -65,7 +66,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 						{
 							Name:       "var1",
 							Type:       variable_domain.TypeString,
-							Expression: "expr1",
+							Expression: lo.ToPtr("expr1"),
 							Constraints: []version_create_domain.Constraint{
 								{Name: "constraint1", Expression: "expr11", IsActive: false},
 							},
@@ -73,7 +74,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 						{
 							Name:       "var2",
 							Type:       variable_domain.TypeInteger,
-							Expression: "expr2",
+							Expression: lo.ToPtr("expr2"),
 							Constraints: []version_create_domain.Constraint{
 								{Name: "constraint2", Expression: "expr12", IsActive: true},
 							},

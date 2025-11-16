@@ -50,11 +50,12 @@ type Version struct {
 }
 
 type Variable struct {
-	ID         int64  `db:"id"`
-	VersionID  int64  `db:"version_id"`
-	Name       string `db:"name"`
-	Type       string `db:"type" fake:"{randomstring:[integer,float,string]}"`
-	Expression string `db:"expression"`
+	ID         int64   `db:"id"`
+	VersionID  int64   `db:"version_id"`
+	Name       string  `db:"name"`
+	Type       string  `db:"type" fake:"{randomstring:[integer,float,string]}"`
+	Expression *string `db:"expression"`
+	IsInput    bool    `db:"is_input"`
 }
 
 type Constraint struct {
@@ -63,4 +64,16 @@ type Constraint struct {
 	Name       string `db:"name"`
 	Expression string `db:"expression"`
 	IsActive   bool   `db:"is_active"`
+}
+
+type Task struct {
+	ID        int64      `db:"id"`
+	VersionID int64      `db:"version_id"`
+	Status    string     `db:"status" fake:"{randomstring:[created,in_progress,succeed,failed]}"`
+	Payload   []byte     `db:"payload"`
+	Result    []byte     `db:"result"`
+	Error     []byte     `db:"error"`
+	CreatorID int64      `db:"creator_id"`
+	CreatedAt time.Time  `db:"created_at"`
+	UpdatedAt *time.Time `db:"updated_at"`
 }

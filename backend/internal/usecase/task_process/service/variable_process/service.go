@@ -1,0 +1,180 @@
+package variable_process_service
+
+import (
+	"context"
+	"maps"
+	"strings"
+
+	"github.com/expr-lang/expr"
+	"github.com/samber/lo"
+
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/task_process/domain"
+)
+
+type Service struct{}
+
+func New() *Service {
+	return &Service{}
+}
+
+func (s *Service) Handle(ctx context.Context, in domain.VariableProcessIn) (map[string]any, error) {
+	variablesByName := lo.KeyBy(in.Variables, func(v domain.Variable) string { return v.Name })
+
+	dependencies := buildDependencies(variablesByName)
+
+	variableNames, err := sortDependencies(dependencies)
+	if err != nil {
+		return nil, err
+	}
+
+	variableValues := make(map[string]any)
+	maps.Copy(variableValues, in.Payload)
+
+	var variableErrors []domain.VariableError
+	for _, name := range variableNames {
+		variable := variablesByName[name]
+
+		variableValue, variableError := processVariable(variable, variableValues)
+		if variableError != nil {
+			variableErrors = append(variableErrors, *variableError)
+		}
+
+		variableValues[name] = variableValue
+	}
+
+	if len(variableErrors) != 0 {
+		return nil, &domain.ProcessError{VariableErrors: variableErrors}
+	}
+
+	return variableValues, nil
+}
+
+func buildDependencies(variablesByName map[string]domain.Variable) map[string][]string {
+	names := lo.Keys(variablesByName)
+	dependents := make(map[string][]string)
+
+	for _, v := range variablesByName {
+		dependencies := extractDependencies(lo.FromPtr(v.Expression), names)
+		dependents[v.Name] = dependencies
+	}
+
+	return dependents
+}
+
+func extractDependencies(expr string, names []string) []string {
+	return lo.Filter(names, func(name string, _ int) bool {
+		return strings.Contains(expr, name)
+	})
+}
+
+func sortDependencies(dependencies map[string][]string) ([]string, error) {
+	var dfs func(string) error
+
+	sorted := make([]string, 0, len(dependencies))
+
+	gray := make(map[string]struct{})
+	black := make(map[string]struct{})
+
+	dfs = func(dependent string) error {
+		if _, ok := gray[dependent]; ok {
+			return &domain.ProcessError{Message: domain.MessageCycle}
+		}
+
+		gray[dependent] = struct{}{}
+		for _, dependency := range dependencies[dependent] {
+			if _, ok := black[dependency]; ok {
+				continue
+			}
+
+			if err := dfs(dependency); err != nil {
+				return err
+			}
+		}
+
+		delete(gray, dependent)
+		black[dependent] = struct{}{}
+		sorted = append(sorted, dependent)
+		return nil
+	}
+
+	for dependency := range dependencies {
+		if _, ok := black[dependency]; ok {
+			continue
+		}
+
+		if err := dfs(dependency); err != nil {
+			return []string{}, err
+		}
+	}
+
+	return sorted, nil
+}
+
+func processVariable(variable domain.Variable, values map[string]any) (any, *domain.VariableError) {
+	value, variableError := processVariableValue(variable, values)
+	if variableError != nil {
+		return nil, variableError
+	}
+
+	constraintErrors := processConstraints(variable.Name, value, variable.Constraints)
+	if len(constraintErrors) != 0 {
+		return nil, &domain.VariableError{ID: variable.ID, Name: variable.Name, ConstraintErrors: constraintErrors}
+	}
+
+	return value, nil
+}
+
+func processVariableValue(variable domain.Variable, values map[string]any) (any, *domain.VariableError) {
+	if variable.IsInput {
+		return values[variable.Name], nil
+	}
+
+	program, err := expr.Compile(lo.FromPtr(variable.Expression), expr.Env(values))
+	if err != nil {
+		return nil, &domain.VariableError{ID: variable.ID, Name: variable.Name, Message: domain.MessageCompile}
+	}
+
+	value, err := expr.Run(program, values)
+	if err != nil {
+		return nil, &domain.VariableError{ID: variable.ID, Name: variable.Name, Message: domain.MessageRun}
+	}
+
+	return value, nil
+}
+
+func processConstraints(name string, value any, constraints []domain.Constraint) []domain.ConstraintError {
+	var constraintErrors []domain.ConstraintError
+
+	for _, constraint := range constraints {
+		if !constraint.IsActive {
+			continue
+		}
+
+		constraintError := processConstraint(name, value, constraint)
+		if constraintError != nil {
+			constraintErrors = append(constraintErrors, *constraintError)
+		}
+	}
+
+	return constraintErrors
+}
+
+func processConstraint(name string, value any, constraint domain.Constraint) *domain.ConstraintError {
+	env := map[string]any{name: value}
+
+	program, err := expr.Compile(constraint.Expression, expr.Env(env), expr.AsBool())
+	if err != nil {
+		return &domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: domain.MessageCompile}
+	}
+
+	check, err := expr.Run(program, env)
+	if err != nil {
+		return &domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: domain.MessageRun}
+	}
+
+	if !check.(bool) {
+		return &domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: domain.MessageCheck}
+	}
+
+	return nil
+}

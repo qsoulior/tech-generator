@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/brianvoe/gofakeit/v7"
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 
@@ -40,13 +41,13 @@ func TestService_Handle_Success(t *testing.T) {
 						ID:         31,
 						Name:       "var1",
 						Type:       variable_domain.TypeString,
-						Expression: "expr31",
+						Expression: lo.ToPtr("expr31"),
 					},
 					{
 						ID:         32,
 						Name:       "var2",
 						Type:       variable_domain.TypeInteger,
-						Expression: "expr32",
+						Expression: lo.ToPtr("expr32"),
 					},
 				}
 				variableRepo.EXPECT().ListByVersionID(ctx, versionID).Return(variables, nil)
@@ -87,7 +88,7 @@ func TestService_Handle_Success(t *testing.T) {
 						ID:         31,
 						Name:       "var1",
 						Type:       variable_domain.TypeString,
-						Expression: "expr31",
+						Expression: lo.ToPtr("expr31"),
 						Constraints: []domain.Constraint{
 							{
 								ID:         41,
@@ -109,7 +110,7 @@ func TestService_Handle_Success(t *testing.T) {
 						ID:         32,
 						Name:       "var2",
 						Type:       variable_domain.TypeInteger,
-						Expression: "expr32",
+						Expression: lo.ToPtr("expr32"),
 						Constraints: []domain.Constraint{
 							{
 								ID:         43,
@@ -212,7 +213,7 @@ func TestService_Handle_Error(t *testing.T) {
 						ID:         31,
 						Name:       "var1",
 						Type:       variable_domain.TypeString,
-						Expression: "expr31",
+						Expression: lo.ToPtr("expr31"),
 					},
 				}
 				variableRepo.EXPECT().ListByVersionID(ctx, versionID).Return(variables, nil)
