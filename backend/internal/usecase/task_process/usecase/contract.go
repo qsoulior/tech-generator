@@ -25,3 +25,7 @@ type variableProcessService interface {
 type dataProcessService interface {
 	Handle(ctx context.Context, in domain.DataProcessIn) ([]byte, error)
 }
+
+type resultRepository interface {
+	Insert(ctx context.Context, data []byte) (int64, error)
+}

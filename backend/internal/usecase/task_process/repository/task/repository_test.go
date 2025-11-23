@@ -120,6 +120,7 @@ func (s *repositorySuite) TestRepository_UpdateByID() {
 		t.Status = string(task_domain.StatusCreated)
 		t.CreatorID = userID
 		t.VersionID = versionID
+		t.ResultID = nil
 		t.Payload = []byte("{\"test\":123}")
 		t.Error = nil
 	})
@@ -127,12 +128,18 @@ func (s *repositorySuite) TestRepository_UpdateByID() {
 	require.NoError(s.T(), err)
 	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "task", taskID)) }()
 
+	// result
+	result := test_db.GenerateEntity[test_db.Result]()
+	resultID, err := test_db.InsertEntityWithID[int64](s.C(), "result", result)
+	require.NoError(s.T(), err)
+	defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "result", resultID)) }()
+
 	// update #1
 	taskUpdate := domain.TaskUpdate{
-		ID:     taskID,
-		Status: task_domain.StatusSucceed,
-		Result: []byte{1, 2, 3},
-		Error:  &domain.ProcessError{Message: "123"},
+		ID:       taskID,
+		Status:   task_domain.StatusSucceed,
+		ResultID: &resultID,
+		Error:    &domain.ProcessError{Message: "123"},
 	}
 	err = repo.UpdateByID(ctx, taskUpdate)
 	require.NoError(s.T(), err)
@@ -148,7 +155,7 @@ func (s *repositorySuite) TestRepository_UpdateByID() {
 		VersionID: versionID,
 		Status:    string(task_domain.StatusSucceed),
 		Payload:   []byte("{\"test\": 123}"),
-		Result:    []byte{1, 2, 3},
+		ResultID:  &resultID,
 		Error:     []byte("{\"message\": \"123\"}"),
 		CreatorID: userID,
 		CreatedAt: got.CreatedAt,
@@ -159,10 +166,10 @@ func (s *repositorySuite) TestRepository_UpdateByID() {
 
 	// update #2
 	taskUpdate = domain.TaskUpdate{
-		ID:     taskID,
-		Status: task_domain.StatusFailed,
-		Result: nil,
-		Error:  nil,
+		ID:       taskID,
+		Status:   task_domain.StatusFailed,
+		ResultID: nil,
+		Error:    nil,
 	}
 	err = repo.UpdateByID(ctx, taskUpdate)
 	require.NoError(s.T(), err)
@@ -178,7 +185,7 @@ func (s *repositorySuite) TestRepository_UpdateByID() {
 		VersionID: versionID,
 		Status:    string(task_domain.StatusFailed),
 		Payload:   []byte("{\"test\": 123}"),
-		Result:    nil,
+		ResultID:  nil,
 		Error:     nil,
 		CreatorID: userID,
 		CreatedAt: got.CreatedAt,

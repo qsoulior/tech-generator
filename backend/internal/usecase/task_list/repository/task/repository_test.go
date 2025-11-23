@@ -56,6 +56,7 @@ func (s *repositorySuite) TestRepository_List() {
 	tasks := test_db.GenerateEntities(2, func(t *test_db.Task, i int) {
 		t.VersionID = versionID
 		t.CreatorID = userIDs[i]
+		t.ResultID = nil
 		t.Payload = []byte("{}")
 		t.Error = nil
 	})
@@ -128,6 +129,7 @@ func (s *repositorySuite) TestRepository_List_Filter() {
 	tasks := test_db.GenerateEntities(N, func(t *test_db.Task, i int) {
 		t.VersionID = versionID
 		t.CreatorID = userIDs[i]
+		t.ResultID = nil
 		t.Payload = []byte("{}")
 		t.Error = nil
 	})
@@ -205,6 +207,7 @@ func (s *repositorySuite) TestRepository_List_Sorting() {
 	tasks := test_db.GenerateEntities(2, func(t *test_db.Task, i int) {
 		t.VersionID = versionID
 		t.CreatorID = userID
+		t.ResultID = nil
 		t.Payload = []byte("{}")
 		t.Error = nil
 	})
@@ -327,6 +330,7 @@ func (s *repositorySuite) TestRepository_List_Pagination() {
 	tasks := test_db.GenerateEntities(5, func(t *test_db.Task, i int) {
 		t.VersionID = versionID
 		t.CreatorID = userID
+		t.ResultID = nil
 		t.Payload = []byte("{}")
 		t.Error = nil
 	})

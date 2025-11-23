@@ -14,6 +14,7 @@ type Usecase struct {
 	versionGetService      versionGetService
 	variableProcessService variableProcessService
 	dataProcessService     dataProcessService
+	resultRepo             resultRepository
 }
 
 func New(
@@ -21,12 +22,14 @@ func New(
 	versionGetService versionGetService,
 	variableProcessService variableProcessService,
 	dataProcessService dataProcessService,
+	resultRepo resultRepository,
 ) *Usecase {
 	return &Usecase{
 		taskRepo:               taskRepo,
 		versionGetService:      versionGetService,
 		variableProcessService: variableProcessService,
 		dataProcessService:     dataProcessService,
+		resultRepo:             resultRepo,
 	}
 }
 
@@ -49,7 +52,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TaskProcessIn) error {
 	}
 
 	// handle task
-	result, err := u.handleTask(ctx, *task)
+	resultID, err := u.handleTask(ctx, *task)
 	if err != nil {
 		var processErr *domain.ProcessError
 		if errors.As(err, &processErr) {
@@ -65,7 +68,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TaskProcessIn) error {
 	}
 
 	// update task
-	taskUpdate = domain.TaskUpdate{ID: in.TaskID, Status: task_domain.StatusSucceed, Result: result}
+	taskUpdate = domain.TaskUpdate{ID: in.TaskID, Status: task_domain.StatusSucceed, ResultID: &resultID}
 	err = u.taskRepo.UpdateByID(ctx, taskUpdate)
 	if err != nil {
 		return fmt.Errorf("task repo - update by id: %w", err)
@@ -74,11 +77,11 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TaskProcessIn) error {
 	return nil
 }
 
-func (u *Usecase) handleTask(ctx context.Context, task domain.Task) ([]byte, error) {
+func (u *Usecase) handleTask(ctx context.Context, task domain.Task) (int64, error) {
 	// get version
 	version, err := u.versionGetService.Handle(ctx, task.VersionID)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	// process variables
@@ -88,7 +91,7 @@ func (u *Usecase) handleTask(ctx context.Context, task domain.Task) ([]byte, err
 	}
 	variableValues, err := u.variableProcessService.Handle(ctx, variableProcessIn)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	// process data
@@ -98,8 +101,14 @@ func (u *Usecase) handleTask(ctx context.Context, task domain.Task) ([]byte, err
 	}
 	result, err := u.dataProcessService.Handle(ctx, dataProcessIn)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
-	return result, nil
+	// insert result
+	resultID, err := u.resultRepo.Insert(ctx, result)
+	if err != nil {
+		return 0, fmt.Errorf("result repo - insert: %w", err)
+	}
+
+	return resultID, nil
 }

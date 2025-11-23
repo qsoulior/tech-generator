@@ -71,9 +71,14 @@ type Task struct {
 	VersionID int64      `db:"version_id"`
 	Status    string     `db:"status" fake:"{randomstring:[created,in_progress,succeed,failed]}"`
 	Payload   []byte     `db:"payload"`
-	Result    []byte     `db:"result"`
+	ResultID  *int64     `db:"result_id"`
 	Error     []byte     `db:"error"`
 	CreatorID int64      `db:"creator_id"`
 	CreatedAt time.Time  `db:"created_at"`
 	UpdatedAt *time.Time `db:"updated_at"`
+}
+
+type Result struct {
+	ID   int64  `db:"id"`
+	Data []byte `db:"data"`
 }

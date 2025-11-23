@@ -13,8 +13,8 @@ type Task struct {
 }
 
 type TaskUpdate struct {
-	ID     int64
-	Status task_domain.Status
-	Result []byte
-	Error  *ProcessError
+	ID       int64
+	Status   task_domain.Status
+	ResultID *int64
+	Error    *ProcessError
 }

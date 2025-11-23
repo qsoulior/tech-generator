@@ -187,3 +187,42 @@ func (mr *MockdataProcessServiceMockRecorder) Handle(ctx, in any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Handle", reflect.TypeOf((*MockdataProcessService)(nil).Handle), ctx, in)
 }
+
+// MockresultRepository is a mock of resultRepository interface.
+type MockresultRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockresultRepositoryMockRecorder
+	isgomock struct{}
+}
+
+// MockresultRepositoryMockRecorder is the mock recorder for MockresultRepository.
+type MockresultRepositoryMockRecorder struct {
+	mock *MockresultRepository
+}
+
+// NewMockresultRepository creates a new mock instance.
+func NewMockresultRepository(ctrl *gomock.Controller) *MockresultRepository {
+	mock := &MockresultRepository{ctrl: ctrl}
+	mock.recorder = &MockresultRepositoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockresultRepository) EXPECT() *MockresultRepositoryMockRecorder {
+	return m.recorder
+}
+
+// Insert mocks base method.
+func (m *MockresultRepository) Insert(ctx context.Context, data []byte) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Insert", ctx, data)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Insert indicates an expected call of Insert.
+func (mr *MockresultRepositoryMockRecorder) Insert(ctx, data any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockresultRepository)(nil).Insert), ctx, data)
+}

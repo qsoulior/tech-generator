@@ -59,7 +59,7 @@ func (r *Repository) UpdateByID(ctx context.Context, task domain.TaskUpdate) err
 		Update("task").
 		SetMap(map[string]any{
 			"status":     task.Status,
-			"result":     task.Result,
+			"result_id":  task.ResultID,
 			"error":      (*taskError)(task.Error),
 			"updated_at": sq.Expr("now() AT TIME ZONE 'utc'"),
 		}).

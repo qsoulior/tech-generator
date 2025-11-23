@@ -3,7 +3,7 @@ CREATE TABLE task (
     version_id BIGINT NOT NULL REFERENCES template_version (id),
     status VARCHAR(50) NOT NULL DEFAULT 'created',
     payload jsonb NOT NULL,
-    result BYTEA,
+    result_id BIGINT REFERENCES result (id),
     error jsonb,
     creator_id BIGINT NOT NULL REFERENCES usr (id),
     created_at TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
