@@ -67,7 +67,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				versionGetService.EXPECT().Handle(ctx, task.VersionID).Return(&version, nil)
 
 				variableProcessIn := domain.VariableProcessIn{Variables: version.Variables, Payload: task.Payload}
-				err := &domain.ProcessError{Message: "test1"}
+				err := &task_domain.ProcessError{Message: "test1"}
 				variableProcessService.EXPECT().Handle(ctx, variableProcessIn).Return(nil, err)
 
 				taskUpdate = domain.TaskUpdate{ID: taskID, Status: task_domain.StatusFailed, Error: err}
@@ -93,7 +93,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				variableValues := gofakeit.Map()
 				variableProcessService.EXPECT().Handle(ctx, variableProcessIn).Return(variableValues, nil)
 
-				err := &domain.ProcessError{Message: "test2"}
+				err := &task_domain.ProcessError{Message: "test2"}
 				dataProcessIn := domain.DataProcessIn{Values: variableValues, Data: version.Data}
 				dataProcessService.EXPECT().Handle(ctx, dataProcessIn).Return(nil, err)
 
@@ -214,7 +214,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 				taskRepo.EXPECT().UpdateByID(ctx, gomock.Any()).Return(nil)
 				versionGetService.EXPECT().Handle(ctx, gomock.Any()).Return(&domain.Version{}, nil)
 				variableProcessService.EXPECT().Handle(ctx, gomock.Any()).Return(map[string]any{}, nil)
-				dataProcessService.EXPECT().Handle(ctx, gomock.Any()).Return(nil, &domain.ProcessError{Message: "test1"})
+				dataProcessService.EXPECT().Handle(ctx, gomock.Any()).Return(nil, &task_domain.ProcessError{Message: "test1"})
 				taskRepo.EXPECT().UpdateByID(ctx, gomock.Any()).Return(errors.New("test8"))
 			},
 			want: "test8",

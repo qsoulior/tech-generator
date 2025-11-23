@@ -54,7 +54,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TaskProcessIn) error {
 	// handle task
 	resultID, err := u.handleTask(ctx, *task)
 	if err != nil {
-		var processErr *domain.ProcessError
+		var processErr *task_domain.ProcessError
 		if errors.As(err, &processErr) {
 			// update task
 			taskUpdate = domain.TaskUpdate{ID: in.TaskID, Status: task_domain.StatusFailed, Error: processErr}

@@ -7,6 +7,7 @@ import (
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
 
+	task_domain "github.com/qsoulior/tech-generator/backend/internal/domain/task"
 	variable_domain "github.com/qsoulior/tech-generator/backend/internal/domain/variable"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/task_process/domain"
 )
@@ -122,7 +123,7 @@ func TestService_Handle_Error(t *testing.T) {
 	tests := []struct {
 		name string
 		in   domain.VariableProcessIn
-		want domain.ProcessError
+		want task_domain.ProcessError
 	}{
 		{
 			name: "ProcessError_Cycle",
@@ -144,8 +145,8 @@ func TestService_Handle_Error(t *testing.T) {
 					},
 				},
 			},
-			want: domain.ProcessError{
-				Message: domain.MessageCycle,
+			want: task_domain.ProcessError{
+				Message: task_domain.MessageCycle,
 			},
 		},
 		{
@@ -168,17 +169,17 @@ func TestService_Handle_Error(t *testing.T) {
 					},
 				},
 			},
-			want: domain.ProcessError{
-				VariableErrors: []domain.VariableError{
+			want: task_domain.ProcessError{
+				VariableErrors: []task_domain.VariableError{
 					{
 						ID:      1,
 						Name:    "var1",
-						Message: domain.MessageCompile,
+						Message: task_domain.MessageCompile,
 					},
 					{
 						ID:      2,
 						Name:    "var2",
-						Message: domain.MessageCompile,
+						Message: task_domain.MessageCompile,
 					},
 				},
 			},
@@ -210,21 +211,21 @@ func TestService_Handle_Error(t *testing.T) {
 				},
 				Payload: map[string]any{"var1": 100},
 			},
-			want: domain.ProcessError{
-				VariableErrors: []domain.VariableError{
+			want: task_domain.ProcessError{
+				VariableErrors: []task_domain.VariableError{
 					{
 						ID:   1,
 						Name: "var1",
-						ConstraintErrors: []domain.ConstraintError{
+						ConstraintErrors: []task_domain.ConstraintError{
 							{
 								ID:      1,
 								Name:    "expr1",
-								Message: domain.MessageCompile,
+								Message: task_domain.MessageCompile,
 							},
 							{
 								ID:      2,
 								Name:    "expr2",
-								Message: domain.MessageCompile,
+								Message: task_domain.MessageCompile,
 							},
 						},
 					},
@@ -264,21 +265,21 @@ func TestService_Handle_Error(t *testing.T) {
 				},
 				Payload: map[string]any{"var1": 100},
 			},
-			want: domain.ProcessError{
-				VariableErrors: []domain.VariableError{
+			want: task_domain.ProcessError{
+				VariableErrors: []task_domain.VariableError{
 					{
 						ID:   1,
 						Name: "var1",
-						ConstraintErrors: []domain.ConstraintError{
+						ConstraintErrors: []task_domain.ConstraintError{
 							{
 								ID:      1,
 								Name:    "expr1",
-								Message: domain.MessageCheck,
+								Message: task_domain.MessageCheck,
 							},
 							{
 								ID:      3,
 								Name:    "expr3",
-								Message: domain.MessageCheck,
+								Message: task_domain.MessageCheck,
 							},
 						},
 					},
@@ -290,7 +291,7 @@ func TestService_Handle_Error(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := service.Handle(ctx, tt.in)
 
-			var got *domain.ProcessError
+			var got *task_domain.ProcessError
 			require.ErrorAs(t, err, &got)
 			require.Equal(t, tt.want, *got)
 		})

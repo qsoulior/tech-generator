@@ -16,5 +16,5 @@ type TaskUpdate struct {
 	ID       int64
 	Status   task_domain.Status
 	ResultID *int64
-	Error    *ProcessError
+	Error    *task_domain.ProcessError
 }

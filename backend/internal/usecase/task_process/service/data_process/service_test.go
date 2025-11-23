@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	task_domain "github.com/qsoulior/tech-generator/backend/internal/domain/task"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/task_process/domain"
 )
 
@@ -37,7 +38,7 @@ func TestService_Handle_Error(t *testing.T) {
 	tests := []struct {
 		name string
 		in   domain.DataProcessIn
-		want domain.ProcessError
+		want task_domain.ProcessError
 	}{
 		{
 			name: "TemplateParse",
@@ -45,14 +46,14 @@ func TestService_Handle_Error(t *testing.T) {
 				Values: map[string]any{},
 				Data:   []byte("abc {{abc}}"),
 			},
-			want: domain.ProcessError{Message: domain.MessageTemplateParse},
+			want: task_domain.ProcessError{Message: task_domain.MessageTemplateParse},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := service.Handle(ctx, tt.in)
 
-			var got *domain.ProcessError
+			var got *task_domain.ProcessError
 			require.ErrorAs(t, err, &got)
 			require.Equal(t, tt.want, *got)
 		})

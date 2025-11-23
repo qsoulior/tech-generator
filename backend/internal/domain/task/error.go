@@ -1,4 +1,4 @@
-package domain
+package task_domain
 
 import (
 	"fmt"

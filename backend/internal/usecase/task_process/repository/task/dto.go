@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	task_domain "github.com/qsoulior/tech-generator/backend/internal/domain/task"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/task_process/domain"
 )
 
@@ -31,7 +32,7 @@ func (t *task) toDomain() *domain.Task {
 	}
 }
 
-type taskError domain.ProcessError
+type taskError task_domain.ProcessError
 
 func (e *taskError) Value() (driver.Value, error) {
 	if e == nil {

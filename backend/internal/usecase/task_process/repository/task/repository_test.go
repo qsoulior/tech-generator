@@ -67,6 +67,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		task := test_db.GenerateEntity(func(t *test_db.Task) {
 			t.CreatorID = userID
 			t.VersionID = versionID
+			t.ResultID = nil
 			t.Payload = payload
 			t.Error = nil
 		})
@@ -139,7 +140,7 @@ func (s *repositorySuite) TestRepository_UpdateByID() {
 		ID:       taskID,
 		Status:   task_domain.StatusSucceed,
 		ResultID: &resultID,
-		Error:    &domain.ProcessError{Message: "123"},
+		Error:    &task_domain.ProcessError{Message: "123"},
 	}
 	err = repo.UpdateByID(ctx, taskUpdate)
 	require.NoError(s.T(), err)
