@@ -149,7 +149,7 @@ func (s *repositorySuite) TestRepository_UpdateByID() {
 		Status:    string(task_domain.StatusSucceed),
 		Payload:   []byte("{\"test\": 123}"),
 		Result:    []byte{1, 2, 3},
-		Error:     []byte("{\"message\":\"123\"}"),
+		Error:     []byte("{\"message\": \"123\"}"),
 		CreatorID: userID,
 		CreatedAt: got.CreatedAt,
 		UpdatedAt: got.UpdatedAt,

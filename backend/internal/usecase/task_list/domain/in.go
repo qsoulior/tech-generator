@@ -9,19 +9,20 @@ import (
 
 var ErrValueInvalid = errors.New("value is invalid")
 
-type ProjectListByUserIn struct {
+type TaskListIn struct {
 	Page    int64
 	Size    int64
-	Filter  ProjectListByUserFilter
+	Filter  TaskListFilter
 	Sorting *sorting_domain.Sorting
 }
 
-type ProjectListByUserFilter struct {
-	UserID      int64
-	ProjectName *string
+type TaskListFilter struct {
+	UserID    int64
+	VersionID int64
+	CreatorID *int64
 }
 
-func (in ProjectListByUserIn) Validate() error {
+func (in TaskListIn) Validate() error {
 	if in.Page < 1 {
 		return error_domain.NewValidationError("page", ErrValueInvalid)
 	}

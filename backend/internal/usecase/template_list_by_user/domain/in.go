@@ -31,10 +31,8 @@ func (in TemplateListByUserIn) Validate() error {
 		return error_domain.NewValidationError("size", ErrValueInvalid)
 	}
 
-	if in.Sorting != nil {
-		if !in.Sorting.Direction.Valid() {
-			return error_domain.NewValidationError("sorting.direction", ErrValueInvalid)
-		}
+	if in.Sorting != nil && !in.Sorting.Direction.Valid() {
+		return error_domain.NewValidationError("sorting.direction", ErrValueInvalid)
 	}
 
 	return nil
