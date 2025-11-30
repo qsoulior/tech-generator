@@ -1,0 +1,42 @@
+paths:
+  userCreate:
+    x-ogen-operation-group: UserCreate
+    post:
+      operationId: userCreate
+      summary: Создать пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateRequest"
+      responses:
+        201:
+          description: Created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    UserCreateRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          description: Имя пользователя
+        email:
+          type: string
+          format: email
+          description: Электронный адрес пользователя
+        password:
+          type: string
+          format: password
+          description: Пароль пользователя

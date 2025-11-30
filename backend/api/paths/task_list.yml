@@ -1,0 +1,87 @@
+paths:
+  taskList:
+    x-ogen-operation-group: TaskList
+    get:
+      operationId: taskList
+      summary: Получить список задач генерации
+      parameters:
+        - $ref: "../common.yml#/components/parameters/Page"
+        - $ref: "../common.yml#/components/parameters/Size"
+        - $ref: "../common.yml#/components/parameters/Sorting"
+        - $ref: "#/components/parameters/TaskVersionID"
+        - $ref: "#/components/parameters/TaskCreatorID"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskListResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    TaskVersionID:
+      name: versionID
+      description: ID версии
+      in: query
+      required: true
+      schema:
+        type: integer
+
+    TaskCreatorID:
+      name: creatorID
+      description: ID создателя задачи
+      in: query
+      required: false
+      schema:
+        type: integer
+
+  schemas:
+    TaskListResponse:
+      type: object
+      required:
+        - tasks
+        - totalTasks
+        - totalPages
+      properties:
+        tasks:
+          type: array
+          description: Список задач генерации
+          items:
+            type: object
+            description: Задача генерации
+            required:
+              - id
+              - status
+              - creatorName
+              - createdAt
+            properties:
+              id:
+                type: integer
+                description: ID задачи генерации
+              status:
+                $ref: "../common.yml#/components/schemas/TaskStatus"
+              creatorName:
+                type: string
+                description: Имя создателя задачи
+              createdAt:
+                type: string
+                format: date-time
+                description: Дата и время создания задачи
+              updatedAt:
+                type: string
+                format: date-time
+                description: Дата и время обновления задачи
+                nullable: true
+        totalTasks:
+          type: integer
+          description: Общее количество задач
+        totalPages:
+          type: integer
+          description: Общее количество страниц

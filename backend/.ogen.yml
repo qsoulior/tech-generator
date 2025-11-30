@@ -1,0 +1,12 @@
+parser:
+  allow_remote: true
+
+generator:
+  convenient_errors: "off"
+  features:
+    enable:
+      # Enables paths server generation
+      - "paths/server"
+      # Enables validation of server responses
+      - "server/response/validation"
+    disable_all: true

@@ -1,0 +1,63 @@
+paths:
+  versionList:
+    x-ogen-operation-group: VersionList
+    get:
+      operationId: versionList
+      summary: Получить список шаблонов в проекте
+      parameters:
+        - $ref: "#/components/parameters/TemplateID"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionListResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    TemplateID:
+      name: templateID
+      description: ID шаблона
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+    VersionListResponse:
+      type: object
+      required:
+        - versions
+      properties:
+        versions:
+          type: array
+          description: Список версий
+          items:
+            type: object
+            description: Версия шаблона
+            required:
+              - id
+              - number
+              - authorName
+              - createdAt
+            properties:
+              id:
+                type: integer
+                description: ID версии
+              number:
+                type: integer
+                description: Номер версии
+              authorName:
+                type: string
+                description: Имя автора версии
+              createdAt:
+                type: string
+                format: date-time
+                description: Дата и время создания версии

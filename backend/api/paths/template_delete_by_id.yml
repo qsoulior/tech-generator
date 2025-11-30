@@ -1,0 +1,27 @@
+paths:
+  templateDeleteByID:
+    x-ogen-operation-group: TemplateDeleteByID
+    delete:
+      operationId: templateDeleteByID
+      summary: Удалить шаблон
+      parameters:
+        - $ref: "#/components/parameters/TemplateID"
+      responses:
+        204:
+          description: No content
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    TemplateID:
+      name: templateID
+      description: ID шаблона
+      in: path
+      required: true
+      schema:
+        type: integer

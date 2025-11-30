@@ -1,0 +1,43 @@
+paths:
+  userGetByID:
+    x-ogen-operation-group: UserGetByID
+    get:
+      operationId: userGetByID
+      summary: Получить пользователя
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserGetByIDResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    UserGetByIDResponse:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - createdAt
+      properties:
+        id:
+          type: integer
+          description: ID пользователя
+        name:
+          type: string
+          description: Имя пользователя
+        email:
+          type: string
+          description: Электронный адрес пользователя
+        createdAt:
+          type: string
+          format: date-time
+          description: Дата и время создания пользователя

@@ -1,0 +1,59 @@
+components:
+  schemas:
+    Error:
+      type: object
+      description: Ошибка
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    TaskStatus:
+      type: string
+      description: Статус задачи
+      enum:
+        - created
+        - in_progress
+        - succeed
+        - failed
+
+  parameters:
+    Page:
+      name: page
+      description: Номер страницы
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1
+
+    Size:
+      name: size
+      description: Количество записей на странице
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 20
+
+    Sorting:
+      name: sorting
+      description: Сортировка списка
+      in: query
+      required: false
+      schema:
+        type: object
+        required:
+          - attribute
+          - direction
+        properties:
+          attribute:
+            type: string
+            description: Атрибут, по которому сортируется список
+          direction:
+            type: string
+            description: Направление, по которому сортируется список
+            enum:
+              - ASC
+              - DESC

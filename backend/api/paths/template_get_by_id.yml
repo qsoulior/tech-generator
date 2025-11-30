@@ -1,0 +1,108 @@
+paths:
+  templateGetByID:
+    x-ogen-operation-group: TemplateGetByID
+    get:
+      operationId: templateGetByID
+      summary: Получить шаблон по ID
+      parameters:
+        - $ref: "#/components/parameters/TemplateID"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TemplateGetByIDResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    TemplateID:
+      name: templateID
+      description: ID шаблона
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+    TemplateGetByIDResponse:
+      type: object
+      required:
+        - number
+        - createdAt
+        - data
+        - variables
+      properties:
+        number:
+          type: integer
+          description: Номер последней версии шаблона
+        createdAt:
+          type: string
+          format: date-time
+          description: Дата и время создания версии
+        data:
+          type: string
+          description: Данные шаблона
+        variables:
+          type: array
+          description: Список переменных шаблона
+          items:
+            type: object
+            description: Переменная шаблона
+            required:
+              - id
+              - name
+              - type
+              - isInput
+              - constraints
+            properties:
+              id:
+                type: integer
+                description: ID переменной
+              name:
+                type: string
+                description: Название переменной
+              type:
+                type: string
+                description: Тип переменной
+                enum:
+                  - string
+                  - integer
+                  - float
+              expression:
+                type: string
+                description: Выражение переменной
+                nullable: true
+              isInput:
+                type: boolean
+                description: Являтеся ли переменная входной
+              constraints:
+                type: array
+                description: Список ограничений переменной
+                items:
+                  type: object
+                  description: Ограничение переменной
+                  required:
+                    - id
+                    - name
+                    - expression
+                    - isActive
+                  properties:
+                    id:
+                      type: integer
+                      description: ID ограничения
+                    name:
+                      type: string
+                      description: Название ограничения
+                    expression:
+                      type: string
+                      description: Выражение ограничения
+                    isActive:
+                      type: boolean
+                      description: Активно ли ограничение

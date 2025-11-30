@@ -1,0 +1,36 @@
+paths:
+  templateCreate:
+    x-ogen-operation-group: TemplateCreate
+    post:
+      operationId: templateCreate
+      summary: Создать шаблон
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TemplateCreateRequest"
+      responses:
+        201:
+          description: Created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    TemplateCreateRequest:
+      type: object
+      required:
+        - name
+        - projectID
+      properties:
+        name:
+          type: string
+          description: Название шаблона
+        projectID:
+          type: integer
+          description: ID проекта

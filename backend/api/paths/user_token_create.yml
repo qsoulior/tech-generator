@@ -1,0 +1,37 @@
+paths:
+  userTokenCreate:
+    x-ogen-operation-group: UserTokenCreate
+    post:
+      operationId: userTokenCreate
+      summary: Создать токен пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserTokenCreateRequest"
+      responses:
+        201:
+          description: Created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    UserTokenCreateRequest:
+      type: object
+      required:
+        - name
+        - password
+      properties:
+        name:
+          type: string
+          description: Имя пользователя
+        password:
+          type: string
+          format: password
+          description: Пароль пользователя

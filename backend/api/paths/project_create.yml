@@ -1,0 +1,32 @@
+paths:
+  projectCreate:
+    x-ogen-operation-group: ProjectCreate
+    post:
+      operationId: projectCreate
+      summary: Создать проект
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectCreateRequest"
+      responses:
+        201:
+          description: Created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    ProjectCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Название проекта

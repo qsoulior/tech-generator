@@ -1,0 +1,88 @@
+paths:
+  templateList:
+    x-ogen-operation-group: TemplateList
+    get:
+      operationId: templateList
+      summary: Получить список шаблонов в проекте
+      parameters:
+        - $ref: "#/components/parameters/ProjectID"
+        - $ref: "../common.yml#/components/parameters/Page"
+        - $ref: "../common.yml#/components/parameters/Size"
+        - $ref: "../common.yml#/components/parameters/Sorting"
+        - $ref: "#/components/parameters/TemplateName"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TemplateListResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    ProjectID:
+      name: projectID
+      description: ID проекта
+      in: path
+      required: true
+      schema:
+        type: integer
+
+    TemplateName:
+      name: templateName
+      description: Название шаблона
+      in: query
+      required: false
+      schema:
+        type: string
+
+  schemas:
+    TemplateListResponse:
+      type: object
+      required:
+        - templates
+        - totalTemplates
+        - totalPages
+      properties:
+        templates:
+          type: array
+          description: Список шаблонов
+          items:
+            type: object
+            description: Шаблон
+            required:
+              - id
+              - name
+              - authorName
+              - createdAt
+            properties:
+              id:
+                type: integer
+                description: ID шаблона
+              name:
+                type: string
+                description: Название шаблона
+              authorName:
+                type: string
+                description: Имя автора шаблона
+              createdAt:
+                type: string
+                format: date-time
+                description: Дата и время создания шаблона
+              updatedAt:
+                type: string
+                format: date-time
+                description: Дата и время обновления шаблона
+                nullable: true
+        totalTemplates:
+          type: integer
+          description: Общее количество шаблонов
+        totalPages:
+          type: integer
+          description: Общее количество страниц

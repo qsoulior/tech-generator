@@ -1,0 +1,87 @@
+paths:
+  versionCreate:
+    x-ogen-operation-group: VersionCreate
+    post:
+      operationId: versionCreate
+      summary: Создать версию шаблона
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VersionCreateRequest"
+      responses:
+        201:
+          description: Created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    VersionCreateRequest:
+      type: object
+      required:
+        - templateID
+        - data
+        - variables
+      properties:
+        templateID:
+          type: integer
+          description: ID шаблона
+        data:
+          type: string
+          format: byte
+          description: Данные шаблона
+        variables:
+          type: array
+          description: Список переменных шаблона
+          items:
+            type: object
+            description: Переменная шаблона
+            required:
+              - name
+              - type
+              - isInput
+              - constraints
+            properties:
+              name:
+                type: string
+                description: Название переменной
+              type:
+                type: string
+                description: Тип переменной
+                enum:
+                  - string
+                  - integer
+                  - float
+              expression:
+                type: string
+                description: Выражение переменной
+                nullable: true
+              isInput:
+                type: boolean
+                description: Являтеся ли переменная входной
+              constraints:
+                type: array
+                description: Список ограничений переменной
+                items:
+                  type: object
+                  description: Ограничение переменной
+                  required:
+                    - name
+                    - expression
+                    - isActive
+                  properties:
+                    name:
+                      type: string
+                      description: Название ограничения
+                    expression:
+                      type: string
+                      description: Выражение ограничения
+                    isActive:
+                      type: boolean
+                      description: Активно ли ограничение

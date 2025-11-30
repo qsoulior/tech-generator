@@ -1,0 +1,36 @@
+paths:
+  versionCreateFrom:
+    x-ogen-operation-group: VersionCreateFrom
+    post:
+      operationId: versionCreateFrom
+      summary: Создать версию шаблона из другой версии
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VersionCreateFromRequest"
+      responses:
+        201:
+          description: Created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    VersionCreateFromRequest:
+      type: object
+      required:
+        - templateID
+        - versionID
+      properties:
+        templateID:
+          type: integer
+          description: ID шаблона
+        versionID:
+          type: integer
+          description: ID версии

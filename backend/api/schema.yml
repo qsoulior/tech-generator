@@ -1,0 +1,37 @@
+openapi: 3.0.4
+info:
+  title: tech-generator
+  version: 0.0.1
+paths:
+  /project/create:
+    $ref: "./paths/project_create.yml#/paths/projectCreate"
+  /project/delete/{projectID}:
+    $ref: "./paths/project_delete_by_id.yml#/paths/projectDeleteByID"
+  /project/list:
+    $ref: "./paths/project_list.yml#/paths/projectList"
+  /task/create:
+    $ref: "./paths/task_create.yml#/paths/taskCreate"
+  /task/get/{taskID}:
+    $ref: "./paths/task_get_by_id.yml#/paths/taskGetByID"
+  /task/list:
+    $ref: "./paths/task_list.yml#/paths/taskList"
+  /template/create:
+    $ref: "./paths/template_create.yml#/paths/templateCreate"
+  /template/delete/{templateID}:
+    $ref: "./paths/template_delete_by_id.yml#/paths/templateDeleteByID"
+  /template/get/{templateID}:
+    $ref: "./paths/template_get_by_id.yml#/paths/templateGetByID"
+  /template/list/{projectID}:
+    $ref: "./paths/template_list.yml#/paths/templateList"
+  /user/create:
+    $ref: "./paths/user_create.yml#/paths/userCreate"
+  /user/get:
+    $ref: "./paths/user_get_by_id.yml#/paths/userGetByID"
+  /user/token/create:
+    $ref: "./paths/user_token_create.yml#/paths/userTokenCreate"
+  /version/create_from:
+    $ref: "./paths/version_create_from.yml#/paths/versionCreateFrom"
+  /version/create:
+    $ref: "./paths/version_create.yml#/paths/versionCreate"
+  /version/list/{templateID}:
+    $ref: "./paths/version_list.yml#/paths/versionList"

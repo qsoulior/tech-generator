@@ -9,6 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 
+	"github.com/qsoulior/tech-generator/backend/internal/generated/api"
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/httpserver"
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/postgres"
 )
@@ -42,7 +43,13 @@ func run() (code int) {
 		code = 1
 	}()
 
-	server := httpserver.New(nil, logger)
+	apiServer, err := api.NewServer(nil)
+	if err != nil {
+		logger.Error("create api server", slog.String("err", err.Error()))
+		return 1
+	}
+
+	server := httpserver.New(apiServer, logger)
 	if err := server.Run(ctx); err != nil {
 		logger.Error("fail server", slog.String("err", err.Error()))
 		return 1

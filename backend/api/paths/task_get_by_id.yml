@@ -1,0 +1,118 @@
+paths:
+  taskGetByID:
+    x-ogen-operation-group: TaskGetByID
+    get:
+      operationId: taskGetByID
+      summary: Получить задачу генерации по ID
+      parameters:
+        - $ref: "#/components/parameters/TaskID"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskGetByIDResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    TaskID:
+      name: taskID
+      description: ID задачи
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+    TaskGetByIDResponse:
+      type: object
+      required:
+        - task
+      properties:
+        task:
+          type: object
+          required:
+            - id
+            - versionID
+            - status
+            - payload
+            - creatorName
+            - createdAt
+          properties:
+            id:
+              type: integer
+              description: ID задачи
+            versionID:
+              type: integer
+              description: ID версии
+            status:
+              $ref: "../common.yml#/components/schemas/TaskStatus"
+            payload:
+              type: object
+              description: Пэйлоад задачи
+              additionalProperties: true
+            error:
+              type: object
+              description: Ошибка обработки задачи
+              nullable: true
+              properties:
+                message:
+                  type: string
+                  description: Сообщение ошибки
+                variableErrors:
+                  type: array
+                  items:
+                    type: object
+                    description: Ошибка обработки переменных
+                    required:
+                      - id
+                      - name
+                    properties:
+                      id:
+                        type: integer
+                        description: ID переменной
+                      name:
+                        type: string
+                        description: Название переменной
+                      message:
+                        type: string
+                        description: Сообщение ошибки
+                      constraintErrors:
+                        type: array
+                        items:
+                          type: object
+                          description: Ошибка обработки ограничений
+                          required:
+                            - id
+                            - name
+                          properties:
+                            id:
+                              type: integer
+                              description: ID ограничения
+                            name:
+                              type: string
+                              description: Название ограничения
+                            message:
+                              type: string
+                              description: Сообщение ошибки
+            creatorName:
+              type: string
+              description: Имя создателя задачи
+            createdAt:
+              type: string
+              format: date-time
+              description: Дата и время создания задачи
+            updatedAt:
+              type: string
+              format: date-time
+              description: Дата и время обновления задачи
+              nullable: true
+        result:
+          type: string

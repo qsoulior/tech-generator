@@ -1,0 +1,37 @@
+paths:
+  taskCreate:
+    x-ogen-operation-group: TaskCreate
+    post:
+      operationId: taskCreate
+      summary: Создать задачу генерации
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskCreateRequest"
+      responses:
+        201:
+          description: Created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    TaskCreateRequest:
+      type: object
+      required:
+        - versionID
+        - payload
+      properties:
+        versionID:
+          type: integer
+          description: ID версии шаблона
+        payload:
+          type: object
+          description: Пэйлоад задачи
+          additionalProperties: true
