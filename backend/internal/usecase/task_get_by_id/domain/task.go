@@ -16,7 +16,7 @@ type Task struct {
 	ID          int64
 	VersionID   int64
 	Status      task_domain.Status
-	Payload     map[string]any
+	Payload     map[string]string
 	ResultID    *int64
 	Error       *task_domain.ProcessError
 	CreatorName string

@@ -63,9 +63,9 @@ func (s *repositorySuite) TestRepository_GetByID() {
 			ID:        gofakeit.Int64(),
 			VersionID: versionID,
 			Status:    task_domain.StatusInProgress,
-			Payload: map[string]any{
-				"test1": float64(123),
-				"test2": 456.789,
+			Payload: map[string]string{
+				"test1": "123",
+				"test2": "456.789",
 				"test3": "text",
 			},
 			ResultID: &resultID,

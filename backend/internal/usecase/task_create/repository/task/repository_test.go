@@ -51,9 +51,9 @@ func (s *repositorySuite) TestRepository_Insert() {
 	in := domain.TaskCreateIn{
 		VersionID: versionID,
 		CreatorID: userID,
-		Payload: map[string]any{
-			"test1": float64(123),
-			"test2": 456.789,
+		Payload: map[string]string{
+			"test1": "123",
+			"test2": "456.789",
 			"test3": "text",
 		},
 	}
@@ -74,7 +74,7 @@ func (s *repositorySuite) TestRepository_Insert() {
 		ID:        got.ID,
 		VersionID: versionID,
 		Status:    string(task_domain.StatusCreated),
-		Payload:   []byte(`{"test1": 123, "test2": 456.789, "test3": "text"}`),
+		Payload:   []byte(`{"test1": "123", "test2": "456.789", "test3": "text"}`),
 		ResultID:  nil,
 		Error:     nil,
 		CreatorID: userID,

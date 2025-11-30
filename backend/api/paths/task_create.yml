@@ -37,4 +37,5 @@ components:
         payload:
           type: object
           description: Пэйлоад задачи
-          additionalProperties: true
+          additionalProperties:
+            type: string

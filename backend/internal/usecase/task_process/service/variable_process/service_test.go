@@ -94,9 +94,9 @@ func TestService_Handle_Success(t *testing.T) {
 				IsInput:    false,
 			},
 		},
-		Payload: map[string]any{
-			"test1": 123,
-			"test3": 321,
+		Payload: map[string]string{
+			"test1": "123",
+			"test3": "321",
 			"test4": "foo",
 		},
 	}
@@ -105,9 +105,9 @@ func TestService_Handle_Success(t *testing.T) {
 	require.NoError(t, err)
 
 	want := map[string]any{
-		"test1": 123,
+		"test1": int64(123),
 		"test2": 382.5,
-		"test3": 321,
+		"test3": int64(321),
 		"test4": "foo",
 		"test5": "foobar",
 		"test6": 392.7,
@@ -174,12 +174,12 @@ func TestService_Handle_Error(t *testing.T) {
 					{
 						ID:      1,
 						Name:    "var1",
-						Message: task_domain.MessageCompile,
+						Message: task_domain.MessageVariableCompile,
 					},
 					{
 						ID:      2,
 						Name:    "var2",
-						Message: task_domain.MessageCompile,
+						Message: task_domain.MessageVariableCompile,
 					},
 				},
 			},
@@ -209,7 +209,7 @@ func TestService_Handle_Error(t *testing.T) {
 						},
 					},
 				},
-				Payload: map[string]any{"var1": 100},
+				Payload: map[string]string{"var1": "100"},
 			},
 			want: task_domain.ProcessError{
 				VariableErrors: []task_domain.VariableError{
@@ -220,12 +220,12 @@ func TestService_Handle_Error(t *testing.T) {
 							{
 								ID:      1,
 								Name:    "expr1",
-								Message: task_domain.MessageCompile,
+								Message: task_domain.MessageVariableCompile,
 							},
 							{
 								ID:      2,
 								Name:    "expr2",
-								Message: task_domain.MessageCompile,
+								Message: task_domain.MessageVariableCompile,
 							},
 						},
 					},
@@ -263,7 +263,7 @@ func TestService_Handle_Error(t *testing.T) {
 						},
 					},
 				},
-				Payload: map[string]any{"var1": 100},
+				Payload: map[string]string{"var1": "100"},
 			},
 			want: task_domain.ProcessError{
 				VariableErrors: []task_domain.VariableError{
@@ -274,12 +274,12 @@ func TestService_Handle_Error(t *testing.T) {
 							{
 								ID:      1,
 								Name:    "expr1",
-								Message: task_domain.MessageCheck,
+								Message: task_domain.MessageConstraintCheck,
 							},
 							{
 								ID:      3,
 								Name:    "expr3",
-								Message: task_domain.MessageCheck,
+								Message: task_domain.MessageConstraintCheck,
 							},
 						},
 					},

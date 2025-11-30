@@ -14,7 +14,7 @@ type Constraint = version_get_domain.Constraint
 
 type VariableProcessIn struct {
 	Variables []Variable
-	Payload   map[string]any
+	Payload   map[string]string
 }
 
 type DataProcessIn struct {

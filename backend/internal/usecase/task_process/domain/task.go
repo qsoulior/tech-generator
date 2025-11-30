@@ -9,7 +9,7 @@ var ErrTaskNotFound = error_domain.NewBaseError("task not found")
 
 type Task struct {
 	VersionID int64
-	Payload   map[string]any
+	Payload   map[string]string
 }
 
 type TaskUpdate struct {

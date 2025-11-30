@@ -53,9 +53,9 @@ func (s *repositorySuite) TestRepository_GetByID() {
 
 		want := domain.Task{
 			VersionID: versionID,
-			Payload: map[string]any{
-				"test1": float64(123),
-				"test2": 456.789,
+			Payload: map[string]string{
+				"test1": "123",
+				"test2": "456.789",
 				"test3": "text",
 			},
 		}

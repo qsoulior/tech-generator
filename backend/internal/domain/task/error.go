@@ -8,12 +8,15 @@ import (
 )
 
 var (
-	MessageCycle         = "Обнаружена цикличная зависимость"
-	MessageCompile       = "Ошибка компиляции"
-	MessageRun           = "Ошибка выполнения"
-	MessageCheck         = "Нарушение ограничения"
-	MessageTemplateParse = "Ошибка парсинга шаблона"
-	MessageTemplateExec  = "Ошибка выполнения шаблона"
+	MessageCycle               = "Обнаружена цикличная зависимость"
+	MessageVariableNotFound    = "Переменная не найдена"
+	MessageVariableTypeUnknown = "Неизвестный тип переменной"
+	MessageVariableParse       = "Ошибка парсинга переменной"
+	MessageVariableCompile     = "Ошибка компиляции переменной"
+	MessageVariableExec        = "Ошибка выполнения переменной"
+	MessageConstraintCheck     = "Нарушение ограничения"
+	MessageTemplateParse       = "Ошибка парсинга шаблона"
+	MessageTemplateExec        = "Ошибка выполнения шаблона"
 )
 
 type ProcessError struct {

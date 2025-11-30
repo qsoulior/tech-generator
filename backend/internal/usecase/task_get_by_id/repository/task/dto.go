@@ -35,7 +35,7 @@ func (t *task) toDomain() *domain.Task {
 	}
 }
 
-type payload map[string]any
+type payload map[string]string
 
 func (p *payload) Scan(value any) error {
 	b, ok := value.([]byte)

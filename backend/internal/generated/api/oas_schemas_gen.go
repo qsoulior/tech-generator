@@ -580,12 +580,12 @@ func (s *TaskCreateRequest) SetPayload(val TaskCreateRequestPayload) {
 }
 
 // Пэйлоад задачи.
-type TaskCreateRequestPayload map[string]jx.Raw
+type TaskCreateRequestPayload map[string]string
 
 func (s *TaskCreateRequestPayload) init() TaskCreateRequestPayload {
 	m := *s
 	if m == nil {
-		m = map[string]jx.Raw{}
+		m = map[string]string{}
 		*s = m
 	}
 	return m

@@ -784,9 +784,7 @@ func (s TaskCreateRequestPayload) encodeFields(e *jx.Encoder) {
 	for k, elem := range s {
 		e.FieldStart(k)
 
-		if len(elem) != 0 {
-			e.Raw(elem)
-		}
+		e.Str(elem)
 	}
 }
 
@@ -797,10 +795,10 @@ func (s *TaskCreateRequestPayload) Decode(d *jx.Decoder) error {
 	}
 	m := s.init()
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		var elem jx.Raw
+		var elem string
 		if err := func() error {
-			v, err := d.RawAppend(nil)
-			elem = jx.Raw(v)
+			v, err := d.Str()
+			elem = string(v)
 			if err != nil {
 				return err
 			}

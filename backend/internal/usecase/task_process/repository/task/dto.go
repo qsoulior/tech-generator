@@ -14,7 +14,7 @@ type task struct {
 	Payload   payload `db:"payload"`
 }
 
-type payload map[string]any
+type payload map[string]string
 
 func (p *payload) Scan(value any) error {
 	b, ok := value.([]byte)

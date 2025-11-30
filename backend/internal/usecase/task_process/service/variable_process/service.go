@@ -2,13 +2,14 @@ package variable_process_service
 
 import (
 	"context"
-	"maps"
+	"strconv"
 	"strings"
 
 	"github.com/expr-lang/expr"
 	"github.com/samber/lo"
 
 	task_domain "github.com/qsoulior/tech-generator/backend/internal/domain/task"
+	variable_domain "github.com/qsoulior/tech-generator/backend/internal/domain/variable"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/task_process/domain"
 )
 
@@ -28,10 +29,18 @@ func (s *Service) Handle(ctx context.Context, in domain.VariableProcessIn) (map[
 		return nil, err
 	}
 
-	variableValues := make(map[string]any)
-	maps.Copy(variableValues, in.Payload)
-
 	var variableErrors []task_domain.VariableError
+	variableValues := make(map[string]any)
+
+	for name, value := range in.Payload {
+		variableValue, variableError := parseVariable(name, value, variablesByName)
+		if variableError != nil {
+			variableErrors = append(variableErrors, *variableError)
+		}
+
+		variableValues[name] = variableValue
+	}
+
 	for _, name := range variableNames {
 		variable := variablesByName[name]
 
@@ -111,6 +120,31 @@ func sortDependencies(dependencies map[string][]string) ([]string, error) {
 	return sorted, nil
 }
 
+var parsers = map[variable_domain.Type]func(s string) (any, error){
+	variable_domain.TypeInteger: func(s string) (any, error) { return strconv.ParseInt(s, 10, 64) },
+	variable_domain.TypeFloat:   func(s string) (any, error) { return strconv.ParseFloat(s, 64) },
+	variable_domain.TypeString:  func(s string) (any, error) { return s, nil },
+}
+
+func parseVariable(name, value string, variablesByName map[string]domain.Variable) (any, *task_domain.VariableError) {
+	variable, ok := variablesByName[name]
+	if !ok {
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableNotFound}
+	}
+
+	parser, ok := parsers[variable.Type]
+	if !ok {
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableTypeUnknown}
+	}
+
+	parsedValue, err := parser(value)
+	if err != nil {
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableParse}
+	}
+
+	return parsedValue, nil
+}
+
 func processVariable(variable domain.Variable, values map[string]any) (any, *task_domain.VariableError) {
 	value, variableError := processVariableValue(variable, values)
 	if variableError != nil {
@@ -132,12 +166,12 @@ func processVariableValue(variable domain.Variable, values map[string]any) (any,
 
 	program, err := expr.Compile(lo.FromPtr(variable.Expression), expr.Env(values))
 	if err != nil {
-		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageCompile}
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableCompile}
 	}
 
 	value, err := expr.Run(program, values)
 	if err != nil {
-		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageRun}
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableExec}
 	}
 
 	return value, nil
@@ -165,16 +199,16 @@ func processConstraint(name string, value any, constraint domain.Constraint) *ta
 
 	program, err := expr.Compile(constraint.Expression, expr.Env(env), expr.AsBool())
 	if err != nil {
-		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageCompile}
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageVariableCompile}
 	}
 
 	check, err := expr.Run(program, env)
 	if err != nil {
-		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageRun}
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageVariableExec}
 	}
 
 	if !check.(bool) {
-		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageCheck}
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintCheck}
 	}
 
 	return nil
