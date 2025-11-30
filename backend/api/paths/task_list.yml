@@ -5,6 +5,7 @@ paths:
       operationId: taskList
       summary: Получить список задач генерации
       parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
         - $ref: "../common.yml#/components/parameters/Page"
         - $ref: "../common.yml#/components/parameters/Size"
         - $ref: "../common.yml#/components/parameters/Sorting"
@@ -33,6 +34,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
 
     TaskCreatorID:
       name: creatorID
@@ -41,6 +43,7 @@ components:
       required: false
       schema:
         type: integer
+        format: int64
 
   schemas:
     TaskListResponse:
@@ -64,6 +67,7 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
                 description: ID задачи генерации
               status:
                 $ref: "../common.yml#/components/schemas/TaskStatus"
@@ -81,7 +85,9 @@ components:
                 nullable: true
         totalTasks:
           type: integer
+          format: int64
           description: Общее количество задач
         totalPages:
           type: integer
+          format: int64
           description: Общее количество страниц

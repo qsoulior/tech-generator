@@ -5,6 +5,7 @@ paths:
       operationId: projectDeleteByID
       summary: Удалить проект
       parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
         - $ref: "#/components/parameters/ProjectID"
       responses:
         204:
@@ -25,3 +26,4 @@ components:
       required: true
       schema:
         type: integer
+        format: int64

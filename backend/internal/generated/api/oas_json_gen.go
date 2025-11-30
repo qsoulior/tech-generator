@@ -410,11 +410,11 @@ func (s *ProjectListResponse) encodeFields(e *jx.Encoder) {
 	}
 	{
 		e.FieldStart("totalProjects")
-		e.Int(s.TotalProjects)
+		e.Int64(s.TotalProjects)
 	}
 	{
 		e.FieldStart("totalPages")
-		e.Int(s.TotalPages)
+		e.Int64(s.TotalPages)
 	}
 }
 
@@ -454,8 +454,8 @@ func (s *ProjectListResponse) Decode(d *jx.Decoder) error {
 		case "totalProjects":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Int()
-				s.TotalProjects = int(v)
+				v, err := d.Int64()
+				s.TotalProjects = int64(v)
 				if err != nil {
 					return err
 				}
@@ -466,8 +466,8 @@ func (s *ProjectListResponse) Decode(d *jx.Decoder) error {
 		case "totalPages":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				v, err := d.Int()
-				s.TotalPages = int(v)
+				v, err := d.Int64()
+				s.TotalPages = int64(v)
 				if err != nil {
 					return err
 				}
@@ -542,7 +542,7 @@ func (s *ProjectListResponseProjectsItem) Encode(e *jx.Encoder) {
 func (s *ProjectListResponseProjectsItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("name")
@@ -572,8 +572,8 @@ func (s *ProjectListResponseProjectsItem) Decode(d *jx.Decoder) error {
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -672,7 +672,7 @@ func (s *TaskCreateRequest) Encode(e *jx.Encoder) {
 func (s *TaskCreateRequest) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("versionID")
-		e.Int(s.VersionID)
+		e.Int64(s.VersionID)
 	}
 	{
 		e.FieldStart("payload")
@@ -697,8 +697,8 @@ func (s *TaskCreateRequest) Decode(d *jx.Decoder) error {
 		case "versionID":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.VersionID = int(v)
+				v, err := d.Int64()
+				s.VersionID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -952,11 +952,11 @@ func (s *TaskGetByIDResponseTask) Encode(e *jx.Encoder) {
 func (s *TaskGetByIDResponseTask) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("versionID")
-		e.Int(s.VersionID)
+		e.Int64(s.VersionID)
 	}
 	{
 		e.FieldStart("status")
@@ -1011,8 +1011,8 @@ func (s *TaskGetByIDResponseTask) Decode(d *jx.Decoder) error {
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -1023,8 +1023,8 @@ func (s *TaskGetByIDResponseTask) Decode(d *jx.Decoder) error {
 		case "versionID":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Int()
-				s.VersionID = int(v)
+				v, err := d.Int64()
+				s.VersionID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -1254,7 +1254,7 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) Encode(e *jx.Encoder) {
 func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("name")
@@ -1297,8 +1297,8 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) Decode(d *jx.Decoder) e
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -1412,7 +1412,7 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) Enc
 func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("name")
@@ -1444,8 +1444,8 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) Dec
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -1608,11 +1608,11 @@ func (s *TaskListResponse) encodeFields(e *jx.Encoder) {
 	}
 	{
 		e.FieldStart("totalTasks")
-		e.Int(s.TotalTasks)
+		e.Int64(s.TotalTasks)
 	}
 	{
 		e.FieldStart("totalPages")
-		e.Int(s.TotalPages)
+		e.Int64(s.TotalPages)
 	}
 }
 
@@ -1652,8 +1652,8 @@ func (s *TaskListResponse) Decode(d *jx.Decoder) error {
 		case "totalTasks":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Int()
-				s.TotalTasks = int(v)
+				v, err := d.Int64()
+				s.TotalTasks = int64(v)
 				if err != nil {
 					return err
 				}
@@ -1664,8 +1664,8 @@ func (s *TaskListResponse) Decode(d *jx.Decoder) error {
 		case "totalPages":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				v, err := d.Int()
-				s.TotalPages = int(v)
+				v, err := d.Int64()
+				s.TotalPages = int64(v)
 				if err != nil {
 					return err
 				}
@@ -1740,7 +1740,7 @@ func (s *TaskListResponseTasksItem) Encode(e *jx.Encoder) {
 func (s *TaskListResponseTasksItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("status")
@@ -1782,8 +1782,8 @@ func (s *TaskListResponseTasksItem) Decode(d *jx.Decoder) error {
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -1950,7 +1950,7 @@ func (s *TemplateCreateRequest) encodeFields(e *jx.Encoder) {
 	}
 	{
 		e.FieldStart("projectID")
-		e.Int(s.ProjectID)
+		e.Int64(s.ProjectID)
 	}
 }
 
@@ -1983,8 +1983,8 @@ func (s *TemplateCreateRequest) Decode(d *jx.Decoder) error {
 		case "projectID":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Int()
-				s.ProjectID = int(v)
+				v, err := d.Int64()
+				s.ProjectID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -2059,7 +2059,7 @@ func (s *TemplateGetByIDResponse) Encode(e *jx.Encoder) {
 func (s *TemplateGetByIDResponse) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("number")
-		e.Int(s.Number)
+		e.Int64(s.Number)
 	}
 	{
 		e.FieldStart("createdAt")
@@ -2098,8 +2098,8 @@ func (s *TemplateGetByIDResponse) Decode(d *jx.Decoder) error {
 		case "number":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.Number = int(v)
+				v, err := d.Int64()
+				s.Number = int64(v)
 				if err != nil {
 					return err
 				}
@@ -2216,7 +2216,7 @@ func (s *TemplateGetByIDResponseVariablesItem) Encode(e *jx.Encoder) {
 func (s *TemplateGetByIDResponseVariablesItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("name")
@@ -2267,8 +2267,8 @@ func (s *TemplateGetByIDResponseVariablesItem) Decode(d *jx.Decoder) error {
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -2405,7 +2405,7 @@ func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) Encode(e *jx.Encod
 func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("name")
@@ -2440,8 +2440,8 @@ func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) Decode(d *jx.Decod
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -2602,11 +2602,11 @@ func (s *TemplateListResponse) encodeFields(e *jx.Encoder) {
 	}
 	{
 		e.FieldStart("totalTemplates")
-		e.Int(s.TotalTemplates)
+		e.Int64(s.TotalTemplates)
 	}
 	{
 		e.FieldStart("totalPages")
-		e.Int(s.TotalPages)
+		e.Int64(s.TotalPages)
 	}
 }
 
@@ -2646,8 +2646,8 @@ func (s *TemplateListResponse) Decode(d *jx.Decoder) error {
 		case "totalTemplates":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Int()
-				s.TotalTemplates = int(v)
+				v, err := d.Int64()
+				s.TotalTemplates = int64(v)
 				if err != nil {
 					return err
 				}
@@ -2658,8 +2658,8 @@ func (s *TemplateListResponse) Decode(d *jx.Decoder) error {
 		case "totalPages":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				v, err := d.Int()
-				s.TotalPages = int(v)
+				v, err := d.Int64()
+				s.TotalPages = int64(v)
 				if err != nil {
 					return err
 				}
@@ -2734,7 +2734,7 @@ func (s *TemplateListResponseTemplatesItem) Encode(e *jx.Encoder) {
 func (s *TemplateListResponseTemplatesItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("name")
@@ -2776,8 +2776,8 @@ func (s *TemplateListResponseTemplatesItem) Decode(d *jx.Decoder) error {
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -3028,7 +3028,7 @@ func (s *UserGetByIDResponse) Encode(e *jx.Encoder) {
 func (s *UserGetByIDResponse) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("name")
@@ -3063,8 +3063,8 @@ func (s *UserGetByIDResponse) Decode(d *jx.Decoder) error {
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -3288,11 +3288,11 @@ func (s *VersionCreateFromRequest) Encode(e *jx.Encoder) {
 func (s *VersionCreateFromRequest) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("templateID")
-		e.Int(s.TemplateID)
+		e.Int64(s.TemplateID)
 	}
 	{
 		e.FieldStart("versionID")
-		e.Int(s.VersionID)
+		e.Int64(s.VersionID)
 	}
 }
 
@@ -3313,8 +3313,8 @@ func (s *VersionCreateFromRequest) Decode(d *jx.Decoder) error {
 		case "templateID":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.TemplateID = int(v)
+				v, err := d.Int64()
+				s.TemplateID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -3325,8 +3325,8 @@ func (s *VersionCreateFromRequest) Decode(d *jx.Decoder) error {
 		case "versionID":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Int()
-				s.VersionID = int(v)
+				v, err := d.Int64()
+				s.VersionID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -3401,7 +3401,7 @@ func (s *VersionCreateRequest) Encode(e *jx.Encoder) {
 func (s *VersionCreateRequest) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("templateID")
-		e.Int(s.TemplateID)
+		e.Int64(s.TemplateID)
 	}
 	{
 		e.FieldStart("data")
@@ -3435,8 +3435,8 @@ func (s *VersionCreateRequest) Decode(d *jx.Decoder) error {
 		case "templateID":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.TemplateID = int(v)
+				v, err := d.Int64()
+				s.TemplateID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -3991,11 +3991,11 @@ func (s *VersionListResponseVersionsItem) Encode(e *jx.Encoder) {
 func (s *VersionListResponseVersionsItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
-		e.Int(s.ID)
+		e.Int64(s.ID)
 	}
 	{
 		e.FieldStart("number")
-		e.Int(s.Number)
+		e.Int64(s.Number)
 	}
 	{
 		e.FieldStart("authorName")
@@ -4026,8 +4026,8 @@ func (s *VersionListResponseVersionsItem) Decode(d *jx.Decoder) error {
 		case "id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.ID = int(v)
+				v, err := d.Int64()
+				s.ID = int64(v)
 				if err != nil {
 					return err
 				}
@@ -4038,8 +4038,8 @@ func (s *VersionListResponseVersionsItem) Decode(d *jx.Decoder) error {
 		case "number":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Int()
-				s.Number = int(v)
+				v, err := d.Int64()
+				s.Number = int64(v)
 				if err != nil {
 					return err
 				}

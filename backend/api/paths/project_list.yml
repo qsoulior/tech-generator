@@ -5,6 +5,7 @@ paths:
       operationId: projectList
       summary: Получить список проектов
       parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
         - $ref: "../common.yml#/components/parameters/Page"
         - $ref: "../common.yml#/components/parameters/Size"
         - $ref: "../common.yml#/components/parameters/Sorting"
@@ -54,6 +55,7 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
                 description: ID проекта
               name:
                 type: string
@@ -63,7 +65,9 @@ components:
                 description: Имя автора проекта
         totalProjects:
           type: integer
+          format: int64
           description: Общее количество проектов
         totalPages:
           type: integer
+          format: int64
           description: Общее количество страниц

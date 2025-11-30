@@ -45,6 +45,16 @@ func (s *Server) handleProjectCreateRequest(args [0]string, argsEscaped bool, w 
 			ID:   "projectCreate",
 		}
 	)
+	params, err := decodeProjectCreateParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeProjectCreateRequest(r)
@@ -72,13 +82,18 @@ func (s *Server) handleProjectCreateRequest(args [0]string, argsEscaped bool, w 
 			OperationID:      "projectCreate",
 			Body:             request,
 			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = *ProjectCreateRequest
-			Params   = struct{}
+			Params   = ProjectCreateParams
 			Response = ProjectCreateRes
 		)
 		response, err = middleware.HookMiddleware[
@@ -88,14 +103,14 @@ func (s *Server) handleProjectCreateRequest(args [0]string, argsEscaped bool, w 
 		](
 			m,
 			mreq,
-			nil,
+			unpackProjectCreateParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.ProjectCreate(ctx, request)
+				response, err = s.h.ProjectCreate(ctx, request, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.ProjectCreate(ctx, request)
+		response, err = s.h.ProjectCreate(ctx, request, params)
 	}
 	if err != nil {
 		defer recordError("Internal", err)
@@ -152,6 +167,10 @@ func (s *Server) handleProjectDeleteByIDRequest(args [1]string, argsEscaped bool
 			Body:             nil,
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
 				{
 					Name: "projectID",
 					In:   "path",
@@ -237,6 +256,10 @@ func (s *Server) handleProjectListRequest(args [0]string, argsEscaped bool, w ht
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+				{
 					Name: "page",
 					In:   "query",
 				}: params.Page,
@@ -309,6 +332,16 @@ func (s *Server) handleTaskCreateRequest(args [0]string, argsEscaped bool, w htt
 			ID:   "taskCreate",
 		}
 	)
+	params, err := decodeTaskCreateParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeTaskCreateRequest(r)
@@ -336,13 +369,18 @@ func (s *Server) handleTaskCreateRequest(args [0]string, argsEscaped bool, w htt
 			OperationID:      "taskCreate",
 			Body:             request,
 			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = *TaskCreateRequest
-			Params   = struct{}
+			Params   = TaskCreateParams
 			Response = TaskCreateRes
 		)
 		response, err = middleware.HookMiddleware[
@@ -352,14 +390,14 @@ func (s *Server) handleTaskCreateRequest(args [0]string, argsEscaped bool, w htt
 		](
 			m,
 			mreq,
-			nil,
+			unpackTaskCreateParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.TaskCreate(ctx, request)
+				response, err = s.h.TaskCreate(ctx, request, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.TaskCreate(ctx, request)
+		response, err = s.h.TaskCreate(ctx, request, params)
 	}
 	if err != nil {
 		defer recordError("Internal", err)
@@ -416,6 +454,10 @@ func (s *Server) handleTaskGetByIDRequest(args [1]string, argsEscaped bool, w ht
 			Body:             nil,
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
 				{
 					Name: "taskID",
 					In:   "path",
@@ -501,6 +543,10 @@ func (s *Server) handleTaskListRequest(args [0]string, argsEscaped bool, w http.
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+				{
 					Name: "page",
 					In:   "query",
 				}: params.Page,
@@ -577,6 +623,16 @@ func (s *Server) handleTemplateCreateRequest(args [0]string, argsEscaped bool, w
 			ID:   "templateCreate",
 		}
 	)
+	params, err := decodeTemplateCreateParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeTemplateCreateRequest(r)
@@ -604,13 +660,18 @@ func (s *Server) handleTemplateCreateRequest(args [0]string, argsEscaped bool, w
 			OperationID:      "templateCreate",
 			Body:             request,
 			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = *TemplateCreateRequest
-			Params   = struct{}
+			Params   = TemplateCreateParams
 			Response = TemplateCreateRes
 		)
 		response, err = middleware.HookMiddleware[
@@ -620,14 +681,14 @@ func (s *Server) handleTemplateCreateRequest(args [0]string, argsEscaped bool, w
 		](
 			m,
 			mreq,
-			nil,
+			unpackTemplateCreateParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.TemplateCreate(ctx, request)
+				response, err = s.h.TemplateCreate(ctx, request, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.TemplateCreate(ctx, request)
+		response, err = s.h.TemplateCreate(ctx, request, params)
 	}
 	if err != nil {
 		defer recordError("Internal", err)
@@ -684,6 +745,10 @@ func (s *Server) handleTemplateDeleteByIDRequest(args [1]string, argsEscaped boo
 			Body:             nil,
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
 				{
 					Name: "templateID",
 					In:   "path",
@@ -769,6 +834,10 @@ func (s *Server) handleTemplateGetByIDRequest(args [1]string, argsEscaped bool, 
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+				{
 					Name: "templateID",
 					In:   "path",
 				}: params.TemplateID,
@@ -852,6 +921,10 @@ func (s *Server) handleTemplateListRequest(args [1]string, argsEscaped bool, w h
 			Body:             nil,
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
 				{
 					Name: "projectID",
 					In:   "path",
@@ -1007,8 +1080,22 @@ func (s *Server) handleUserGetByIDRequest(args [0]string, argsEscaped bool, w ht
 	ctx := r.Context()
 
 	var (
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: UserGetByIDOperation,
+			ID:   "userGetByID",
+		}
 	)
+	params, err := decodeUserGetByIDParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 
 	var rawBody []byte
 
@@ -1021,13 +1108,18 @@ func (s *Server) handleUserGetByIDRequest(args [0]string, argsEscaped bool, w ht
 			OperationID:      "userGetByID",
 			Body:             nil,
 			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = struct{}
-			Params   = struct{}
+			Params   = UserGetByIDParams
 			Response = UserGetByIDRes
 		)
 		response, err = middleware.HookMiddleware[
@@ -1037,14 +1129,14 @@ func (s *Server) handleUserGetByIDRequest(args [0]string, argsEscaped bool, w ht
 		](
 			m,
 			mreq,
-			nil,
+			unpackUserGetByIDParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.UserGetByID(ctx)
+				response, err = s.h.UserGetByID(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.UserGetByID(ctx)
+		response, err = s.h.UserGetByID(ctx, params)
 	}
 	if err != nil {
 		defer recordError("Internal", err)
@@ -1162,6 +1254,16 @@ func (s *Server) handleVersionCreateRequest(args [0]string, argsEscaped bool, w 
 			ID:   "versionCreate",
 		}
 	)
+	params, err := decodeVersionCreateParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeVersionCreateRequest(r)
@@ -1189,13 +1291,18 @@ func (s *Server) handleVersionCreateRequest(args [0]string, argsEscaped bool, w 
 			OperationID:      "versionCreate",
 			Body:             request,
 			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = *VersionCreateRequest
-			Params   = struct{}
+			Params   = VersionCreateParams
 			Response = VersionCreateRes
 		)
 		response, err = middleware.HookMiddleware[
@@ -1205,14 +1312,14 @@ func (s *Server) handleVersionCreateRequest(args [0]string, argsEscaped bool, w 
 		](
 			m,
 			mreq,
-			nil,
+			unpackVersionCreateParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.VersionCreate(ctx, request)
+				response, err = s.h.VersionCreate(ctx, request, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.VersionCreate(ctx, request)
+		response, err = s.h.VersionCreate(ctx, request, params)
 	}
 	if err != nil {
 		defer recordError("Internal", err)
@@ -1246,6 +1353,16 @@ func (s *Server) handleVersionCreateFromRequest(args [0]string, argsEscaped bool
 			ID:   "versionCreateFrom",
 		}
 	)
+	params, err := decodeVersionCreateFromParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeVersionCreateFromRequest(r)
@@ -1273,13 +1390,18 @@ func (s *Server) handleVersionCreateFromRequest(args [0]string, argsEscaped bool
 			OperationID:      "versionCreateFrom",
 			Body:             request,
 			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = *VersionCreateFromRequest
-			Params   = struct{}
+			Params   = VersionCreateFromParams
 			Response = VersionCreateFromRes
 		)
 		response, err = middleware.HookMiddleware[
@@ -1289,14 +1411,14 @@ func (s *Server) handleVersionCreateFromRequest(args [0]string, argsEscaped bool
 		](
 			m,
 			mreq,
-			nil,
+			unpackVersionCreateFromParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.VersionCreateFrom(ctx, request)
+				response, err = s.h.VersionCreateFrom(ctx, request, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.VersionCreateFrom(ctx, request)
+		response, err = s.h.VersionCreateFrom(ctx, request, params)
 	}
 	if err != nil {
 		defer recordError("Internal", err)
@@ -1353,6 +1475,10 @@ func (s *Server) handleVersionListRequest(args [1]string, argsEscaped bool, w ht
 			Body:             nil,
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
 				{
 					Name: "templateID",
 					In:   "path",

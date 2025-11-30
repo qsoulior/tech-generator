@@ -4,6 +4,8 @@ paths:
     post:
       operationId: templateCreate
       summary: Создать шаблон
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
       requestBody:
         required: true
         content:
@@ -33,4 +35,5 @@ components:
           description: Название шаблона
         projectID:
           type: integer
+          format: int64
           description: ID проекта

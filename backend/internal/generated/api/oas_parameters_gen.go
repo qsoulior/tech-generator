@@ -14,24 +14,124 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+// ProjectCreateParams is parameters of projectCreate operation.
+type ProjectCreateParams struct {
+	// ID пользователя.
+	XUserID int64
+}
+
+func unpackProjectCreateParams(packed middleware.Parameters) (params ProjectCreateParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeProjectCreateParams(args [0]string, argsEscaped bool, r *http.Request) (params ProjectCreateParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // ProjectDeleteByIDParams is parameters of projectDeleteByID operation.
 type ProjectDeleteByIDParams struct {
+	// ID пользователя.
+	XUserID int64
 	// ID проекта.
-	ProjectID int
+	ProjectID int64
 }
 
 func unpackProjectDeleteByIDParams(packed middleware.Parameters) (params ProjectDeleteByIDParams) {
 	{
 		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "projectID",
 			In:   "path",
 		}
-		params.ProjectID = packed[key].(int)
+		params.ProjectID = packed[key].(int64)
 	}
 	return params
 }
 
 func decodeProjectDeleteByIDParams(args [1]string, argsEscaped bool, r *http.Request) (params ProjectDeleteByIDParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
 	// Decode path: projectID.
 	if err := func() error {
 		param := args[0]
@@ -56,7 +156,7 @@ func decodeProjectDeleteByIDParams(args [1]string, argsEscaped bool, r *http.Req
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToInt64(val)
 				if err != nil {
 					return err
 				}
@@ -82,10 +182,12 @@ func decodeProjectDeleteByIDParams(args [1]string, argsEscaped bool, r *http.Req
 
 // ProjectListParams is parameters of projectList operation.
 type ProjectListParams struct {
+	// ID пользователя.
+	XUserID int64
 	// Номер страницы.
-	Page OptInt `json:",omitempty,omitzero"`
+	Page int64
 	// Количество записей на странице.
-	Size OptInt `json:",omitempty,omitzero"`
+	Size int64
 	// Сортировка списка.
 	Sorting OptSorting `json:",omitempty,omitzero"`
 	// Название проекта.
@@ -95,21 +197,24 @@ type ProjectListParams struct {
 func unpackProjectListParams(packed middleware.Parameters) (params ProjectListParams) {
 	{
 		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "page",
 			In:   "query",
 		}
-		if v, ok := packed[key]; ok {
-			params.Page = v.(OptInt)
-		}
+		params.Page = packed[key].(int64)
 	}
 	{
 		key := middleware.ParameterKey{
 			Name: "size",
 			In:   "query",
 		}
-		if v, ok := packed[key]; ok {
-			params.Size = v.(OptInt)
-		}
+		params.Size = packed[key].(int64)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -134,10 +239,40 @@ func unpackProjectListParams(packed middleware.Parameters) (params ProjectListPa
 
 func decodeProjectListParams(args [0]string, argsEscaped bool, r *http.Request) (params ProjectListParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Set default value for query: page.
-	{
-		val := int(1)
-		params.Page.SetTo(val)
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
 	}
 	// Decode query: page.
 	if err := func() error {
@@ -149,28 +284,23 @@ func decodeProjectListParams(args [0]string, argsEscaped bool, r *http.Request) 
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotPageVal int
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToInt(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotPageVal = c
-					return nil
-				}(); err != nil {
+				val, err := d.DecodeValue()
+				if err != nil {
 					return err
 				}
-				params.Page.SetTo(paramsDotPageVal)
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.Page = c
 				return nil
 			}); err != nil {
 				return err
 			}
+		} else {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -179,11 +309,6 @@ func decodeProjectListParams(args [0]string, argsEscaped bool, r *http.Request) 
 			In:   "query",
 			Err:  err,
 		}
-	}
-	// Set default value for query: size.
-	{
-		val := int(20)
-		params.Size.SetTo(val)
 	}
 	// Decode query: size.
 	if err := func() error {
@@ -195,28 +320,23 @@ func decodeProjectListParams(args [0]string, argsEscaped bool, r *http.Request) 
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSizeVal int
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToInt(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSizeVal = c
-					return nil
-				}(); err != nil {
+				val, err := d.DecodeValue()
+				if err != nil {
 					return err
 				}
-				params.Size.SetTo(paramsDotSizeVal)
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.Size = c
 				return nil
 			}); err != nil {
 				return err
 			}
+		} else {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -316,24 +436,124 @@ func decodeProjectListParams(args [0]string, argsEscaped bool, r *http.Request) 
 	return params, nil
 }
 
+// TaskCreateParams is parameters of taskCreate operation.
+type TaskCreateParams struct {
+	// ID пользователя.
+	XUserID int64
+}
+
+func unpackTaskCreateParams(packed middleware.Parameters) (params TaskCreateParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeTaskCreateParams(args [0]string, argsEscaped bool, r *http.Request) (params TaskCreateParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // TaskGetByIDParams is parameters of taskGetByID operation.
 type TaskGetByIDParams struct {
+	// ID пользователя.
+	XUserID int64
 	// ID задачи.
-	TaskID int
+	TaskID int64
 }
 
 func unpackTaskGetByIDParams(packed middleware.Parameters) (params TaskGetByIDParams) {
 	{
 		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "taskID",
 			In:   "path",
 		}
-		params.TaskID = packed[key].(int)
+		params.TaskID = packed[key].(int64)
 	}
 	return params
 }
 
 func decodeTaskGetByIDParams(args [1]string, argsEscaped bool, r *http.Request) (params TaskGetByIDParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
 	// Decode path: taskID.
 	if err := func() error {
 		param := args[0]
@@ -358,7 +578,7 @@ func decodeTaskGetByIDParams(args [1]string, argsEscaped bool, r *http.Request) 
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToInt64(val)
 				if err != nil {
 					return err
 				}
@@ -384,36 +604,41 @@ func decodeTaskGetByIDParams(args [1]string, argsEscaped bool, r *http.Request) 
 
 // TaskListParams is parameters of taskList operation.
 type TaskListParams struct {
+	// ID пользователя.
+	XUserID int64
 	// Номер страницы.
-	Page OptInt `json:",omitempty,omitzero"`
+	Page int64
 	// Количество записей на странице.
-	Size OptInt `json:",omitempty,omitzero"`
+	Size int64
 	// Сортировка списка.
 	Sorting OptSorting `json:",omitempty,omitzero"`
 	// ID версии.
-	VersionID int
+	VersionID int64
 	// ID создателя задачи.
-	CreatorID OptInt `json:",omitempty,omitzero"`
+	CreatorID OptInt64 `json:",omitempty,omitzero"`
 }
 
 func unpackTaskListParams(packed middleware.Parameters) (params TaskListParams) {
 	{
 		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "page",
 			In:   "query",
 		}
-		if v, ok := packed[key]; ok {
-			params.Page = v.(OptInt)
-		}
+		params.Page = packed[key].(int64)
 	}
 	{
 		key := middleware.ParameterKey{
 			Name: "size",
 			In:   "query",
 		}
-		if v, ok := packed[key]; ok {
-			params.Size = v.(OptInt)
-		}
+		params.Size = packed[key].(int64)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -429,7 +654,7 @@ func unpackTaskListParams(packed middleware.Parameters) (params TaskListParams) 
 			Name: "versionID",
 			In:   "query",
 		}
-		params.VersionID = packed[key].(int)
+		params.VersionID = packed[key].(int64)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -437,7 +662,7 @@ func unpackTaskListParams(packed middleware.Parameters) (params TaskListParams) 
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.CreatorID = v.(OptInt)
+			params.CreatorID = v.(OptInt64)
 		}
 	}
 	return params
@@ -445,10 +670,40 @@ func unpackTaskListParams(packed middleware.Parameters) (params TaskListParams) 
 
 func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (params TaskListParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Set default value for query: page.
-	{
-		val := int(1)
-		params.Page.SetTo(val)
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
 	}
 	// Decode query: page.
 	if err := func() error {
@@ -460,28 +715,23 @@ func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotPageVal int
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToInt(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotPageVal = c
-					return nil
-				}(); err != nil {
+				val, err := d.DecodeValue()
+				if err != nil {
 					return err
 				}
-				params.Page.SetTo(paramsDotPageVal)
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.Page = c
 				return nil
 			}); err != nil {
 				return err
 			}
+		} else {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -490,11 +740,6 @@ func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 			In:   "query",
 			Err:  err,
 		}
-	}
-	// Set default value for query: size.
-	{
-		val := int(20)
-		params.Size.SetTo(val)
 	}
 	// Decode query: size.
 	if err := func() error {
@@ -506,28 +751,23 @@ func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSizeVal int
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToInt(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSizeVal = c
-					return nil
-				}(); err != nil {
+				val, err := d.DecodeValue()
+				if err != nil {
 					return err
 				}
-				params.Size.SetTo(paramsDotSizeVal)
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.Size = c
 				return nil
 			}); err != nil {
 				return err
 			}
+		} else {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -598,7 +838,7 @@ func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToInt64(val)
 				if err != nil {
 					return err
 				}
@@ -629,14 +869,14 @@ func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotCreatorIDVal int
+				var paramsDotCreatorIDVal int64
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
 						return err
 					}
 
-					c, err := conv.ToInt(val)
+					c, err := conv.ToInt64(val)
 					if err != nil {
 						return err
 					}
@@ -663,24 +903,124 @@ func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 	return params, nil
 }
 
+// TemplateCreateParams is parameters of templateCreate operation.
+type TemplateCreateParams struct {
+	// ID пользователя.
+	XUserID int64
+}
+
+func unpackTemplateCreateParams(packed middleware.Parameters) (params TemplateCreateParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeTemplateCreateParams(args [0]string, argsEscaped bool, r *http.Request) (params TemplateCreateParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // TemplateDeleteByIDParams is parameters of templateDeleteByID operation.
 type TemplateDeleteByIDParams struct {
+	// ID пользователя.
+	XUserID int64
 	// ID шаблона.
-	TemplateID int
+	TemplateID int64
 }
 
 func unpackTemplateDeleteByIDParams(packed middleware.Parameters) (params TemplateDeleteByIDParams) {
 	{
 		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "templateID",
 			In:   "path",
 		}
-		params.TemplateID = packed[key].(int)
+		params.TemplateID = packed[key].(int64)
 	}
 	return params
 }
 
 func decodeTemplateDeleteByIDParams(args [1]string, argsEscaped bool, r *http.Request) (params TemplateDeleteByIDParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
 	// Decode path: templateID.
 	if err := func() error {
 		param := args[0]
@@ -705,7 +1045,7 @@ func decodeTemplateDeleteByIDParams(args [1]string, argsEscaped bool, r *http.Re
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToInt64(val)
 				if err != nil {
 					return err
 				}
@@ -731,22 +1071,66 @@ func decodeTemplateDeleteByIDParams(args [1]string, argsEscaped bool, r *http.Re
 
 // TemplateGetByIDParams is parameters of templateGetByID operation.
 type TemplateGetByIDParams struct {
+	// ID пользователя.
+	XUserID int64
 	// ID шаблона.
-	TemplateID int
+	TemplateID int64
 }
 
 func unpackTemplateGetByIDParams(packed middleware.Parameters) (params TemplateGetByIDParams) {
 	{
 		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "templateID",
 			In:   "path",
 		}
-		params.TemplateID = packed[key].(int)
+		params.TemplateID = packed[key].(int64)
 	}
 	return params
 }
 
 func decodeTemplateGetByIDParams(args [1]string, argsEscaped bool, r *http.Request) (params TemplateGetByIDParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
 	// Decode path: templateID.
 	if err := func() error {
 		param := args[0]
@@ -771,7 +1155,7 @@ func decodeTemplateGetByIDParams(args [1]string, argsEscaped bool, r *http.Reque
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToInt64(val)
 				if err != nil {
 					return err
 				}
@@ -797,12 +1181,14 @@ func decodeTemplateGetByIDParams(args [1]string, argsEscaped bool, r *http.Reque
 
 // TemplateListParams is parameters of templateList operation.
 type TemplateListParams struct {
+	// ID пользователя.
+	XUserID int64
 	// ID проекта.
-	ProjectID int
+	ProjectID int64
 	// Номер страницы.
-	Page OptInt `json:",omitempty,omitzero"`
+	Page int64
 	// Количество записей на странице.
-	Size OptInt `json:",omitempty,omitzero"`
+	Size int64
 	// Сортировка списка.
 	Sorting OptSorting `json:",omitempty,omitzero"`
 	// Название шаблона.
@@ -812,28 +1198,31 @@ type TemplateListParams struct {
 func unpackTemplateListParams(packed middleware.Parameters) (params TemplateListParams) {
 	{
 		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "projectID",
 			In:   "path",
 		}
-		params.ProjectID = packed[key].(int)
+		params.ProjectID = packed[key].(int64)
 	}
 	{
 		key := middleware.ParameterKey{
 			Name: "page",
 			In:   "query",
 		}
-		if v, ok := packed[key]; ok {
-			params.Page = v.(OptInt)
-		}
+		params.Page = packed[key].(int64)
 	}
 	{
 		key := middleware.ParameterKey{
 			Name: "size",
 			In:   "query",
 		}
-		if v, ok := packed[key]; ok {
-			params.Size = v.(OptInt)
-		}
+		params.Size = packed[key].(int64)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -858,6 +1247,41 @@ func unpackTemplateListParams(packed middleware.Parameters) (params TemplateList
 
 func decodeTemplateListParams(args [1]string, argsEscaped bool, r *http.Request) (params TemplateListParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
 	// Decode path: projectID.
 	if err := func() error {
 		param := args[0]
@@ -882,7 +1306,7 @@ func decodeTemplateListParams(args [1]string, argsEscaped bool, r *http.Request)
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToInt64(val)
 				if err != nil {
 					return err
 				}
@@ -903,11 +1327,6 @@ func decodeTemplateListParams(args [1]string, argsEscaped bool, r *http.Request)
 			Err:  err,
 		}
 	}
-	// Set default value for query: page.
-	{
-		val := int(1)
-		params.Page.SetTo(val)
-	}
 	// Decode query: page.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -918,28 +1337,23 @@ func decodeTemplateListParams(args [1]string, argsEscaped bool, r *http.Request)
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotPageVal int
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToInt(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotPageVal = c
-					return nil
-				}(); err != nil {
+				val, err := d.DecodeValue()
+				if err != nil {
 					return err
 				}
-				params.Page.SetTo(paramsDotPageVal)
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.Page = c
 				return nil
 			}); err != nil {
 				return err
 			}
+		} else {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -948,11 +1362,6 @@ func decodeTemplateListParams(args [1]string, argsEscaped bool, r *http.Request)
 			In:   "query",
 			Err:  err,
 		}
-	}
-	// Set default value for query: size.
-	{
-		val := int(20)
-		params.Size.SetTo(val)
 	}
 	// Decode query: size.
 	if err := func() error {
@@ -964,28 +1373,23 @@ func decodeTemplateListParams(args [1]string, argsEscaped bool, r *http.Request)
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSizeVal int
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToInt(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotSizeVal = c
-					return nil
-				}(); err != nil {
+				val, err := d.DecodeValue()
+				if err != nil {
 					return err
 				}
-				params.Size.SetTo(paramsDotSizeVal)
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.Size = c
 				return nil
 			}); err != nil {
 				return err
 			}
+		} else {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -1085,24 +1489,236 @@ func decodeTemplateListParams(args [1]string, argsEscaped bool, r *http.Request)
 	return params, nil
 }
 
+// UserGetByIDParams is parameters of userGetByID operation.
+type UserGetByIDParams struct {
+	// ID пользователя.
+	XUserID int64
+}
+
+func unpackUserGetByIDParams(packed middleware.Parameters) (params UserGetByIDParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeUserGetByIDParams(args [0]string, argsEscaped bool, r *http.Request) (params UserGetByIDParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// VersionCreateParams is parameters of versionCreate operation.
+type VersionCreateParams struct {
+	// ID пользователя.
+	XUserID int64
+}
+
+func unpackVersionCreateParams(packed middleware.Parameters) (params VersionCreateParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeVersionCreateParams(args [0]string, argsEscaped bool, r *http.Request) (params VersionCreateParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// VersionCreateFromParams is parameters of versionCreateFrom operation.
+type VersionCreateFromParams struct {
+	// ID пользователя.
+	XUserID int64
+}
+
+func unpackVersionCreateFromParams(packed middleware.Parameters) (params VersionCreateFromParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeVersionCreateFromParams(args [0]string, argsEscaped bool, r *http.Request) (params VersionCreateFromParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // VersionListParams is parameters of versionList operation.
 type VersionListParams struct {
+	// ID пользователя.
+	XUserID int64
 	// ID шаблона.
-	TemplateID int
+	TemplateID int64
 }
 
 func unpackVersionListParams(packed middleware.Parameters) (params VersionListParams) {
 	{
 		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "templateID",
 			In:   "path",
 		}
-		params.TemplateID = packed[key].(int)
+		params.TemplateID = packed[key].(int64)
 	}
 	return params
 }
 
 func decodeVersionListParams(args [1]string, argsEscaped bool, r *http.Request) (params VersionListParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
 	// Decode path: templateID.
 	if err := func() error {
 		param := args[0]
@@ -1127,7 +1743,7 @@ func decodeVersionListParams(args [1]string, argsEscaped bool, r *http.Request) 
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToInt64(val)
 				if err != nil {
 					return err
 				}

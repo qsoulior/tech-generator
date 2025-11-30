@@ -5,6 +5,7 @@ paths:
       operationId: taskGetByID
       summary: Получить задачу генерации по ID
       parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
         - $ref: "#/components/parameters/TaskID"
       responses:
         200:
@@ -29,6 +30,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
 
   schemas:
     TaskGetByIDResponse:
@@ -48,9 +50,11 @@ components:
           properties:
             id:
               type: integer
+              format: int64
               description: ID задачи
             versionID:
               type: integer
+              format: int64
               description: ID версии
             status:
               $ref: "../common.yml#/components/schemas/TaskStatus"
@@ -77,6 +81,7 @@ components:
                     properties:
                       id:
                         type: integer
+                        format: int64
                         description: ID переменной
                       name:
                         type: string
@@ -95,6 +100,7 @@ components:
                           properties:
                             id:
                               type: integer
+                              format: int64
                               description: ID ограничения
                             name:
                               type: string

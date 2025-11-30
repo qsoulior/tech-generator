@@ -35,7 +35,7 @@ type ProjectCreateHandler interface {
 	// Создать проект.
 	//
 	// POST /project/create
-	ProjectCreate(ctx context.Context, req *ProjectCreateRequest) (ProjectCreateRes, error)
+	ProjectCreate(ctx context.Context, req *ProjectCreateRequest, params ProjectCreateParams) (ProjectCreateRes, error)
 }
 
 // ProjectDeleteByIDHandler handles operations described by OpenAPI v3 specification.
@@ -71,7 +71,7 @@ type TaskCreateHandler interface {
 	// Создать задачу генерации.
 	//
 	// POST /task/create
-	TaskCreate(ctx context.Context, req *TaskCreateRequest) (TaskCreateRes, error)
+	TaskCreate(ctx context.Context, req *TaskCreateRequest, params TaskCreateParams) (TaskCreateRes, error)
 }
 
 // TaskGetByIDHandler handles operations described by OpenAPI v3 specification.
@@ -107,7 +107,7 @@ type TemplateCreateHandler interface {
 	// Создать шаблон.
 	//
 	// POST /template/create
-	TemplateCreate(ctx context.Context, req *TemplateCreateRequest) (TemplateCreateRes, error)
+	TemplateCreate(ctx context.Context, req *TemplateCreateRequest, params TemplateCreateParams) (TemplateCreateRes, error)
 }
 
 // TemplateDeleteByIDHandler handles operations described by OpenAPI v3 specification.
@@ -167,7 +167,7 @@ type UserGetByIDHandler interface {
 	// Получить пользователя.
 	//
 	// GET /user/get
-	UserGetByID(ctx context.Context) (UserGetByIDRes, error)
+	UserGetByID(ctx context.Context, params UserGetByIDParams) (UserGetByIDRes, error)
 }
 
 // UserTokenCreateHandler handles operations described by OpenAPI v3 specification.
@@ -191,7 +191,7 @@ type VersionCreateHandler interface {
 	// Создать версию шаблона.
 	//
 	// POST /version/create
-	VersionCreate(ctx context.Context, req *VersionCreateRequest) (VersionCreateRes, error)
+	VersionCreate(ctx context.Context, req *VersionCreateRequest, params VersionCreateParams) (VersionCreateRes, error)
 }
 
 // VersionCreateFromHandler handles operations described by OpenAPI v3 specification.
@@ -203,7 +203,7 @@ type VersionCreateFromHandler interface {
 	// Создать версию шаблона из другой версии.
 	//
 	// POST /version/create_from
-	VersionCreateFrom(ctx context.Context, req *VersionCreateFromRequest) (VersionCreateFromRes, error)
+	VersionCreateFrom(ctx context.Context, req *VersionCreateFromRequest, params VersionCreateFromParams) (VersionCreateFromRes, error)
 }
 
 // VersionListHandler handles operations described by OpenAPI v3 specification.

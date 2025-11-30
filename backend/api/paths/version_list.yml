@@ -5,6 +5,7 @@ paths:
       operationId: versionList
       summary: Получить список шаблонов в проекте
       parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
         - $ref: "#/components/parameters/TemplateID"
       responses:
         200:
@@ -29,6 +30,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
 
   schemas:
     VersionListResponse:
@@ -50,9 +52,11 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
                 description: ID версии
               number:
                 type: integer
+                format: int64
                 description: Номер версии
               authorName:
                 type: string

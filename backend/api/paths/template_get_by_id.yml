@@ -5,6 +5,7 @@ paths:
       operationId: templateGetByID
       summary: Получить шаблон по ID
       parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
         - $ref: "#/components/parameters/TemplateID"
       responses:
         200:
@@ -29,6 +30,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
 
   schemas:
     TemplateGetByIDResponse:
@@ -41,6 +43,7 @@ components:
       properties:
         number:
           type: integer
+          format: int64
           description: Номер последней версии шаблона
         createdAt:
           type: string
@@ -64,6 +67,7 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
                 description: ID переменной
               name:
                 type: string
@@ -96,6 +100,7 @@ components:
                   properties:
                     id:
                       type: integer
+                      format: int64
                       description: ID ограничения
                     name:
                       type: string

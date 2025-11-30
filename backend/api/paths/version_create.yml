@@ -4,6 +4,8 @@ paths:
     post:
       operationId: versionCreate
       summary: Создать версию шаблона
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
       requestBody:
         required: true
         content:
@@ -31,6 +33,7 @@ components:
       properties:
         templateID:
           type: integer
+          format: int64
           description: ID шаблона
         data:
           type: string

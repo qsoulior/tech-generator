@@ -4,6 +4,8 @@ paths:
     post:
       operationId: projectCreate
       summary: Создать проект
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
       requestBody:
         required: true
         content:

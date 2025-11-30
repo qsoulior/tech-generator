@@ -4,6 +4,8 @@ paths:
     post:
       operationId: taskCreate
       summary: Создать задачу генерации
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
       requestBody:
         required: true
         content:
@@ -30,6 +32,7 @@ components:
       properties:
         versionID:
           type: integer
+          format: int64
           description: ID версии шаблона
         payload:
           type: object

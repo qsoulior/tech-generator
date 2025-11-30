@@ -42,38 +42,38 @@ func (*Error) versionCreateFromRes()  {}
 func (*Error) versionCreateRes()      {}
 func (*Error) versionListRes()        {}
 
-// NewOptInt returns new OptInt with value set to v.
-func NewOptInt(v int) OptInt {
-	return OptInt{
+// NewOptInt64 returns new OptInt64 with value set to v.
+func NewOptInt64(v int64) OptInt64 {
+	return OptInt64{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptInt is optional int.
-type OptInt struct {
-	Value int
+// OptInt64 is optional int64.
+type OptInt64 struct {
+	Value int64
 	Set   bool
 }
 
-// IsSet returns true if OptInt was set.
-func (o OptInt) IsSet() bool { return o.Set }
+// IsSet returns true if OptInt64 was set.
+func (o OptInt64) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptInt) Reset() {
-	var v int
+func (o *OptInt64) Reset() {
+	var v int64
 	o.Value = v
 	o.Set = false
 }
 
 // SetTo sets value to v.
-func (o *OptInt) SetTo(v int) {
+func (o *OptInt64) SetTo(v int64) {
 	o.Set = true
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptInt) Get() (v int, ok bool) {
+func (o OptInt64) Get() (v int64, ok bool) {
 	if !o.Set {
 		return v, false
 	}
@@ -81,7 +81,7 @@ func (o OptInt) Get() (v int, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptInt) Or(d int) int {
+func (o OptInt64) Or(d int64) int64 {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -400,9 +400,9 @@ type ProjectListResponse struct {
 	// Список проектов.
 	Projects []ProjectListResponseProjectsItem `json:"projects"`
 	// Общее количество проектов.
-	TotalProjects int `json:"totalProjects"`
+	TotalProjects int64 `json:"totalProjects"`
 	// Общее количество страниц.
-	TotalPages int `json:"totalPages"`
+	TotalPages int64 `json:"totalPages"`
 }
 
 // GetProjects returns the value of Projects.
@@ -411,12 +411,12 @@ func (s *ProjectListResponse) GetProjects() []ProjectListResponseProjectsItem {
 }
 
 // GetTotalProjects returns the value of TotalProjects.
-func (s *ProjectListResponse) GetTotalProjects() int {
+func (s *ProjectListResponse) GetTotalProjects() int64 {
 	return s.TotalProjects
 }
 
 // GetTotalPages returns the value of TotalPages.
-func (s *ProjectListResponse) GetTotalPages() int {
+func (s *ProjectListResponse) GetTotalPages() int64 {
 	return s.TotalPages
 }
 
@@ -426,12 +426,12 @@ func (s *ProjectListResponse) SetProjects(val []ProjectListResponseProjectsItem)
 }
 
 // SetTotalProjects sets the value of TotalProjects.
-func (s *ProjectListResponse) SetTotalProjects(val int) {
+func (s *ProjectListResponse) SetTotalProjects(val int64) {
 	s.TotalProjects = val
 }
 
 // SetTotalPages sets the value of TotalPages.
-func (s *ProjectListResponse) SetTotalPages(val int) {
+func (s *ProjectListResponse) SetTotalPages(val int64) {
 	s.TotalPages = val
 }
 
@@ -440,7 +440,7 @@ func (*ProjectListResponse) projectListRes() {}
 // Проект.
 type ProjectListResponseProjectsItem struct {
 	// ID проекта.
-	ID int `json:"id"`
+	ID int64 `json:"id"`
 	// Название проекта.
 	Name string `json:"name"`
 	// Имя автора проекта.
@@ -448,7 +448,7 @@ type ProjectListResponseProjectsItem struct {
 }
 
 // GetID returns the value of ID.
-func (s *ProjectListResponseProjectsItem) GetID() int {
+func (s *ProjectListResponseProjectsItem) GetID() int64 {
 	return s.ID
 }
 
@@ -463,7 +463,7 @@ func (s *ProjectListResponseProjectsItem) GetAuthorName() string {
 }
 
 // SetID sets the value of ID.
-func (s *ProjectListResponseProjectsItem) SetID(val int) {
+func (s *ProjectListResponseProjectsItem) SetID(val int64) {
 	s.ID = val
 }
 
@@ -554,13 +554,13 @@ func (*TaskCreateCreated) taskCreateRes() {}
 // Ref: #/components/schemas/TaskCreateRequest
 type TaskCreateRequest struct {
 	// ID версии шаблона.
-	VersionID int `json:"versionID"`
+	VersionID int64 `json:"versionID"`
 	// Пэйлоад задачи.
 	Payload TaskCreateRequestPayload `json:"payload"`
 }
 
 // GetVersionID returns the value of VersionID.
-func (s *TaskCreateRequest) GetVersionID() int {
+func (s *TaskCreateRequest) GetVersionID() int64 {
 	return s.VersionID
 }
 
@@ -570,7 +570,7 @@ func (s *TaskCreateRequest) GetPayload() TaskCreateRequestPayload {
 }
 
 // SetVersionID sets the value of VersionID.
-func (s *TaskCreateRequest) SetVersionID(val int) {
+func (s *TaskCreateRequest) SetVersionID(val int64) {
 	s.VersionID = val
 }
 
@@ -621,9 +621,9 @@ func (*TaskGetByIDResponse) taskGetByIDRes() {}
 
 type TaskGetByIDResponseTask struct {
 	// ID задачи.
-	ID int `json:"id"`
+	ID int64 `json:"id"`
 	// ID версии.
-	VersionID int        `json:"versionID"`
+	VersionID int64      `json:"versionID"`
 	Status    TaskStatus `json:"status"`
 	// Пэйлоад задачи.
 	Payload TaskGetByIDResponseTaskPayload `json:"payload"`
@@ -638,12 +638,12 @@ type TaskGetByIDResponseTask struct {
 }
 
 // GetID returns the value of ID.
-func (s *TaskGetByIDResponseTask) GetID() int {
+func (s *TaskGetByIDResponseTask) GetID() int64 {
 	return s.ID
 }
 
 // GetVersionID returns the value of VersionID.
-func (s *TaskGetByIDResponseTask) GetVersionID() int {
+func (s *TaskGetByIDResponseTask) GetVersionID() int64 {
 	return s.VersionID
 }
 
@@ -678,12 +678,12 @@ func (s *TaskGetByIDResponseTask) GetUpdatedAt() OptNilDateTime {
 }
 
 // SetID sets the value of ID.
-func (s *TaskGetByIDResponseTask) SetID(val int) {
+func (s *TaskGetByIDResponseTask) SetID(val int64) {
 	s.ID = val
 }
 
 // SetVersionID sets the value of VersionID.
-func (s *TaskGetByIDResponseTask) SetVersionID(val int) {
+func (s *TaskGetByIDResponseTask) SetVersionID(val int64) {
 	s.VersionID = val
 }
 
@@ -747,7 +747,7 @@ func (s *TaskGetByIDResponseTaskError) SetVariableErrors(val []TaskGetByIDRespon
 // Ошибка обработки переменных.
 type TaskGetByIDResponseTaskErrorVariableErrorsItem struct {
 	// ID переменной.
-	ID int `json:"id"`
+	ID int64 `json:"id"`
 	// Название переменной.
 	Name string `json:"name"`
 	// Сообщение ошибки.
@@ -756,7 +756,7 @@ type TaskGetByIDResponseTaskErrorVariableErrorsItem struct {
 }
 
 // GetID returns the value of ID.
-func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) GetID() int {
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) GetID() int64 {
 	return s.ID
 }
 
@@ -776,7 +776,7 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) GetConstraintErrors() [
 }
 
 // SetID sets the value of ID.
-func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) SetID(val int) {
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) SetID(val int64) {
 	s.ID = val
 }
 
@@ -798,7 +798,7 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) SetConstraintErrors(val
 // Ошибка обработки ограничений.
 type TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem struct {
 	// ID ограничения.
-	ID int `json:"id"`
+	ID int64 `json:"id"`
 	// Название ограничения.
 	Name string `json:"name"`
 	// Сообщение ошибки.
@@ -806,7 +806,7 @@ type TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem struct {
 }
 
 // GetID returns the value of ID.
-func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) GetID() int {
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) GetID() int64 {
 	return s.ID
 }
 
@@ -821,7 +821,7 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) Get
 }
 
 // SetID sets the value of ID.
-func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) SetID(val int) {
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) SetID(val int64) {
 	s.ID = val
 }
 
@@ -852,9 +852,9 @@ type TaskListResponse struct {
 	// Список задач генерации.
 	Tasks []TaskListResponseTasksItem `json:"tasks"`
 	// Общее количество задач.
-	TotalTasks int `json:"totalTasks"`
+	TotalTasks int64 `json:"totalTasks"`
 	// Общее количество страниц.
-	TotalPages int `json:"totalPages"`
+	TotalPages int64 `json:"totalPages"`
 }
 
 // GetTasks returns the value of Tasks.
@@ -863,12 +863,12 @@ func (s *TaskListResponse) GetTasks() []TaskListResponseTasksItem {
 }
 
 // GetTotalTasks returns the value of TotalTasks.
-func (s *TaskListResponse) GetTotalTasks() int {
+func (s *TaskListResponse) GetTotalTasks() int64 {
 	return s.TotalTasks
 }
 
 // GetTotalPages returns the value of TotalPages.
-func (s *TaskListResponse) GetTotalPages() int {
+func (s *TaskListResponse) GetTotalPages() int64 {
 	return s.TotalPages
 }
 
@@ -878,12 +878,12 @@ func (s *TaskListResponse) SetTasks(val []TaskListResponseTasksItem) {
 }
 
 // SetTotalTasks sets the value of TotalTasks.
-func (s *TaskListResponse) SetTotalTasks(val int) {
+func (s *TaskListResponse) SetTotalTasks(val int64) {
 	s.TotalTasks = val
 }
 
 // SetTotalPages sets the value of TotalPages.
-func (s *TaskListResponse) SetTotalPages(val int) {
+func (s *TaskListResponse) SetTotalPages(val int64) {
 	s.TotalPages = val
 }
 
@@ -892,7 +892,7 @@ func (*TaskListResponse) taskListRes() {}
 // Задача генерации.
 type TaskListResponseTasksItem struct {
 	// ID задачи генерации.
-	ID     int        `json:"id"`
+	ID     int64      `json:"id"`
 	Status TaskStatus `json:"status"`
 	// Имя создателя задачи.
 	CreatorName string `json:"creatorName"`
@@ -903,7 +903,7 @@ type TaskListResponseTasksItem struct {
 }
 
 // GetID returns the value of ID.
-func (s *TaskListResponseTasksItem) GetID() int {
+func (s *TaskListResponseTasksItem) GetID() int64 {
 	return s.ID
 }
 
@@ -928,7 +928,7 @@ func (s *TaskListResponseTasksItem) GetUpdatedAt() OptNilDateTime {
 }
 
 // SetID sets the value of ID.
-func (s *TaskListResponseTasksItem) SetID(val int) {
+func (s *TaskListResponseTasksItem) SetID(val int64) {
 	s.ID = val
 }
 
@@ -1019,7 +1019,7 @@ type TemplateCreateRequest struct {
 	// Название шаблона.
 	Name string `json:"name"`
 	// ID проекта.
-	ProjectID int `json:"projectID"`
+	ProjectID int64 `json:"projectID"`
 }
 
 // GetName returns the value of Name.
@@ -1028,7 +1028,7 @@ func (s *TemplateCreateRequest) GetName() string {
 }
 
 // GetProjectID returns the value of ProjectID.
-func (s *TemplateCreateRequest) GetProjectID() int {
+func (s *TemplateCreateRequest) GetProjectID() int64 {
 	return s.ProjectID
 }
 
@@ -1038,7 +1038,7 @@ func (s *TemplateCreateRequest) SetName(val string) {
 }
 
 // SetProjectID sets the value of ProjectID.
-func (s *TemplateCreateRequest) SetProjectID(val int) {
+func (s *TemplateCreateRequest) SetProjectID(val int64) {
 	s.ProjectID = val
 }
 
@@ -1050,7 +1050,7 @@ func (*TemplateDeleteByIDNoContent) templateDeleteByIDRes() {}
 // Ref: #/components/schemas/TemplateGetByIDResponse
 type TemplateGetByIDResponse struct {
 	// Номер последней версии шаблона.
-	Number int `json:"number"`
+	Number int64 `json:"number"`
 	// Дата и время создания версии.
 	CreatedAt time.Time `json:"createdAt"`
 	// Данные шаблона.
@@ -1060,7 +1060,7 @@ type TemplateGetByIDResponse struct {
 }
 
 // GetNumber returns the value of Number.
-func (s *TemplateGetByIDResponse) GetNumber() int {
+func (s *TemplateGetByIDResponse) GetNumber() int64 {
 	return s.Number
 }
 
@@ -1080,7 +1080,7 @@ func (s *TemplateGetByIDResponse) GetVariables() []TemplateGetByIDResponseVariab
 }
 
 // SetNumber sets the value of Number.
-func (s *TemplateGetByIDResponse) SetNumber(val int) {
+func (s *TemplateGetByIDResponse) SetNumber(val int64) {
 	s.Number = val
 }
 
@@ -1104,7 +1104,7 @@ func (*TemplateGetByIDResponse) templateGetByIDRes() {}
 // Переменная шаблона.
 type TemplateGetByIDResponseVariablesItem struct {
 	// ID переменной.
-	ID int `json:"id"`
+	ID int64 `json:"id"`
 	// Название переменной.
 	Name string `json:"name"`
 	// Тип переменной.
@@ -1118,7 +1118,7 @@ type TemplateGetByIDResponseVariablesItem struct {
 }
 
 // GetID returns the value of ID.
-func (s *TemplateGetByIDResponseVariablesItem) GetID() int {
+func (s *TemplateGetByIDResponseVariablesItem) GetID() int64 {
 	return s.ID
 }
 
@@ -1148,7 +1148,7 @@ func (s *TemplateGetByIDResponseVariablesItem) GetConstraints() []TemplateGetByI
 }
 
 // SetID sets the value of ID.
-func (s *TemplateGetByIDResponseVariablesItem) SetID(val int) {
+func (s *TemplateGetByIDResponseVariablesItem) SetID(val int64) {
 	s.ID = val
 }
 
@@ -1180,7 +1180,7 @@ func (s *TemplateGetByIDResponseVariablesItem) SetConstraints(val []TemplateGetB
 // Ограничение переменной.
 type TemplateGetByIDResponseVariablesItemConstraintsItem struct {
 	// ID ограничения.
-	ID int `json:"id"`
+	ID int64 `json:"id"`
 	// Название ограничения.
 	Name string `json:"name"`
 	// Выражение ограничения.
@@ -1190,7 +1190,7 @@ type TemplateGetByIDResponseVariablesItemConstraintsItem struct {
 }
 
 // GetID returns the value of ID.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) GetID() int {
+func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) GetID() int64 {
 	return s.ID
 }
 
@@ -1210,7 +1210,7 @@ func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) GetIsActive() bool
 }
 
 // SetID sets the value of ID.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) SetID(val int) {
+func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) SetID(val int64) {
 	s.ID = val
 }
 
@@ -1283,9 +1283,9 @@ type TemplateListResponse struct {
 	// Список шаблонов.
 	Templates []TemplateListResponseTemplatesItem `json:"templates"`
 	// Общее количество шаблонов.
-	TotalTemplates int `json:"totalTemplates"`
+	TotalTemplates int64 `json:"totalTemplates"`
 	// Общее количество страниц.
-	TotalPages int `json:"totalPages"`
+	TotalPages int64 `json:"totalPages"`
 }
 
 // GetTemplates returns the value of Templates.
@@ -1294,12 +1294,12 @@ func (s *TemplateListResponse) GetTemplates() []TemplateListResponseTemplatesIte
 }
 
 // GetTotalTemplates returns the value of TotalTemplates.
-func (s *TemplateListResponse) GetTotalTemplates() int {
+func (s *TemplateListResponse) GetTotalTemplates() int64 {
 	return s.TotalTemplates
 }
 
 // GetTotalPages returns the value of TotalPages.
-func (s *TemplateListResponse) GetTotalPages() int {
+func (s *TemplateListResponse) GetTotalPages() int64 {
 	return s.TotalPages
 }
 
@@ -1309,12 +1309,12 @@ func (s *TemplateListResponse) SetTemplates(val []TemplateListResponseTemplatesI
 }
 
 // SetTotalTemplates sets the value of TotalTemplates.
-func (s *TemplateListResponse) SetTotalTemplates(val int) {
+func (s *TemplateListResponse) SetTotalTemplates(val int64) {
 	s.TotalTemplates = val
 }
 
 // SetTotalPages sets the value of TotalPages.
-func (s *TemplateListResponse) SetTotalPages(val int) {
+func (s *TemplateListResponse) SetTotalPages(val int64) {
 	s.TotalPages = val
 }
 
@@ -1323,7 +1323,7 @@ func (*TemplateListResponse) templateListRes() {}
 // Шаблон.
 type TemplateListResponseTemplatesItem struct {
 	// ID шаблона.
-	ID int `json:"id"`
+	ID int64 `json:"id"`
 	// Название шаблона.
 	Name string `json:"name"`
 	// Имя автора шаблона.
@@ -1335,7 +1335,7 @@ type TemplateListResponseTemplatesItem struct {
 }
 
 // GetID returns the value of ID.
-func (s *TemplateListResponseTemplatesItem) GetID() int {
+func (s *TemplateListResponseTemplatesItem) GetID() int64 {
 	return s.ID
 }
 
@@ -1360,7 +1360,7 @@ func (s *TemplateListResponseTemplatesItem) GetUpdatedAt() OptNilDateTime {
 }
 
 // SetID sets the value of ID.
-func (s *TemplateListResponseTemplatesItem) SetID(val int) {
+func (s *TemplateListResponseTemplatesItem) SetID(val int64) {
 	s.ID = val
 }
 
@@ -1432,7 +1432,7 @@ func (s *UserCreateRequest) SetPassword(val string) {
 // Ref: #/components/schemas/UserGetByIDResponse
 type UserGetByIDResponse struct {
 	// ID пользователя.
-	ID int `json:"id"`
+	ID int64 `json:"id"`
 	// Имя пользователя.
 	Name string `json:"name"`
 	// Электронный адрес пользователя.
@@ -1442,7 +1442,7 @@ type UserGetByIDResponse struct {
 }
 
 // GetID returns the value of ID.
-func (s *UserGetByIDResponse) GetID() int {
+func (s *UserGetByIDResponse) GetID() int64 {
 	return s.ID
 }
 
@@ -1462,7 +1462,7 @@ func (s *UserGetByIDResponse) GetCreatedAt() time.Time {
 }
 
 // SetID sets the value of ID.
-func (s *UserGetByIDResponse) SetID(val int) {
+func (s *UserGetByIDResponse) SetID(val int64) {
 	s.ID = val
 }
 
@@ -1529,35 +1529,35 @@ func (*VersionCreateFromCreated) versionCreateFromRes() {}
 // Ref: #/components/schemas/VersionCreateFromRequest
 type VersionCreateFromRequest struct {
 	// ID шаблона.
-	TemplateID int `json:"templateID"`
+	TemplateID int64 `json:"templateID"`
 	// ID версии.
-	VersionID int `json:"versionID"`
+	VersionID int64 `json:"versionID"`
 }
 
 // GetTemplateID returns the value of TemplateID.
-func (s *VersionCreateFromRequest) GetTemplateID() int {
+func (s *VersionCreateFromRequest) GetTemplateID() int64 {
 	return s.TemplateID
 }
 
 // GetVersionID returns the value of VersionID.
-func (s *VersionCreateFromRequest) GetVersionID() int {
+func (s *VersionCreateFromRequest) GetVersionID() int64 {
 	return s.VersionID
 }
 
 // SetTemplateID sets the value of TemplateID.
-func (s *VersionCreateFromRequest) SetTemplateID(val int) {
+func (s *VersionCreateFromRequest) SetTemplateID(val int64) {
 	s.TemplateID = val
 }
 
 // SetVersionID sets the value of VersionID.
-func (s *VersionCreateFromRequest) SetVersionID(val int) {
+func (s *VersionCreateFromRequest) SetVersionID(val int64) {
 	s.VersionID = val
 }
 
 // Ref: #/components/schemas/VersionCreateRequest
 type VersionCreateRequest struct {
 	// ID шаблона.
-	TemplateID int `json:"templateID"`
+	TemplateID int64 `json:"templateID"`
 	// Данные шаблона.
 	Data []byte `json:"data"`
 	// Список переменных шаблона.
@@ -1565,7 +1565,7 @@ type VersionCreateRequest struct {
 }
 
 // GetTemplateID returns the value of TemplateID.
-func (s *VersionCreateRequest) GetTemplateID() int {
+func (s *VersionCreateRequest) GetTemplateID() int64 {
 	return s.TemplateID
 }
 
@@ -1580,7 +1580,7 @@ func (s *VersionCreateRequest) GetVariables() []VersionCreateRequestVariablesIte
 }
 
 // SetTemplateID sets the value of TemplateID.
-func (s *VersionCreateRequest) SetTemplateID(val int) {
+func (s *VersionCreateRequest) SetTemplateID(val int64) {
 	s.TemplateID = val
 }
 
@@ -1768,9 +1768,9 @@ func (*VersionListResponse) versionListRes() {}
 // Версия шаблона.
 type VersionListResponseVersionsItem struct {
 	// ID версии.
-	ID int `json:"id"`
+	ID int64 `json:"id"`
 	// Номер версии.
-	Number int `json:"number"`
+	Number int64 `json:"number"`
 	// Имя автора версии.
 	AuthorName string `json:"authorName"`
 	// Дата и время создания версии.
@@ -1778,12 +1778,12 @@ type VersionListResponseVersionsItem struct {
 }
 
 // GetID returns the value of ID.
-func (s *VersionListResponseVersionsItem) GetID() int {
+func (s *VersionListResponseVersionsItem) GetID() int64 {
 	return s.ID
 }
 
 // GetNumber returns the value of Number.
-func (s *VersionListResponseVersionsItem) GetNumber() int {
+func (s *VersionListResponseVersionsItem) GetNumber() int64 {
 	return s.Number
 }
 
@@ -1798,12 +1798,12 @@ func (s *VersionListResponseVersionsItem) GetCreatedAt() time.Time {
 }
 
 // SetID sets the value of ID.
-func (s *VersionListResponseVersionsItem) SetID(val int) {
+func (s *VersionListResponseVersionsItem) SetID(val int64) {
 	s.ID = val
 }
 
 // SetNumber sets the value of Number.
-func (s *VersionListResponseVersionsItem) SetNumber(val int) {
+func (s *VersionListResponseVersionsItem) SetNumber(val int64) {
 	s.Number = val
 }
 

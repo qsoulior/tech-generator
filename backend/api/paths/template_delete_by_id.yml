@@ -5,6 +5,7 @@ paths:
       operationId: templateDeleteByID
       summary: Удалить шаблон
       parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
         - $ref: "#/components/parameters/TemplateID"
       responses:
         204:
@@ -25,3 +26,4 @@ components:
       required: true
       schema:
         type: integer
+        format: int64

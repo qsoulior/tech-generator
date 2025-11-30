@@ -12,6 +12,7 @@ import (
 	"github.com/qsoulior/tech-generator/backend/internal/generated/api"
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/httpserver"
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/postgres"
+	error_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/error"
 )
 
 func main() {
@@ -43,7 +44,9 @@ func run() (code int) {
 		code = 1
 	}()
 
-	apiServer, err := api.NewServer(nil)
+	apiServer, err := api.NewServer(nil,
+		api.WithErrorHandler(error_handler.New(logger).Handle),
+	)
 	if err != nil {
 		logger.Error("create api server", slog.String("err", err.Error()))
 		return 1

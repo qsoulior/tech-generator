@@ -4,6 +4,8 @@ paths:
     post:
       operationId: versionCreateFrom
       summary: Создать версию шаблона из другой версии
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
       requestBody:
         required: true
         content:
@@ -30,7 +32,9 @@ components:
       properties:
         templateID:
           type: integer
+          format: int64
           description: ID шаблона
         versionID:
           type: integer
+          format: int64
           description: ID версии

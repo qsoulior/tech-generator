@@ -19,23 +19,32 @@ components:
         - failed
 
   parameters:
+    UserID:
+      name: X-User-Id
+      description: ID пользователя
+      in: header
+      required: true
+      schema:
+        type: integer
+        format: int64
+
     Page:
       name: page
       description: Номер страницы
       in: query
-      required: false
+      required: true
       schema:
         type: integer
-        default: 1
+        format: int64
 
     Size:
       name: size
       description: Количество записей на странице
       in: query
-      required: false
+      required: true
       schema:
         type: integer
-        default: 20
+        format: int64
 
     Sorting:
       name: sorting
