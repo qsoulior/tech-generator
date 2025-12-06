@@ -15,6 +15,7 @@ import (
 	"github.com/qsoulior/tech-generator/backend/internal/generated/api"
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/httpserver"
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/postgres"
+	"github.com/qsoulior/tech-generator/backend/internal/pkg/rabbitmq"
 	"github.com/qsoulior/tech-generator/backend/internal/transport/http"
 	error_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/error"
 	project_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_create"
@@ -78,9 +79,43 @@ func run() (code int) {
 	}
 	defer func() {
 		err := db.Close()
-		logger.Error("close postgres connection", slog.String("err", err.Error()))
-		code = 1
+		if err != nil {
+			logger.Error("close postgres connection", slog.String("err", err.Error()))
+			code = 1
+		}
 	}()
+
+	conn, err := rabbitmq.Connect()
+	if err != nil {
+		logger.Error("connect rabbitmq", slog.String("err", err.Error()))
+		return 1
+	}
+	defer func() {
+		err := conn.Close()
+		if err != nil {
+			logger.Error("close rabbitmq connection", slog.String("err", err.Error()))
+			code = 1
+		}
+	}()
+
+	ch, err := conn.Channel()
+	if err != nil {
+		logger.Error("connect  rabbitmq channel", slog.String("err", err.Error()))
+		return 1
+	}
+	defer func() {
+		err := ch.Close()
+		if err != nil {
+			logger.Error("close rabbitmq channel", slog.String("err", err.Error()))
+			code = 1
+		}
+	}()
+
+	_, err = ch.QueueDeclare("task_created", true, false, false, false, nil)
+	if err != nil {
+		logger.Error("declare queue", slog.String("err", err.Error()))
+		return 1
+	}
 
 	cfg := &config.Config{
 		UserTokenExpiration: 30 * 24 * time.Hour,
@@ -95,7 +130,7 @@ func run() (code int) {
 	projectCreateUsecase := project_create_usecase.New(db)
 	projectDeleteUsecase := project_delete_usecase.New(db)
 	projectListUsecase := project_list_by_user_usecase.New(db)
-	taskCreateUsecase := task_create_usecase.New(db)
+	taskCreateUsecase := task_create_usecase.New(db, ch)
 	taskGetByIDUsecase := task_get_by_id_usecase.New(db)
 	taskListUsecase := task_list_usecase.New(db)
 	templateCreateUsecase := template_create_usecase.New(db)

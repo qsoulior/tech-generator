@@ -13,5 +13,9 @@ type versionRepository interface {
 }
 
 type taskRepository interface {
-	Insert(ctx context.Context, in domain.TaskCreateIn) error
+	Insert(ctx context.Context, in domain.TaskCreateIn) (int64, error)
+}
+
+type publisher interface {
+	PublishTaskCreated(ctx context.Context, id int64) error
 }

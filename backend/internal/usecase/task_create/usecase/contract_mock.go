@@ -81,15 +81,54 @@ func (m *MocktaskRepository) EXPECT() *MocktaskRepositoryMockRecorder {
 }
 
 // Insert mocks base method.
-func (m *MocktaskRepository) Insert(ctx context.Context, in domain.TaskCreateIn) error {
+func (m *MocktaskRepository) Insert(ctx context.Context, in domain.TaskCreateIn) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Insert", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Insert indicates an expected call of Insert.
 func (mr *MocktaskRepositoryMockRecorder) Insert(ctx, in any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MocktaskRepository)(nil).Insert), ctx, in)
+}
+
+// Mockpublisher is a mock of publisher interface.
+type Mockpublisher struct {
+	ctrl     *gomock.Controller
+	recorder *MockpublisherMockRecorder
+	isgomock struct{}
+}
+
+// MockpublisherMockRecorder is the mock recorder for Mockpublisher.
+type MockpublisherMockRecorder struct {
+	mock *Mockpublisher
+}
+
+// NewMockpublisher creates a new mock instance.
+func NewMockpublisher(ctrl *gomock.Controller) *Mockpublisher {
+	mock := &Mockpublisher{ctrl: ctrl}
+	mock.recorder = &MockpublisherMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *Mockpublisher) EXPECT() *MockpublisherMockRecorder {
+	return m.recorder
+}
+
+// PublishTaskCreated mocks base method.
+func (m *Mockpublisher) PublishTaskCreated(ctx context.Context, id int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PublishTaskCreated", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PublishTaskCreated indicates an expected call of PublishTaskCreated.
+func (mr *MockpublisherMockRecorder) PublishTaskCreated(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PublishTaskCreated", reflect.TypeOf((*Mockpublisher)(nil).PublishTaskCreated), ctx, id)
 }

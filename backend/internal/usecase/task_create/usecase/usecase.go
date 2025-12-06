@@ -13,12 +13,14 @@ import (
 type Usecase struct {
 	versionRepo versionRepository
 	taskRepo    taskRepository
+	publisher   publisher
 }
 
-func New(versionRepo versionRepository, taskRepo taskRepository) *Usecase {
+func New(versionRepo versionRepository, taskRepo taskRepository, publisher publisher) *Usecase {
 	return &Usecase{
 		versionRepo: versionRepo,
 		taskRepo:    taskRepo,
+		publisher:   publisher,
 	}
 }
 
@@ -30,9 +32,15 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TaskCreateIn) error {
 	}
 
 	// insert task
-	err = u.taskRepo.Insert(ctx, in)
+	taskID, err := u.taskRepo.Insert(ctx, in)
 	if err != nil {
 		return fmt.Errorf("task repo - insert: %w", err)
+	}
+
+	// send message
+	err = u.publisher.PublishTaskCreated(ctx, taskID)
+	if err != nil {
+		return fmt.Errorf("publisher - publish task created: %w", err)
 	}
 
 	return nil

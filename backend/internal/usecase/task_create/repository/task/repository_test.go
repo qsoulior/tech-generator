@@ -58,13 +58,13 @@ func (s *repositorySuite) TestRepository_Insert() {
 		},
 	}
 
-	err = repo.Insert(ctx, in)
+	gotID, err := repo.Insert(ctx, in)
 	require.NoError(s.T(), err)
 	defer func() {
 		require.NoError(s.T(), test_db.DeleteEntityByColumn(s.C(), "task", "version_id", versionID))
 	}()
 
-	gotTasks, err := test_db.SelectEntitiesByColumn[test_db.Task](s.C(), "task", "version_id", []int64{versionID})
+	gotTasks, err := test_db.SelectEntitiesByID[test_db.Task](s.C(), "task", []int64{gotID})
 	require.NoError(s.T(), err)
 	require.Len(s.T(), gotTasks, 1)
 
