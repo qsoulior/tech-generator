@@ -197,6 +197,36 @@ func (s *TemplateGetByIDResponse) Validate() error {
 
 	var failures []validate.FieldError
 	if err := func() error {
+		if value, ok := s.Version.Get(); ok {
+			if err := func() error {
+				if err := value.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "version",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s *TemplateGetByIDVersion) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
 		if s.Variables == nil {
 			return errors.New("nil is invalid value")
 		}
@@ -230,7 +260,7 @@ func (s *TemplateGetByIDResponse) Validate() error {
 	return nil
 }
 
-func (s *TemplateGetByIDResponseVariablesItem) Validate() error {
+func (s *TemplateGetByIDVersionVariablesItem) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
 	}
@@ -264,7 +294,7 @@ func (s *TemplateGetByIDResponseVariablesItem) Validate() error {
 	return nil
 }
 
-func (s TemplateGetByIDResponseVariablesItemType) Validate() error {
+func (s TemplateGetByIDVersionVariablesItemType) Validate() error {
 	switch s {
 	case "string":
 		return nil

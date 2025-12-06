@@ -271,6 +271,52 @@ func (o OptTaskGetByIDResponseTaskError) Or(d TaskGetByIDResponseTaskError) Task
 	return d
 }
 
+// NewOptTemplateGetByIDVersion returns new OptTemplateGetByIDVersion with value set to v.
+func NewOptTemplateGetByIDVersion(v TemplateGetByIDVersion) OptTemplateGetByIDVersion {
+	return OptTemplateGetByIDVersion{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTemplateGetByIDVersion is optional TemplateGetByIDVersion.
+type OptTemplateGetByIDVersion struct {
+	Value TemplateGetByIDVersion
+	Set   bool
+}
+
+// IsSet returns true if OptTemplateGetByIDVersion was set.
+func (o OptTemplateGetByIDVersion) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTemplateGetByIDVersion) Reset() {
+	var v TemplateGetByIDVersion
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTemplateGetByIDVersion) SetTo(v TemplateGetByIDVersion) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTemplateGetByIDVersion) Get() (v TemplateGetByIDVersion, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTemplateGetByIDVersion) Or(d TemplateGetByIDVersion) TemplateGetByIDVersion {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // ProjectCreateCreated is response for ProjectCreate operation.
 type ProjectCreateCreated struct{}
 
@@ -951,136 +997,151 @@ func (*TemplateDeleteByIDNoContent) templateDeleteByIDRes() {}
 
 // Ref: #/components/schemas/TemplateGetByIDResponse
 type TemplateGetByIDResponse struct {
+	Version OptTemplateGetByIDVersion `json:"version"`
+}
+
+// GetVersion returns the value of Version.
+func (s *TemplateGetByIDResponse) GetVersion() OptTemplateGetByIDVersion {
+	return s.Version
+}
+
+// SetVersion sets the value of Version.
+func (s *TemplateGetByIDResponse) SetVersion(val OptTemplateGetByIDVersion) {
+	s.Version = val
+}
+
+func (*TemplateGetByIDResponse) templateGetByIDRes() {}
+
+// Ref: #/components/schemas/TemplateGetByIDVersion
+type TemplateGetByIDVersion struct {
 	// Номер последней версии шаблона.
 	Number int64 `json:"number"`
 	// Дата и время создания версии.
 	CreatedAt time.Time `json:"createdAt"`
 	// Данные шаблона.
-	Data string `json:"data"`
+	Data []byte `json:"data"`
 	// Список переменных шаблона.
-	Variables []TemplateGetByIDResponseVariablesItem `json:"variables"`
+	Variables []TemplateGetByIDVersionVariablesItem `json:"variables"`
 }
 
 // GetNumber returns the value of Number.
-func (s *TemplateGetByIDResponse) GetNumber() int64 {
+func (s *TemplateGetByIDVersion) GetNumber() int64 {
 	return s.Number
 }
 
 // GetCreatedAt returns the value of CreatedAt.
-func (s *TemplateGetByIDResponse) GetCreatedAt() time.Time {
+func (s *TemplateGetByIDVersion) GetCreatedAt() time.Time {
 	return s.CreatedAt
 }
 
 // GetData returns the value of Data.
-func (s *TemplateGetByIDResponse) GetData() string {
+func (s *TemplateGetByIDVersion) GetData() []byte {
 	return s.Data
 }
 
 // GetVariables returns the value of Variables.
-func (s *TemplateGetByIDResponse) GetVariables() []TemplateGetByIDResponseVariablesItem {
+func (s *TemplateGetByIDVersion) GetVariables() []TemplateGetByIDVersionVariablesItem {
 	return s.Variables
 }
 
 // SetNumber sets the value of Number.
-func (s *TemplateGetByIDResponse) SetNumber(val int64) {
+func (s *TemplateGetByIDVersion) SetNumber(val int64) {
 	s.Number = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.
-func (s *TemplateGetByIDResponse) SetCreatedAt(val time.Time) {
+func (s *TemplateGetByIDVersion) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
 // SetData sets the value of Data.
-func (s *TemplateGetByIDResponse) SetData(val string) {
+func (s *TemplateGetByIDVersion) SetData(val []byte) {
 	s.Data = val
 }
 
 // SetVariables sets the value of Variables.
-func (s *TemplateGetByIDResponse) SetVariables(val []TemplateGetByIDResponseVariablesItem) {
+func (s *TemplateGetByIDVersion) SetVariables(val []TemplateGetByIDVersionVariablesItem) {
 	s.Variables = val
 }
 
-func (*TemplateGetByIDResponse) templateGetByIDRes() {}
-
 // Переменная шаблона.
-type TemplateGetByIDResponseVariablesItem struct {
+type TemplateGetByIDVersionVariablesItem struct {
 	// ID переменной.
 	ID int64 `json:"id"`
 	// Название переменной.
 	Name string `json:"name"`
 	// Тип переменной.
-	Type TemplateGetByIDResponseVariablesItemType `json:"type"`
+	Type TemplateGetByIDVersionVariablesItemType `json:"type"`
 	// Выражение переменной.
 	Expression OptString `json:"expression"`
 	// Являтеся ли переменная входной.
 	IsInput bool `json:"isInput"`
 	// Список ограничений переменной.
-	Constraints []TemplateGetByIDResponseVariablesItemConstraintsItem `json:"constraints"`
+	Constraints []TemplateGetByIDVersionVariablesItemConstraintsItem `json:"constraints"`
 }
 
 // GetID returns the value of ID.
-func (s *TemplateGetByIDResponseVariablesItem) GetID() int64 {
+func (s *TemplateGetByIDVersionVariablesItem) GetID() int64 {
 	return s.ID
 }
 
 // GetName returns the value of Name.
-func (s *TemplateGetByIDResponseVariablesItem) GetName() string {
+func (s *TemplateGetByIDVersionVariablesItem) GetName() string {
 	return s.Name
 }
 
 // GetType returns the value of Type.
-func (s *TemplateGetByIDResponseVariablesItem) GetType() TemplateGetByIDResponseVariablesItemType {
+func (s *TemplateGetByIDVersionVariablesItem) GetType() TemplateGetByIDVersionVariablesItemType {
 	return s.Type
 }
 
 // GetExpression returns the value of Expression.
-func (s *TemplateGetByIDResponseVariablesItem) GetExpression() OptString {
+func (s *TemplateGetByIDVersionVariablesItem) GetExpression() OptString {
 	return s.Expression
 }
 
 // GetIsInput returns the value of IsInput.
-func (s *TemplateGetByIDResponseVariablesItem) GetIsInput() bool {
+func (s *TemplateGetByIDVersionVariablesItem) GetIsInput() bool {
 	return s.IsInput
 }
 
 // GetConstraints returns the value of Constraints.
-func (s *TemplateGetByIDResponseVariablesItem) GetConstraints() []TemplateGetByIDResponseVariablesItemConstraintsItem {
+func (s *TemplateGetByIDVersionVariablesItem) GetConstraints() []TemplateGetByIDVersionVariablesItemConstraintsItem {
 	return s.Constraints
 }
 
 // SetID sets the value of ID.
-func (s *TemplateGetByIDResponseVariablesItem) SetID(val int64) {
+func (s *TemplateGetByIDVersionVariablesItem) SetID(val int64) {
 	s.ID = val
 }
 
 // SetName sets the value of Name.
-func (s *TemplateGetByIDResponseVariablesItem) SetName(val string) {
+func (s *TemplateGetByIDVersionVariablesItem) SetName(val string) {
 	s.Name = val
 }
 
 // SetType sets the value of Type.
-func (s *TemplateGetByIDResponseVariablesItem) SetType(val TemplateGetByIDResponseVariablesItemType) {
+func (s *TemplateGetByIDVersionVariablesItem) SetType(val TemplateGetByIDVersionVariablesItemType) {
 	s.Type = val
 }
 
 // SetExpression sets the value of Expression.
-func (s *TemplateGetByIDResponseVariablesItem) SetExpression(val OptString) {
+func (s *TemplateGetByIDVersionVariablesItem) SetExpression(val OptString) {
 	s.Expression = val
 }
 
 // SetIsInput sets the value of IsInput.
-func (s *TemplateGetByIDResponseVariablesItem) SetIsInput(val bool) {
+func (s *TemplateGetByIDVersionVariablesItem) SetIsInput(val bool) {
 	s.IsInput = val
 }
 
 // SetConstraints sets the value of Constraints.
-func (s *TemplateGetByIDResponseVariablesItem) SetConstraints(val []TemplateGetByIDResponseVariablesItemConstraintsItem) {
+func (s *TemplateGetByIDVersionVariablesItem) SetConstraints(val []TemplateGetByIDVersionVariablesItemConstraintsItem) {
 	s.Constraints = val
 }
 
 // Ограничение переменной.
-type TemplateGetByIDResponseVariablesItemConstraintsItem struct {
+type TemplateGetByIDVersionVariablesItemConstraintsItem struct {
 	// ID ограничения.
 	ID int64 `json:"id"`
 	// Название ограничения.
@@ -1092,71 +1153,71 @@ type TemplateGetByIDResponseVariablesItemConstraintsItem struct {
 }
 
 // GetID returns the value of ID.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) GetID() int64 {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) GetID() int64 {
 	return s.ID
 }
 
 // GetName returns the value of Name.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) GetName() string {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) GetName() string {
 	return s.Name
 }
 
 // GetExpression returns the value of Expression.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) GetExpression() string {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) GetExpression() string {
 	return s.Expression
 }
 
 // GetIsActive returns the value of IsActive.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) GetIsActive() bool {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) GetIsActive() bool {
 	return s.IsActive
 }
 
 // SetID sets the value of ID.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) SetID(val int64) {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) SetID(val int64) {
 	s.ID = val
 }
 
 // SetName sets the value of Name.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) SetName(val string) {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) SetName(val string) {
 	s.Name = val
 }
 
 // SetExpression sets the value of Expression.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) SetExpression(val string) {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) SetExpression(val string) {
 	s.Expression = val
 }
 
 // SetIsActive sets the value of IsActive.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) SetIsActive(val bool) {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) SetIsActive(val bool) {
 	s.IsActive = val
 }
 
 // Тип переменной.
-type TemplateGetByIDResponseVariablesItemType string
+type TemplateGetByIDVersionVariablesItemType string
 
 const (
-	TemplateGetByIDResponseVariablesItemTypeString  TemplateGetByIDResponseVariablesItemType = "string"
-	TemplateGetByIDResponseVariablesItemTypeInteger TemplateGetByIDResponseVariablesItemType = "integer"
-	TemplateGetByIDResponseVariablesItemTypeFloat   TemplateGetByIDResponseVariablesItemType = "float"
+	TemplateGetByIDVersionVariablesItemTypeString  TemplateGetByIDVersionVariablesItemType = "string"
+	TemplateGetByIDVersionVariablesItemTypeInteger TemplateGetByIDVersionVariablesItemType = "integer"
+	TemplateGetByIDVersionVariablesItemTypeFloat   TemplateGetByIDVersionVariablesItemType = "float"
 )
 
-// AllValues returns all TemplateGetByIDResponseVariablesItemType values.
-func (TemplateGetByIDResponseVariablesItemType) AllValues() []TemplateGetByIDResponseVariablesItemType {
-	return []TemplateGetByIDResponseVariablesItemType{
-		TemplateGetByIDResponseVariablesItemTypeString,
-		TemplateGetByIDResponseVariablesItemTypeInteger,
-		TemplateGetByIDResponseVariablesItemTypeFloat,
+// AllValues returns all TemplateGetByIDVersionVariablesItemType values.
+func (TemplateGetByIDVersionVariablesItemType) AllValues() []TemplateGetByIDVersionVariablesItemType {
+	return []TemplateGetByIDVersionVariablesItemType{
+		TemplateGetByIDVersionVariablesItemTypeString,
+		TemplateGetByIDVersionVariablesItemTypeInteger,
+		TemplateGetByIDVersionVariablesItemTypeFloat,
 	}
 }
 
 // MarshalText implements encoding.TextMarshaler.
-func (s TemplateGetByIDResponseVariablesItemType) MarshalText() ([]byte, error) {
+func (s TemplateGetByIDVersionVariablesItemType) MarshalText() ([]byte, error) {
 	switch s {
-	case TemplateGetByIDResponseVariablesItemTypeString:
+	case TemplateGetByIDVersionVariablesItemTypeString:
 		return []byte(s), nil
-	case TemplateGetByIDResponseVariablesItemTypeInteger:
+	case TemplateGetByIDVersionVariablesItemTypeInteger:
 		return []byte(s), nil
-	case TemplateGetByIDResponseVariablesItemTypeFloat:
+	case TemplateGetByIDVersionVariablesItemTypeFloat:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -1164,16 +1225,16 @@ func (s TemplateGetByIDResponseVariablesItemType) MarshalText() ([]byte, error) 
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler.
-func (s *TemplateGetByIDResponseVariablesItemType) UnmarshalText(data []byte) error {
-	switch TemplateGetByIDResponseVariablesItemType(data) {
-	case TemplateGetByIDResponseVariablesItemTypeString:
-		*s = TemplateGetByIDResponseVariablesItemTypeString
+func (s *TemplateGetByIDVersionVariablesItemType) UnmarshalText(data []byte) error {
+	switch TemplateGetByIDVersionVariablesItemType(data) {
+	case TemplateGetByIDVersionVariablesItemTypeString:
+		*s = TemplateGetByIDVersionVariablesItemTypeString
 		return nil
-	case TemplateGetByIDResponseVariablesItemTypeInteger:
-		*s = TemplateGetByIDResponseVariablesItemTypeInteger
+	case TemplateGetByIDVersionVariablesItemTypeInteger:
+		*s = TemplateGetByIDVersionVariablesItemTypeInteger
 		return nil
-	case TemplateGetByIDResponseVariablesItemTypeFloat:
-		*s = TemplateGetByIDResponseVariablesItemTypeFloat
+	case TemplateGetByIDVersionVariablesItemTypeFloat:
+		*s = TemplateGetByIDVersionVariablesItemTypeFloat
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)

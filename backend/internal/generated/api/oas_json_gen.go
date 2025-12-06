@@ -212,6 +212,39 @@ func (s *OptTaskGetByIDResponseTaskError) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes TemplateGetByIDVersion as json.
+func (o OptTemplateGetByIDVersion) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes TemplateGetByIDVersion from json.
+func (o *OptTemplateGetByIDVersion) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptTemplateGetByIDVersion to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptTemplateGetByIDVersion) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptTemplateGetByIDVersion) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode implements json.Marshaler.
 func (s *ProjectCreateRequest) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -1970,6 +2003,69 @@ func (s *TemplateGetByIDResponse) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *TemplateGetByIDResponse) encodeFields(e *jx.Encoder) {
 	{
+		if s.Version.Set {
+			e.FieldStart("version")
+			s.Version.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfTemplateGetByIDResponse = [1]string{
+	0: "version",
+}
+
+// Decode decodes TemplateGetByIDResponse from json.
+func (s *TemplateGetByIDResponse) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode TemplateGetByIDResponse to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "version":
+			if err := func() error {
+				s.Version.Reset()
+				if err := s.Version.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"version\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode TemplateGetByIDResponse")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *TemplateGetByIDResponse) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *TemplateGetByIDResponse) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *TemplateGetByIDVersion) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *TemplateGetByIDVersion) encodeFields(e *jx.Encoder) {
+	{
 		e.FieldStart("number")
 		e.Int64(s.Number)
 	}
@@ -1979,7 +2075,7 @@ func (s *TemplateGetByIDResponse) encodeFields(e *jx.Encoder) {
 	}
 	{
 		e.FieldStart("data")
-		e.Str(s.Data)
+		e.Base64(s.Data)
 	}
 	{
 		e.FieldStart("variables")
@@ -1991,17 +2087,17 @@ func (s *TemplateGetByIDResponse) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfTemplateGetByIDResponse = [4]string{
+var jsonFieldsNameOfTemplateGetByIDVersion = [4]string{
 	0: "number",
 	1: "createdAt",
 	2: "data",
 	3: "variables",
 }
 
-// Decode decodes TemplateGetByIDResponse from json.
-func (s *TemplateGetByIDResponse) Decode(d *jx.Decoder) error {
+// Decode decodes TemplateGetByIDVersion from json.
+func (s *TemplateGetByIDVersion) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode TemplateGetByIDResponse to nil")
+		return errors.New("invalid: unable to decode TemplateGetByIDVersion to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -2034,8 +2130,8 @@ func (s *TemplateGetByIDResponse) Decode(d *jx.Decoder) error {
 		case "data":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				v, err := d.Str()
-				s.Data = string(v)
+				v, err := d.Base64()
+				s.Data = []byte(v)
 				if err != nil {
 					return err
 				}
@@ -2046,9 +2142,9 @@ func (s *TemplateGetByIDResponse) Decode(d *jx.Decoder) error {
 		case "variables":
 			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				s.Variables = make([]TemplateGetByIDResponseVariablesItem, 0)
+				s.Variables = make([]TemplateGetByIDVersionVariablesItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
-					var elem TemplateGetByIDResponseVariablesItem
+					var elem TemplateGetByIDVersionVariablesItem
 					if err := elem.Decode(d); err != nil {
 						return err
 					}
@@ -2066,7 +2162,7 @@ func (s *TemplateGetByIDResponse) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode TemplateGetByIDResponse")
+		return errors.Wrap(err, "decode TemplateGetByIDVersion")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -2083,8 +2179,8 @@ func (s *TemplateGetByIDResponse) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfTemplateGetByIDResponse) {
-					name = jsonFieldsNameOfTemplateGetByIDResponse[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfTemplateGetByIDVersion) {
+					name = jsonFieldsNameOfTemplateGetByIDVersion[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -2105,27 +2201,27 @@ func (s *TemplateGetByIDResponse) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *TemplateGetByIDResponse) MarshalJSON() ([]byte, error) {
+func (s *TemplateGetByIDVersion) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *TemplateGetByIDResponse) UnmarshalJSON(data []byte) error {
+func (s *TemplateGetByIDVersion) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode implements json.Marshaler.
-func (s *TemplateGetByIDResponseVariablesItem) Encode(e *jx.Encoder) {
+func (s *TemplateGetByIDVersionVariablesItem) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *TemplateGetByIDResponseVariablesItem) encodeFields(e *jx.Encoder) {
+func (s *TemplateGetByIDVersionVariablesItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
 		e.Int64(s.ID)
@@ -2158,7 +2254,7 @@ func (s *TemplateGetByIDResponseVariablesItem) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfTemplateGetByIDResponseVariablesItem = [6]string{
+var jsonFieldsNameOfTemplateGetByIDVersionVariablesItem = [6]string{
 	0: "id",
 	1: "name",
 	2: "type",
@@ -2167,10 +2263,10 @@ var jsonFieldsNameOfTemplateGetByIDResponseVariablesItem = [6]string{
 	5: "constraints",
 }
 
-// Decode decodes TemplateGetByIDResponseVariablesItem from json.
-func (s *TemplateGetByIDResponseVariablesItem) Decode(d *jx.Decoder) error {
+// Decode decodes TemplateGetByIDVersionVariablesItem from json.
+func (s *TemplateGetByIDVersionVariablesItem) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode TemplateGetByIDResponseVariablesItem to nil")
+		return errors.New("invalid: unable to decode TemplateGetByIDVersionVariablesItem to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -2235,9 +2331,9 @@ func (s *TemplateGetByIDResponseVariablesItem) Decode(d *jx.Decoder) error {
 		case "constraints":
 			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
-				s.Constraints = make([]TemplateGetByIDResponseVariablesItemConstraintsItem, 0)
+				s.Constraints = make([]TemplateGetByIDVersionVariablesItemConstraintsItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
-					var elem TemplateGetByIDResponseVariablesItemConstraintsItem
+					var elem TemplateGetByIDVersionVariablesItemConstraintsItem
 					if err := elem.Decode(d); err != nil {
 						return err
 					}
@@ -2255,7 +2351,7 @@ func (s *TemplateGetByIDResponseVariablesItem) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode TemplateGetByIDResponseVariablesItem")
+		return errors.Wrap(err, "decode TemplateGetByIDVersionVariablesItem")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -2272,8 +2368,8 @@ func (s *TemplateGetByIDResponseVariablesItem) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfTemplateGetByIDResponseVariablesItem) {
-					name = jsonFieldsNameOfTemplateGetByIDResponseVariablesItem[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfTemplateGetByIDVersionVariablesItem) {
+					name = jsonFieldsNameOfTemplateGetByIDVersionVariablesItem[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -2294,27 +2390,27 @@ func (s *TemplateGetByIDResponseVariablesItem) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *TemplateGetByIDResponseVariablesItem) MarshalJSON() ([]byte, error) {
+func (s *TemplateGetByIDVersionVariablesItem) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *TemplateGetByIDResponseVariablesItem) UnmarshalJSON(data []byte) error {
+func (s *TemplateGetByIDVersionVariablesItem) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode implements json.Marshaler.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) Encode(e *jx.Encoder) {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) encodeFields(e *jx.Encoder) {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
 		e.Int64(s.ID)
@@ -2333,17 +2429,17 @@ func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) encodeFields(e *jx
 	}
 }
 
-var jsonFieldsNameOfTemplateGetByIDResponseVariablesItemConstraintsItem = [4]string{
+var jsonFieldsNameOfTemplateGetByIDVersionVariablesItemConstraintsItem = [4]string{
 	0: "id",
 	1: "name",
 	2: "expression",
 	3: "isActive",
 }
 
-// Decode decodes TemplateGetByIDResponseVariablesItemConstraintsItem from json.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) Decode(d *jx.Decoder) error {
+// Decode decodes TemplateGetByIDVersionVariablesItemConstraintsItem from json.
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode TemplateGetByIDResponseVariablesItemConstraintsItem to nil")
+		return errors.New("invalid: unable to decode TemplateGetByIDVersionVariablesItemConstraintsItem to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -2402,7 +2498,7 @@ func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) Decode(d *jx.Decod
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode TemplateGetByIDResponseVariablesItemConstraintsItem")
+		return errors.Wrap(err, "decode TemplateGetByIDVersionVariablesItemConstraintsItem")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -2419,8 +2515,8 @@ func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) Decode(d *jx.Decod
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfTemplateGetByIDResponseVariablesItemConstraintsItem) {
-					name = jsonFieldsNameOfTemplateGetByIDResponseVariablesItemConstraintsItem[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfTemplateGetByIDVersionVariablesItemConstraintsItem) {
+					name = jsonFieldsNameOfTemplateGetByIDVersionVariablesItemConstraintsItem[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -2441,56 +2537,56 @@ func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) Decode(d *jx.Decod
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) MarshalJSON() ([]byte, error) {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *TemplateGetByIDResponseVariablesItemConstraintsItem) UnmarshalJSON(data []byte) error {
+func (s *TemplateGetByIDVersionVariablesItemConstraintsItem) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes TemplateGetByIDResponseVariablesItemType as json.
-func (s TemplateGetByIDResponseVariablesItemType) Encode(e *jx.Encoder) {
+// Encode encodes TemplateGetByIDVersionVariablesItemType as json.
+func (s TemplateGetByIDVersionVariablesItemType) Encode(e *jx.Encoder) {
 	e.Str(string(s))
 }
 
-// Decode decodes TemplateGetByIDResponseVariablesItemType from json.
-func (s *TemplateGetByIDResponseVariablesItemType) Decode(d *jx.Decoder) error {
+// Decode decodes TemplateGetByIDVersionVariablesItemType from json.
+func (s *TemplateGetByIDVersionVariablesItemType) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode TemplateGetByIDResponseVariablesItemType to nil")
+		return errors.New("invalid: unable to decode TemplateGetByIDVersionVariablesItemType to nil")
 	}
 	v, err := d.StrBytes()
 	if err != nil {
 		return err
 	}
 	// Try to use constant string.
-	switch TemplateGetByIDResponseVariablesItemType(v) {
-	case TemplateGetByIDResponseVariablesItemTypeString:
-		*s = TemplateGetByIDResponseVariablesItemTypeString
-	case TemplateGetByIDResponseVariablesItemTypeInteger:
-		*s = TemplateGetByIDResponseVariablesItemTypeInteger
-	case TemplateGetByIDResponseVariablesItemTypeFloat:
-		*s = TemplateGetByIDResponseVariablesItemTypeFloat
+	switch TemplateGetByIDVersionVariablesItemType(v) {
+	case TemplateGetByIDVersionVariablesItemTypeString:
+		*s = TemplateGetByIDVersionVariablesItemTypeString
+	case TemplateGetByIDVersionVariablesItemTypeInteger:
+		*s = TemplateGetByIDVersionVariablesItemTypeInteger
+	case TemplateGetByIDVersionVariablesItemTypeFloat:
+		*s = TemplateGetByIDVersionVariablesItemTypeFloat
 	default:
-		*s = TemplateGetByIDResponseVariablesItemType(v)
+		*s = TemplateGetByIDVersionVariablesItemType(v)
 	}
 
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s TemplateGetByIDResponseVariablesItemType) MarshalJSON() ([]byte, error) {
+func (s TemplateGetByIDVersionVariablesItemType) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *TemplateGetByIDResponseVariablesItemType) UnmarshalJSON(data []byte) error {
+func (s *TemplateGetByIDVersionVariablesItemType) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
