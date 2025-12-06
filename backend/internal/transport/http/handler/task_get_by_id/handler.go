@@ -17,6 +17,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) TaskGetByID(ctx context.Context, params api.TaskGetByIDParams) (api.TaskGetByIDRes, error) {
 	in := domain.TaskGetByIDIn{
 		TaskID: params.TaskID,

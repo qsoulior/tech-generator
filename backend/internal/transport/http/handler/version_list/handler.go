@@ -16,6 +16,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) VersionList(ctx context.Context, params api.VersionListParams) (api.VersionListRes, error) {
 	out, err := h.usecase.Handle(ctx, convertRequestToIn(params))
 	if err != nil {

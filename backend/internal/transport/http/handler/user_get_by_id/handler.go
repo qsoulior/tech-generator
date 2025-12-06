@@ -14,6 +14,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) UserGetByID(ctx context.Context, params api.UserGetByIDParams) (api.UserGetByIDRes, error) {
 	out, err := h.usecase.Handle(ctx, params.XUserID)
 	if err != nil {

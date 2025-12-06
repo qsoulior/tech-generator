@@ -14,6 +14,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) TaskCreate(ctx context.Context, req *api.TaskCreateRequest, params api.TaskCreateParams) (api.TaskCreateRes, error) {
 	in := domain.TaskCreateIn{
 		VersionID: req.VersionID,

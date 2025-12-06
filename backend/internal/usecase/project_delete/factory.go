@@ -1,4 +1,4 @@
-package template_delete_usecase
+package project_delete_usecase
 
 import (
 	"github.com/jmoiron/sqlx"

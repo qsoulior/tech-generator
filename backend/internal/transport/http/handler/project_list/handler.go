@@ -17,6 +17,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) ProjectList(ctx context.Context, params api.ProjectListParams) (api.ProjectListRes, error) {
 	out, err := h.usecase.Handle(ctx, convertRequestToIn(params))
 	if err != nil {

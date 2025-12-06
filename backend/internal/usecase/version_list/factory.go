@@ -1,4 +1,4 @@
-package version_list_repository
+package version_list_usecase
 
 import (
 	"github.com/jmoiron/sqlx"

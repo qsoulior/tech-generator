@@ -1,4 +1,4 @@
-package project_list_by_user_usecase
+package template_list_by_user_usecase
 
 import (
 	"github.com/jmoiron/sqlx"

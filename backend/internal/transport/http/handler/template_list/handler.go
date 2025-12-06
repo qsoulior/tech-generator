@@ -17,6 +17,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) TemplateList(ctx context.Context, params api.TemplateListParams) (api.TemplateListRes, error) {
 	out, err := h.usecase.Handle(ctx, convertRequestToIn(params))
 	if err != nil {

@@ -14,6 +14,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) TemplateDeleteByID(ctx context.Context, params api.TemplateDeleteByIDParams) (api.TemplateDeleteByIDRes, error) {
 	in := domain.TemplateDeleteIn{
 		TemplateID: params.TemplateID,

@@ -15,6 +15,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) UserTokenCreate(ctx context.Context, req *api.UserTokenCreateRequest) (api.UserTokenCreateRes, error) {
 	in := domain.UserCreateTokenIn{
 		Name:     req.Name,

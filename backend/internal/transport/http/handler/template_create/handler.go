@@ -14,6 +14,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) TemplateCreate(ctx context.Context, req *api.TemplateCreateRequest, params api.TemplateCreateParams) (api.TemplateCreateRes, error) {
 	in := domain.TemplateCreateIn{
 		Name:      req.Name,

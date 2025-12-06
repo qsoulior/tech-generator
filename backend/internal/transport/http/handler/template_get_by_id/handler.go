@@ -17,6 +17,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) TemplateGetByID(ctx context.Context, params api.TemplateGetByIDParams) (api.TemplateGetByIDRes, error) {
 	in := domain.TemplateGetByIDIn{
 		TemplateID: params.TemplateID,

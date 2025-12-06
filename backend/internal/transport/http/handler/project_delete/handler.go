@@ -14,6 +14,12 @@ type Handler struct {
 	usecase usecase
 }
 
+func New(usecase usecase) *Handler {
+	return &Handler{
+		usecase: usecase,
+	}
+}
+
 func (h *Handler) ProjectDeleteByID(ctx context.Context, params api.ProjectDeleteByIDParams) (api.ProjectDeleteByIDRes, error) {
 	in := domain.ProjectDeleteIn{
 		ProjectID: params.ProjectID,
