@@ -61,11 +61,11 @@ components:
             payload:
               type: object
               description: Пэйлоад задачи
-              additionalProperties: true
+              additionalProperties:
+                type: string
             error:
               type: object
               description: Ошибка обработки задачи
-              nullable: true
               properties:
                 message:
                   type: string
@@ -119,6 +119,6 @@ components:
               type: string
               format: date-time
               description: Дата и время обновления задачи
-              nullable: true
         result:
           type: string
+          format: byte

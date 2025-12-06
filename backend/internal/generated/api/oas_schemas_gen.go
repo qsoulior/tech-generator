@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/jx"
 )
 
 // Ошибка.
@@ -41,6 +40,52 @@ func (*Error) userTokenCreateRes()    {}
 func (*Error) versionCreateFromRes()  {}
 func (*Error) versionCreateRes()      {}
 func (*Error) versionListRes()        {}
+
+// NewOptDateTime returns new OptDateTime with value set to v.
+func NewOptDateTime(v time.Time) OptDateTime {
+	return OptDateTime{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDateTime is optional time.Time.
+type OptDateTime struct {
+	Value time.Time
+	Set   bool
+}
+
+// IsSet returns true if OptDateTime was set.
+func (o OptDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDateTime) Get() (v time.Time, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
 
 // NewOptInt64 returns new OptInt64 with value set to v.
 func NewOptInt64(v int64) OptInt64 {
@@ -82,195 +127,6 @@ func (o OptInt64) Get() (v int64, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptInt64) Or(d int64) int64 {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptNilDateTime returns new OptNilDateTime with value set to v.
-func NewOptNilDateTime(v time.Time) OptNilDateTime {
-	return OptNilDateTime{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptNilDateTime is optional nullable time.Time.
-type OptNilDateTime struct {
-	Value time.Time
-	Set   bool
-	Null  bool
-}
-
-// IsSet returns true if OptNilDateTime was set.
-func (o OptNilDateTime) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptNilDateTime) Reset() {
-	var v time.Time
-	o.Value = v
-	o.Set = false
-	o.Null = false
-}
-
-// SetTo sets value to v.
-func (o *OptNilDateTime) SetTo(v time.Time) {
-	o.Set = true
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o OptNilDateTime) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *OptNilDateTime) SetToNull() {
-	o.Set = true
-	o.Null = true
-	var v time.Time
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptNilDateTime) Get() (v time.Time, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptNilDateTime) Or(d time.Time) time.Time {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptNilString returns new OptNilString with value set to v.
-func NewOptNilString(v string) OptNilString {
-	return OptNilString{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptNilString is optional nullable string.
-type OptNilString struct {
-	Value string
-	Set   bool
-	Null  bool
-}
-
-// IsSet returns true if OptNilString was set.
-func (o OptNilString) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptNilString) Reset() {
-	var v string
-	o.Value = v
-	o.Set = false
-	o.Null = false
-}
-
-// SetTo sets value to v.
-func (o *OptNilString) SetTo(v string) {
-	o.Set = true
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o OptNilString) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *OptNilString) SetToNull() {
-	o.Set = true
-	o.Null = true
-	var v string
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptNilString) Get() (v string, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptNilString) Or(d string) string {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptNilTaskGetByIDResponseTaskError returns new OptNilTaskGetByIDResponseTaskError with value set to v.
-func NewOptNilTaskGetByIDResponseTaskError(v TaskGetByIDResponseTaskError) OptNilTaskGetByIDResponseTaskError {
-	return OptNilTaskGetByIDResponseTaskError{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptNilTaskGetByIDResponseTaskError is optional nullable TaskGetByIDResponseTaskError.
-type OptNilTaskGetByIDResponseTaskError struct {
-	Value TaskGetByIDResponseTaskError
-	Set   bool
-	Null  bool
-}
-
-// IsSet returns true if OptNilTaskGetByIDResponseTaskError was set.
-func (o OptNilTaskGetByIDResponseTaskError) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptNilTaskGetByIDResponseTaskError) Reset() {
-	var v TaskGetByIDResponseTaskError
-	o.Value = v
-	o.Set = false
-	o.Null = false
-}
-
-// SetTo sets value to v.
-func (o *OptNilTaskGetByIDResponseTaskError) SetTo(v TaskGetByIDResponseTaskError) {
-	o.Set = true
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o OptNilTaskGetByIDResponseTaskError) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *OptNilTaskGetByIDResponseTaskError) SetToNull() {
-	o.Set = true
-	o.Null = true
-	var v TaskGetByIDResponseTaskError
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptNilTaskGetByIDResponseTaskError) Get() (v TaskGetByIDResponseTaskError, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptNilTaskGetByIDResponseTaskError) Or(d TaskGetByIDResponseTaskError) TaskGetByIDResponseTaskError {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -363,6 +219,52 @@ func (o OptString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTaskGetByIDResponseTaskError returns new OptTaskGetByIDResponseTaskError with value set to v.
+func NewOptTaskGetByIDResponseTaskError(v TaskGetByIDResponseTaskError) OptTaskGetByIDResponseTaskError {
+	return OptTaskGetByIDResponseTaskError{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTaskGetByIDResponseTaskError is optional TaskGetByIDResponseTaskError.
+type OptTaskGetByIDResponseTaskError struct {
+	Value TaskGetByIDResponseTaskError
+	Set   bool
+}
+
+// IsSet returns true if OptTaskGetByIDResponseTaskError was set.
+func (o OptTaskGetByIDResponseTaskError) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTaskGetByIDResponseTaskError) Reset() {
+	var v TaskGetByIDResponseTaskError
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTaskGetByIDResponseTaskError) SetTo(v TaskGetByIDResponseTaskError) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTaskGetByIDResponseTaskError) Get() (v TaskGetByIDResponseTaskError, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTaskGetByIDResponseTaskError) Or(d TaskGetByIDResponseTaskError) TaskGetByIDResponseTaskError {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -594,7 +496,7 @@ func (s *TaskCreateRequestPayload) init() TaskCreateRequestPayload {
 // Ref: #/components/schemas/TaskGetByIDResponse
 type TaskGetByIDResponse struct {
 	Task   TaskGetByIDResponseTask `json:"task"`
-	Result OptString               `json:"result"`
+	Result []byte                  `json:"result"`
 }
 
 // GetTask returns the value of Task.
@@ -603,7 +505,7 @@ func (s *TaskGetByIDResponse) GetTask() TaskGetByIDResponseTask {
 }
 
 // GetResult returns the value of Result.
-func (s *TaskGetByIDResponse) GetResult() OptString {
+func (s *TaskGetByIDResponse) GetResult() []byte {
 	return s.Result
 }
 
@@ -613,7 +515,7 @@ func (s *TaskGetByIDResponse) SetTask(val TaskGetByIDResponseTask) {
 }
 
 // SetResult sets the value of Result.
-func (s *TaskGetByIDResponse) SetResult(val OptString) {
+func (s *TaskGetByIDResponse) SetResult(val []byte) {
 	s.Result = val
 }
 
@@ -628,13 +530,13 @@ type TaskGetByIDResponseTask struct {
 	// Пэйлоад задачи.
 	Payload TaskGetByIDResponseTaskPayload `json:"payload"`
 	// Ошибка обработки задачи.
-	Error OptNilTaskGetByIDResponseTaskError `json:"error"`
+	Error OptTaskGetByIDResponseTaskError `json:"error"`
 	// Имя создателя задачи.
 	CreatorName string `json:"creatorName"`
 	// Дата и время создания задачи.
 	CreatedAt time.Time `json:"createdAt"`
 	// Дата и время обновления задачи.
-	UpdatedAt OptNilDateTime `json:"updatedAt"`
+	UpdatedAt OptDateTime `json:"updatedAt"`
 }
 
 // GetID returns the value of ID.
@@ -658,7 +560,7 @@ func (s *TaskGetByIDResponseTask) GetPayload() TaskGetByIDResponseTaskPayload {
 }
 
 // GetError returns the value of Error.
-func (s *TaskGetByIDResponseTask) GetError() OptNilTaskGetByIDResponseTaskError {
+func (s *TaskGetByIDResponseTask) GetError() OptTaskGetByIDResponseTaskError {
 	return s.Error
 }
 
@@ -673,7 +575,7 @@ func (s *TaskGetByIDResponseTask) GetCreatedAt() time.Time {
 }
 
 // GetUpdatedAt returns the value of UpdatedAt.
-func (s *TaskGetByIDResponseTask) GetUpdatedAt() OptNilDateTime {
+func (s *TaskGetByIDResponseTask) GetUpdatedAt() OptDateTime {
 	return s.UpdatedAt
 }
 
@@ -698,7 +600,7 @@ func (s *TaskGetByIDResponseTask) SetPayload(val TaskGetByIDResponseTaskPayload)
 }
 
 // SetError sets the value of Error.
-func (s *TaskGetByIDResponseTask) SetError(val OptNilTaskGetByIDResponseTaskError) {
+func (s *TaskGetByIDResponseTask) SetError(val OptTaskGetByIDResponseTaskError) {
 	s.Error = val
 }
 
@@ -713,7 +615,7 @@ func (s *TaskGetByIDResponseTask) SetCreatedAt(val time.Time) {
 }
 
 // SetUpdatedAt sets the value of UpdatedAt.
-func (s *TaskGetByIDResponseTask) SetUpdatedAt(val OptNilDateTime) {
+func (s *TaskGetByIDResponseTask) SetUpdatedAt(val OptDateTime) {
 	s.UpdatedAt = val
 }
 
@@ -836,12 +738,12 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) Set
 }
 
 // Пэйлоад задачи.
-type TaskGetByIDResponseTaskPayload map[string]jx.Raw
+type TaskGetByIDResponseTaskPayload map[string]string
 
 func (s *TaskGetByIDResponseTaskPayload) init() TaskGetByIDResponseTaskPayload {
 	m := *s
 	if m == nil {
-		m = map[string]jx.Raw{}
+		m = map[string]string{}
 		*s = m
 	}
 	return m
@@ -899,7 +801,7 @@ type TaskListResponseTasksItem struct {
 	// Дата и время создания задачи.
 	CreatedAt time.Time `json:"createdAt"`
 	// Дата и время обновления задачи.
-	UpdatedAt OptNilDateTime `json:"updatedAt"`
+	UpdatedAt OptDateTime `json:"updatedAt"`
 }
 
 // GetID returns the value of ID.
@@ -923,7 +825,7 @@ func (s *TaskListResponseTasksItem) GetCreatedAt() time.Time {
 }
 
 // GetUpdatedAt returns the value of UpdatedAt.
-func (s *TaskListResponseTasksItem) GetUpdatedAt() OptNilDateTime {
+func (s *TaskListResponseTasksItem) GetUpdatedAt() OptDateTime {
 	return s.UpdatedAt
 }
 
@@ -948,7 +850,7 @@ func (s *TaskListResponseTasksItem) SetCreatedAt(val time.Time) {
 }
 
 // SetUpdatedAt sets the value of UpdatedAt.
-func (s *TaskListResponseTasksItem) SetUpdatedAt(val OptNilDateTime) {
+func (s *TaskListResponseTasksItem) SetUpdatedAt(val OptDateTime) {
 	s.UpdatedAt = val
 }
 
@@ -1110,7 +1012,7 @@ type TemplateGetByIDResponseVariablesItem struct {
 	// Тип переменной.
 	Type TemplateGetByIDResponseVariablesItemType `json:"type"`
 	// Выражение переменной.
-	Expression OptNilString `json:"expression"`
+	Expression OptString `json:"expression"`
 	// Являтеся ли переменная входной.
 	IsInput bool `json:"isInput"`
 	// Список ограничений переменной.
@@ -1133,7 +1035,7 @@ func (s *TemplateGetByIDResponseVariablesItem) GetType() TemplateGetByIDResponse
 }
 
 // GetExpression returns the value of Expression.
-func (s *TemplateGetByIDResponseVariablesItem) GetExpression() OptNilString {
+func (s *TemplateGetByIDResponseVariablesItem) GetExpression() OptString {
 	return s.Expression
 }
 
@@ -1163,7 +1065,7 @@ func (s *TemplateGetByIDResponseVariablesItem) SetType(val TemplateGetByIDRespon
 }
 
 // SetExpression sets the value of Expression.
-func (s *TemplateGetByIDResponseVariablesItem) SetExpression(val OptNilString) {
+func (s *TemplateGetByIDResponseVariablesItem) SetExpression(val OptString) {
 	s.Expression = val
 }
 
@@ -1331,7 +1233,7 @@ type TemplateListResponseTemplatesItem struct {
 	// Дата и время создания шаблона.
 	CreatedAt time.Time `json:"createdAt"`
 	// Дата и время обновления шаблона.
-	UpdatedAt OptNilDateTime `json:"updatedAt"`
+	UpdatedAt OptDateTime `json:"updatedAt"`
 }
 
 // GetID returns the value of ID.
@@ -1355,7 +1257,7 @@ func (s *TemplateListResponseTemplatesItem) GetCreatedAt() time.Time {
 }
 
 // GetUpdatedAt returns the value of UpdatedAt.
-func (s *TemplateListResponseTemplatesItem) GetUpdatedAt() OptNilDateTime {
+func (s *TemplateListResponseTemplatesItem) GetUpdatedAt() OptDateTime {
 	return s.UpdatedAt
 }
 
@@ -1380,7 +1282,7 @@ func (s *TemplateListResponseTemplatesItem) SetCreatedAt(val time.Time) {
 }
 
 // SetUpdatedAt sets the value of UpdatedAt.
-func (s *TemplateListResponseTemplatesItem) SetUpdatedAt(val OptNilDateTime) {
+func (s *TemplateListResponseTemplatesItem) SetUpdatedAt(val OptDateTime) {
 	s.UpdatedAt = val
 }
 
@@ -1601,7 +1503,7 @@ type VersionCreateRequestVariablesItem struct {
 	// Тип переменной.
 	Type VersionCreateRequestVariablesItemType `json:"type"`
 	// Выражение переменной.
-	Expression OptNilString `json:"expression"`
+	Expression OptString `json:"expression"`
 	// Являтеся ли переменная входной.
 	IsInput bool `json:"isInput"`
 	// Список ограничений переменной.
@@ -1619,7 +1521,7 @@ func (s *VersionCreateRequestVariablesItem) GetType() VersionCreateRequestVariab
 }
 
 // GetExpression returns the value of Expression.
-func (s *VersionCreateRequestVariablesItem) GetExpression() OptNilString {
+func (s *VersionCreateRequestVariablesItem) GetExpression() OptString {
 	return s.Expression
 }
 
@@ -1644,7 +1546,7 @@ func (s *VersionCreateRequestVariablesItem) SetType(val VersionCreateRequestVari
 }
 
 // SetExpression sets the value of Expression.
-func (s *VersionCreateRequestVariablesItem) SetExpression(val OptNilString) {
+func (s *VersionCreateRequestVariablesItem) SetExpression(val OptString) {
 	s.Expression = val
 }
 

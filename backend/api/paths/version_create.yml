@@ -64,7 +64,6 @@ components:
               expression:
                 type: string
                 description: Выражение переменной
-                nullable: true
               isInput:
                 type: boolean
                 description: Являтеся ли переменная входной
