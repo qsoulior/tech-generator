@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 
 	"github.com/qsoulior/tech-generator/backend/internal/config"
 	"github.com/qsoulior/tech-generator/backend/internal/generated/api"
@@ -175,7 +176,8 @@ func run() (code int) {
 
 	authMiddleware := auth_middleware.New(userTokenParseUsecase, logger)
 
-	httpHandler := authMiddleware.Handle()(apiServer)
+	httpHandler := cors.Default().Handler(apiServer)
+	httpHandler = authMiddleware.Handle()(httpHandler)
 
 	server := httpserver.New(httpHandler, logger)
 	if err := server.Run(ctx); err != nil {

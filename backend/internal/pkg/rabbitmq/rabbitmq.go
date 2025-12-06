@@ -7,7 +7,7 @@ import (
 )
 
 func Connect() (*amqp091.Connection, error) {
-	url := os.Getenv("AMQP_URL")
+	url := os.Getenv("RABBITMQ_URL")
 
 	conn, err := amqp091.Dial(url)
 	if err != nil {

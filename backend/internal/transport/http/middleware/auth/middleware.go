@@ -13,8 +13,10 @@ import (
 const headerUserID = "X-User-Id"
 
 var nonAuth = map[string]struct{}{
-	"GET /user/create":        {},
-	"POST /user/token/create": {},
+	"GET /user/create":           {},
+	"OPTIONS /user/create":       {},
+	"POST /user/token/create":    {},
+	"OPTIONS /user/token/create": {},
 }
 
 type Middleware struct {
