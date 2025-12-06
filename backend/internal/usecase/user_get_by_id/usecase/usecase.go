@@ -23,5 +23,9 @@ func (u *Usecase) Handle(ctx context.Context, id int64) (*domain.User, error) {
 		return nil, fmt.Errorf("user repo - get by id: %w", err)
 	}
 
+	if user == nil {
+		return nil, domain.ErrUserNotFound
+	}
+
 	return user, nil
 }

@@ -13,6 +13,11 @@ paths:
       responses:
         201:
           description: Created
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: string
         400:
           description: Bad request
           content:

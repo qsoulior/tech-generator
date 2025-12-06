@@ -7,6 +7,8 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
+	"github.com/ogen-go/ogen/conv"
+	"github.com/ogen-go/ogen/uri"
 )
 
 func encodeProjectCreateResponse(response ProjectCreateRes, w http.ResponseWriter) error {
@@ -382,6 +384,22 @@ func encodeUserGetByIDResponse(response UserGetByIDRes, w http.ResponseWriter) e
 func encodeUserTokenCreateResponse(response UserTokenCreateRes, w http.ResponseWriter) error {
 	switch response := response.(type) {
 	case *UserTokenCreateCreated:
+		// Encoding response headers.
+		{
+			h := uri.NewHeaderEncoder(w.Header())
+			// Encode "Set-Cookie" header.
+			{
+				cfg := uri.HeaderParameterEncodingConfig{
+					Name:    "Set-Cookie",
+					Explode: false,
+				}
+				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+					return e.EncodeValue(conv.StringToString(response.SetCookie))
+				}); err != nil {
+					return errors.Wrap(err, "encode Set-Cookie header")
+				}
+			}
+		}
 		w.WriteHeader(201)
 
 		return nil

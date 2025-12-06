@@ -1447,7 +1447,19 @@ func (s *UserGetByIDResponse) SetCreatedAt(val time.Time) {
 func (*UserGetByIDResponse) userGetByIDRes() {}
 
 // UserTokenCreateCreated is response for UserTokenCreate operation.
-type UserTokenCreateCreated struct{}
+type UserTokenCreateCreated struct {
+	SetCookie string
+}
+
+// GetSetCookie returns the value of SetCookie.
+func (s *UserTokenCreateCreated) GetSetCookie() string {
+	return s.SetCookie
+}
+
+// SetSetCookie sets the value of SetCookie.
+func (s *UserTokenCreateCreated) SetSetCookie(val string) {
+	s.SetCookie = val
+}
 
 func (*UserTokenCreateCreated) userTokenCreateRes() {}
 
