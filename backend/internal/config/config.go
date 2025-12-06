@@ -1,7 +1,22 @@
 package config
 
-import "time"
+import (
+	"time"
+
+	"github.com/kelseyhightower/envconfig"
+)
 
 type Config struct {
-	UserTokenExpiration time.Duration
+	UserTokenExpiration time.Duration `envconfig:"USER_TOKEN_EXPIRATION" default:"720h"`
+}
+
+func New() (*Config, error) {
+	var cfg Config
+
+	err := envconfig.Process("", &cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &cfg, nil
 }

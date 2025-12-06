@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/joho/godotenv"
 
@@ -72,6 +71,12 @@ func run() (code int) {
 		return 1
 	}
 
+	cfg, err := config.New()
+	if err != nil {
+		logger.Error("init config", slog.String("err", err.Error()))
+		return 1
+	}
+
 	db, err := postgres.Connect(ctx)
 	if err != nil {
 		logger.Error("connect postgres", slog.String("err", err.Error()))
@@ -115,10 +120,6 @@ func run() (code int) {
 	if err != nil {
 		logger.Error("declare queue", slog.String("err", err.Error()))
 		return 1
-	}
-
-	cfg := &config.Config{
-		UserTokenExpiration: 30 * 24 * time.Hour,
 	}
 
 	publicKey, privateKey, err := ed25519.GenerateKey(nil)
