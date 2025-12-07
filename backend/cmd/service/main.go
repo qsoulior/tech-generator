@@ -176,8 +176,14 @@ func run() (code int) {
 
 	authMiddleware := auth_middleware.New(userTokenParseUsecase, logger)
 
-	httpHandler := cors.Default().Handler(apiServer)
-	httpHandler = authMiddleware.Handle()(httpHandler)
+	corsMiddleware := cors.New(cors.Options{
+		AllowedOrigins:   cfg.ServiceAllowedOrigins,
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	})
+
+	httpHandler := authMiddleware.Handle(apiServer)
+	httpHandler = corsMiddleware.Handler(httpHandler)
 
 	server := httpserver.New(httpHandler, logger)
 	if err := server.Run(ctx); err != nil {

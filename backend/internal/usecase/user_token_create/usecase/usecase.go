@@ -26,7 +26,7 @@ func New(userRepo userRepository, passwordVerifier passwordVerifier, tokenBuilde
 
 func (u *Usecase) Handle(ctx context.Context, in domain.UserCreateTokenIn) (domain.UserCreateTokenOut, error) {
 	if err := in.Validate(); err != nil {
-		return domain.UserCreateTokenOut{}, err
+		return domain.UserCreateTokenOut{}, domain.ErrPasswordIncorrect
 	}
 
 	user, err := u.userRepo.GetByName(ctx, in.Name)
@@ -35,7 +35,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.UserCreateTokenIn) (doma
 	}
 
 	if user == nil {
-		return domain.UserCreateTokenOut{}, domain.ErrUserDoesNotExist
+		return domain.UserCreateTokenOut{}, domain.ErrPasswordIncorrect
 	}
 
 	err = u.passwordVerifier.Verify(user.Password, in.Password)

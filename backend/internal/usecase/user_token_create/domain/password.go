@@ -12,9 +12,9 @@ const (
 )
 
 var (
-	ErrPasswordTooShort  = error_domain.NewBaseError("password is too short")
-	ErrPasswordTooLong   = error_domain.NewBaseError("password is too long")
-	ErrPasswordIncorrect = error_domain.NewBaseError("password is incorrect")
+	ErrPasswordTooShort  = error_domain.NewBaseError("Пароль слишком короткий")
+	ErrPasswordTooLong   = error_domain.NewBaseError("Пароль слишком длинный")
+	ErrPasswordIncorrect = error_domain.NewBaseError("Имя пользователя или пароль неверные")
 )
 
 type Password string

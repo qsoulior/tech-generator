@@ -2,21 +2,19 @@ package auth_middleware
 
 import (
 	"errors"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"strconv"
 
 	error_domain "github.com/qsoulior/tech-generator/backend/internal/domain/error"
+	"github.com/qsoulior/tech-generator/backend/internal/generated/api"
 )
 
 const headerUserID = "X-User-Id"
 
 var nonAuth = map[string]struct{}{
-	"GET /user/create":           {},
-	"OPTIONS /user/create":       {},
-	"POST /user/token/create":    {},
-	"OPTIONS /user/token/create": {},
+	"userTokenCreate": {},
+	"userCreate":      {},
 }
 
 type Middleware struct {
@@ -31,37 +29,40 @@ func New(usecase usecase, logger *slog.Logger) *Middleware {
 	}
 }
 
-func (m *Middleware) Handle() func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			key := fmt.Sprintf("%s %s", r.Method, r.URL.Path)
-			if _, ok := nonAuth[key]; ok {
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			cookie, err := r.Cookie("token")
-			if err != nil || cookie.Valid() != nil {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-
-			user, err := m.usecase.Handle(r.Context(), cookie.Value)
-			if err != nil {
-				var baseErr *error_domain.BaseError
-				if errors.As(err, &baseErr) {
-					w.WriteHeader(http.StatusForbidden)
-					_, _ = w.Write([]byte(err.Error()))
-					return
-				}
-
-				m.logger.Error("user token parse", slog.String("err", err.Error()))
-				w.WriteHeader(http.StatusInternalServerError)
-				return
-			}
-
-			r.Header.Set(headerUserID, strconv.FormatInt(user.ID, 10))
+func (m *Middleware) Handle(next *api.Server) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		route, ok := next.FindRoute(r.Method, r.URL.Path)
+		if !ok {
 			next.ServeHTTP(w, r)
-		})
-	}
+			return
+		}
+
+		if _, ok := nonAuth[route.OperationID()]; ok {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		cookie, err := r.Cookie("token")
+		if err != nil || cookie.Valid() != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		user, err := m.usecase.Handle(r.Context(), cookie.Value)
+		if err != nil {
+			var baseErr *error_domain.BaseError
+			if errors.As(err, &baseErr) {
+				w.WriteHeader(http.StatusForbidden)
+				_, _ = w.Write([]byte(err.Error()))
+				return
+			}
+
+			m.logger.Error("user token parse", slog.String("err", err.Error()))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		r.Header.Set(headerUserID, strconv.FormatInt(user.ID, 10))
+		next.ServeHTTP(w, r)
+	})
 }

@@ -8,7 +8,7 @@ import (
 
 var (
 	ErrValueEmpty = errors.New("value is empty")
-	ErrUserExists = error_domain.NewBaseError("user with name or email exists")
+	ErrUserExists = error_domain.NewBaseError("Пользователь с таким именем или email уже существует")
 )
 
 type UserCreateIn struct {

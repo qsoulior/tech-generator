@@ -7,7 +7,8 @@ import (
 )
 
 type Config struct {
-	UserTokenExpiration time.Duration `envconfig:"USER_TOKEN_EXPIRATION" default:"720h"`
+	UserTokenExpiration   time.Duration `envconfig:"USER_TOKEN_EXPIRATION" default:"720h"`
+	ServiceAllowedOrigins []string      `envconfig:"SERVICE_ALLOWED_ORIGINS"`
 }
 
 func New() (*Config, error) {

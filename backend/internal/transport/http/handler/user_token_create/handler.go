@@ -43,12 +43,13 @@ func (h *Handler) UserTokenCreate(ctx context.Context, req *api.UserTokenCreateR
 	}
 
 	cookie := http.Cookie{
-		Name:     "token",
-		Path:     "/",
-		Value:    out.Token,
-		Secure:   true,
-		HttpOnly: true,
-		Expires:  out.ExpiresAt,
+		Name:        "token",
+		Path:        "/",
+		Value:       out.Token,
+		Secure:      true,
+		HttpOnly:    true,
+		Partitioned: true,
+		Expires:     out.ExpiresAt,
 	}
 
 	resp := api.UserTokenCreateCreated{

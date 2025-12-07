@@ -68,7 +68,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			setup: func(userRepo *MockuserRepository, passwordVerifier *MockpasswordVerifier, tokenBuilder *MocktokenBuilder) {
 			},
 			in:   domain.UserCreateTokenIn{},
-			want: domain.ErrNameEmpty,
+			want: domain.ErrPasswordIncorrect,
 		},
 		{
 			name: "userRepo_GetByName",
@@ -84,7 +84,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 				userRepo.EXPECT().GetByName(ctx, gomock.Any()).Return(nil, nil)
 			},
 			in:   validIn,
-			want: domain.ErrUserDoesNotExist,
+			want: domain.ErrPasswordIncorrect,
 		},
 		{
 			name: "passwordVerifier_Verify_PasswordIncorrect",
