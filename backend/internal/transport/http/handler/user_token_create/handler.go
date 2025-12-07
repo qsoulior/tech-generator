@@ -49,6 +49,7 @@ func (h *Handler) UserTokenCreate(ctx context.Context, req *api.UserTokenCreateR
 		Secure:      true,
 		HttpOnly:    true,
 		Partitioned: true,
+		SameSite:    http.SameSiteNoneMode,
 		Expires:     out.ExpiresAt,
 	}
 

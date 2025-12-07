@@ -50,6 +50,7 @@ async function userTokenCreate(model: Model) {
       name: model.name,
       password: model.password,
     }),
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -83,7 +84,7 @@ async function userTokenCreate(model: Model) {
       <n-checkbox v-model:checked="modelRef.remember"> Запомнить меня </n-checkbox>
     </n-form-item>
     <n-form-item>
-      <n-button type="primary" @click="handleValidateClick">Войти</n-button>
+      <n-button secondary type="primary" @click="handleValidateClick">Войти</n-button>
     </n-form-item>
   </n-form>
 </template>

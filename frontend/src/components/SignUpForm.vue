@@ -131,7 +131,7 @@ async function userTokenCreate(name: string, password: string) {
       />
     </n-form-item>
     <n-form-item>
-      <n-button type="primary" @click="handleValidateClick">Зарегистрироваться</n-button>
+      <n-button secondary type="primary" @click="handleValidateClick">Зарегистрироваться</n-button>
     </n-form-item>
   </n-form>
 </template>
