@@ -8,11 +8,11 @@ import (
 )
 
 type template struct {
-	LastVersionID   *int64 `db:"last_version_id"`
-	AuthorID        int64  `db:"author_id"`
-	ProjectAuthorID int64  `db:"project_author_id"`
-	UserID          int64  `db:"user_id"`
-	Role            string `db:"role"`
+	LastVersionID   *int64  `db:"last_version_id"`
+	AuthorID        int64   `db:"author_id"`
+	ProjectAuthorID int64   `db:"project_author_id"`
+	UserID          *int64  `db:"user_id"`
+	Role            *string `db:"role"`
 }
 
 type templates []template
@@ -22,15 +22,17 @@ func (ts templates) toDomain() *domain.Template {
 		return nil
 	}
 
+	users := lo.FilterMap(ts, func(t template, _ int) (domain.TemplateUser, bool) {
+		if t.UserID == nil {
+			return domain.TemplateUser{}, false
+		}
+		return domain.TemplateUser{ID: *t.UserID, Role: user_domain.Role(*t.Role)}, true
+	})
+
 	return &domain.Template{
 		LastVersionID:   ts[0].LastVersionID,
 		AuthorID:        ts[0].AuthorID,
 		ProjectAuthorID: ts[0].ProjectAuthorID,
-		Users: lo.Map(ts, func(t template, _ int) domain.TemplateUser {
-			return domain.TemplateUser{
-				ID:   t.UserID,
-				Role: user_domain.Role(t.Role),
-			}
-		}),
+		Users:           users,
 	}
 }

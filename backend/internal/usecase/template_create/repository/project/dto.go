@@ -8,9 +8,9 @@ import (
 )
 
 type project struct {
-	AuthorID int64  `db:"author_id"`
-	UserID   int64  `db:"user_id"`
-	Role     string `db:"role"`
+	AuthorID int64   `db:"author_id"`
+	UserID   *int64  `db:"user_id"`
+	Role     *string `db:"role"`
 }
 
 type projects []project
@@ -20,13 +20,15 @@ func (ps projects) toDomain() *domain.Project {
 		return nil
 	}
 
+	users := lo.FilterMap(ps, func(p project, _ int) (domain.ProjectUser, bool) {
+		if p.UserID == nil {
+			return domain.ProjectUser{}, false
+		}
+		return domain.ProjectUser{ID: *p.UserID, Role: user_domain.Role(*p.Role)}, true
+	})
+
 	return &domain.Project{
 		AuthorID: ps[0].AuthorID,
-		Users: lo.Map(ps, func(p project, _ int) domain.ProjectUser {
-			return domain.ProjectUser{
-				ID:   p.UserID,
-				Role: user_domain.Role(p.Role),
-			}
-		}),
+		Users:    users,
 	}
 }
