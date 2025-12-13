@@ -840,8 +840,10 @@ func (*TaskListResponse) taskListRes() {}
 // Задача генерации.
 type TaskListResponseTasksItem struct {
 	// ID задачи генерации.
-	ID     int64      `json:"id"`
-	Status TaskStatus `json:"status"`
+	ID int64 `json:"id"`
+	// Номер версии.
+	VersionNumber int64      `json:"versionNumber"`
+	Status        TaskStatus `json:"status"`
 	// Имя создателя задачи.
 	CreatorName string `json:"creatorName"`
 	// Дата и время создания задачи.
@@ -853,6 +855,11 @@ type TaskListResponseTasksItem struct {
 // GetID returns the value of ID.
 func (s *TaskListResponseTasksItem) GetID() int64 {
 	return s.ID
+}
+
+// GetVersionNumber returns the value of VersionNumber.
+func (s *TaskListResponseTasksItem) GetVersionNumber() int64 {
+	return s.VersionNumber
 }
 
 // GetStatus returns the value of Status.
@@ -878,6 +885,11 @@ func (s *TaskListResponseTasksItem) GetUpdatedAt() OptDateTime {
 // SetID sets the value of ID.
 func (s *TaskListResponseTasksItem) SetID(val int64) {
 	s.ID = val
+}
+
+// SetVersionNumber sets the value of VersionNumber.
+func (s *TaskListResponseTasksItem) SetVersionNumber(val int64) {
+	s.VersionNumber = val
 }
 
 // SetStatus sets the value of Status.
@@ -1026,6 +1038,8 @@ func (*TemplateGetByIDResponse) templateGetByIDRes() {}
 
 // Ref: #/components/schemas/TemplateGetByIDVersion
 type TemplateGetByIDVersion struct {
+	// ID последней версии шаблона.
+	ID int64 `json:"id"`
 	// Номер последней версии шаблона.
 	Number int64 `json:"number"`
 	// Дата и время создания версии.
@@ -1034,6 +1048,11 @@ type TemplateGetByIDVersion struct {
 	Data []byte `json:"data"`
 	// Список переменных шаблона.
 	Variables []TemplateGetByIDVersionVariablesItem `json:"variables"`
+}
+
+// GetID returns the value of ID.
+func (s *TemplateGetByIDVersion) GetID() int64 {
+	return s.ID
 }
 
 // GetNumber returns the value of Number.
@@ -1054,6 +1073,11 @@ func (s *TemplateGetByIDVersion) GetData() []byte {
 // GetVariables returns the value of Variables.
 func (s *TemplateGetByIDVersion) GetVariables() []TemplateGetByIDVersionVariablesItem {
 	return s.Variables
+}
+
+// SetID sets the value of ID.
+func (s *TemplateGetByIDVersion) SetID(val int64) {
+	s.ID = val
 }
 
 // SetNumber sets the value of Number.
@@ -1589,7 +1613,7 @@ type VersionCreateRequestVariablesItem struct {
 	Type VersionCreateRequestVariablesItemType `json:"type"`
 	// Выражение переменной.
 	Expression OptString `json:"expression"`
-	// Являтеся ли переменная входной.
+	// Является ли переменная входной.
 	IsInput bool `json:"isInput"`
 	// Список ограничений переменной.
 	Constraints []VersionCreateRequestVariablesItemConstraintsItem `json:"constraints"`

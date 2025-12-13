@@ -94,6 +94,7 @@ func (u *Service) createVariables(ctx context.Context, templateVersionID int64, 
 			Name:       v.Name,
 			Type:       v.Type,
 			Expression: v.Expression,
+			IsInput:    v.IsInput,
 		}
 	})
 

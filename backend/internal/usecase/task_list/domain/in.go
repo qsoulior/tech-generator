@@ -17,9 +17,9 @@ type TaskListIn struct {
 }
 
 type TaskListFilter struct {
-	UserID    int64
-	VersionID int64
-	CreatorID *int64
+	UserID     int64
+	TemplateID int64
+	CreatorID  *int64
 }
 
 func (in TaskListIn) Validate() error {

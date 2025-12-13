@@ -86,8 +86,9 @@ func TestService_Handle_Success(t *testing.T) {
 					{
 						Name:        "var_1",
 						Type:        variable_domain.TypeString,
-						Expression:  lo.ToPtr("expr_1"),
+						Expression:  nil,
 						Constraints: []domain.Constraint{},
+						IsInput:     true,
 					},
 				},
 			},
@@ -100,7 +101,7 @@ func TestService_Handle_Success(t *testing.T) {
 				versionRepo.EXPECT().Create(trCtx, templateVersion).Return(int64(20), nil)
 
 				variables := []domain.VariableToCreate{
-					{VersionID: 20, Name: "var_1", Type: variable_domain.TypeString, Expression: lo.ToPtr("expr_1")},
+					{VersionID: 20, Name: "var_1", Type: variable_domain.TypeString, Expression: nil, IsInput: true},
 				}
 				variableRepo.EXPECT().Create(trCtx, variables).Return([]int64{31}, nil)
 

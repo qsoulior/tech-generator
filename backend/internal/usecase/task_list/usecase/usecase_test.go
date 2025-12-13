@@ -20,8 +20,8 @@ func TestUsecase_Handle_Success(t *testing.T) {
 		Page: 1,
 		Size: 10,
 		Filter: domain.TaskListFilter{
-			UserID:    1,
-			VersionID: 2,
+			UserID:     1,
+			TemplateID: 2,
 		},
 	}
 
@@ -37,7 +37,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			name: "IsProjectAuthor",
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository) {
 				version := domain.Version{ProjectAuthorID: 1, TemplateAuthorID: 2}
-				versionRepo.EXPECT().GetByID(ctx, in.Filter.VersionID).Return(&version, nil)
+				versionRepo.EXPECT().GetByID(ctx, in.Filter.TemplateID).Return(&version, nil)
 				taskRepo.EXPECT().List(ctx, in).Return(want.Tasks, nil)
 				taskRepo.EXPECT().GetTotal(ctx, in).Return(want.TotalTasks, nil)
 			},
@@ -46,7 +46,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			name: "IsTemplateAuthor",
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository) {
 				version := domain.Version{ProjectAuthorID: 2, TemplateAuthorID: 1}
-				versionRepo.EXPECT().GetByID(ctx, in.Filter.VersionID).Return(&version, nil)
+				versionRepo.EXPECT().GetByID(ctx, in.Filter.TemplateID).Return(&version, nil)
 				taskRepo.EXPECT().List(ctx, in).Return(want.Tasks, nil)
 				taskRepo.EXPECT().GetTotal(ctx, in).Return(want.TotalTasks, nil)
 			},
@@ -55,7 +55,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			name: "IsReader",
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository) {
 				version := domain.Version{TemplateUsers: []domain.TemplateUser{{ID: 1, Role: user_domain.RoleRead}}}
-				versionRepo.EXPECT().GetByID(ctx, in.Filter.VersionID).Return(&version, nil)
+				versionRepo.EXPECT().GetByID(ctx, in.Filter.TemplateID).Return(&version, nil)
 				taskRepo.EXPECT().List(ctx, in).Return(want.Tasks, nil)
 				taskRepo.EXPECT().GetTotal(ctx, in).Return(want.TotalTasks, nil)
 			},
@@ -64,7 +64,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			name: "IsWriter",
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository) {
 				version := domain.Version{TemplateUsers: []domain.TemplateUser{{ID: 1, Role: user_domain.RoleWrite}}}
-				versionRepo.EXPECT().GetByID(ctx, in.Filter.VersionID).Return(&version, nil)
+				versionRepo.EXPECT().GetByID(ctx, in.Filter.TemplateID).Return(&version, nil)
 				taskRepo.EXPECT().List(ctx, in).Return(want.Tasks, nil)
 				taskRepo.EXPECT().GetTotal(ctx, in).Return(want.TotalTasks, nil)
 			},
@@ -95,8 +95,8 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		Page: 1,
 		Size: 10,
 		Filter: domain.TaskListFilter{
-			UserID:    1,
-			VersionID: 2,
+			UserID:     1,
+			TemplateID: 2,
 		},
 	}
 
@@ -116,7 +116,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "versionRepo_GetByID",
 			in:   in,
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository) {
-				versionRepo.EXPECT().GetByID(ctx, in.Filter.VersionID).Return(nil, errors.New("test1"))
+				versionRepo.EXPECT().GetByID(ctx, in.Filter.TemplateID).Return(nil, errors.New("test1"))
 			},
 			want: "test1",
 		},
@@ -124,7 +124,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "domain_ErrVersionNotFound",
 			in:   in,
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository) {
-				versionRepo.EXPECT().GetByID(ctx, in.Filter.VersionID).Return(nil, nil)
+				versionRepo.EXPECT().GetByID(ctx, in.Filter.TemplateID).Return(nil, nil)
 			},
 			want: domain.ErrVersionNotFound.Error(),
 		},
@@ -133,7 +133,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			in:   in,
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository) {
 				version := domain.Version{ProjectAuthorID: 2, TemplateAuthorID: 3}
-				versionRepo.EXPECT().GetByID(ctx, in.Filter.VersionID).Return(&version, nil)
+				versionRepo.EXPECT().GetByID(ctx, in.Filter.TemplateID).Return(&version, nil)
 			},
 			want: domain.ErrVersionInvalid.Error(),
 		},
@@ -142,7 +142,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			in:   in,
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository) {
 				version := domain.Version{ProjectAuthorID: 1, TemplateAuthorID: 2}
-				versionRepo.EXPECT().GetByID(ctx, in.Filter.VersionID).Return(&version, nil)
+				versionRepo.EXPECT().GetByID(ctx, in.Filter.TemplateID).Return(&version, nil)
 				taskRepo.EXPECT().List(ctx, in).Return(nil, errors.New("test2"))
 			},
 			want: "test2",
@@ -152,7 +152,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			in:   in,
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository) {
 				version := domain.Version{ProjectAuthorID: 1, TemplateAuthorID: 2}
-				versionRepo.EXPECT().GetByID(ctx, in.Filter.VersionID).Return(&version, nil)
+				versionRepo.EXPECT().GetByID(ctx, in.Filter.TemplateID).Return(&version, nil)
 				taskRepo.EXPECT().List(ctx, in).Return([]domain.Task{}, nil)
 				taskRepo.EXPECT().GetTotal(ctx, in).Return(int64(0), errors.New("test3"))
 			},

@@ -559,9 +559,9 @@ func (s *Server) handleTaskListRequest(args [0]string, argsEscaped bool, w http.
 					In:   "query",
 				}: params.Sorting,
 				{
-					Name: "versionID",
+					Name: "templateID",
 					In:   "query",
-				}: params.VersionID,
+				}: params.TemplateID,
 				{
 					Name: "creatorID",
 					In:   "query",

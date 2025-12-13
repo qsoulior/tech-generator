@@ -7,7 +7,8 @@ const router = useRouter()
 const message = useMessage()
 
 const props = defineProps<{
-  id: number
+  projectId: number
+  templateId: number
   name: string
   authorName: string
   createdAt: Date
@@ -18,7 +19,7 @@ const emit = defineEmits<{
 }>()
 
 async function templateDelete() {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/delete/${props.id}`, {
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/delete/${props.templateId}`, {
     method: "DELETE",
     credentials: "include",
   })
@@ -43,7 +44,10 @@ async function onPositiveClick() {
 </script>
 
 <template>
-  <router-link :to="{ name: 'template', params: { id: id } }" style="width: 100%; text-decoration: none">
+  <router-link
+    :to="{ name: 'template', params: { projectID: projectId, templateID: templateId } }"
+    style="width: 100%; text-decoration: none"
+  >
     <n-card>
       <n-flex align="center" justify="space-between">
         <n-flex vertical size="small">

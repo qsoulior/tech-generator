@@ -66,7 +66,7 @@ components:
                 description: Выражение переменной
               isInput:
                 type: boolean
-                description: Являтеся ли переменная входной
+                description: Является ли переменная входной
               constraints:
                 type: array
                 description: Список ограничений переменной

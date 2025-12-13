@@ -66,11 +66,12 @@ func (s *repositorySuite) TestRepository_List() {
 
 	wantTasks := lo.Map(tasks, func(t test_db.Task, i int) domain.Task {
 		return domain.Task{
-			ID:          t.ID,
-			Status:      task_domain.Status(t.Status),
-			CreatorName: users[i].Name,
-			CreatedAt:   t.CreatedAt.Truncate(1 * time.Microsecond),
-			UpdatedAt:   lo.ToPtr(t.UpdatedAt.Truncate(1 * time.Microsecond)),
+			ID:            t.ID,
+			VersionNumber: version.Number,
+			Status:        task_domain.Status(t.Status),
+			CreatorName:   users[i].Name,
+			CreatedAt:     t.CreatedAt.Truncate(1 * time.Microsecond),
+			UpdatedAt:     lo.ToPtr(t.UpdatedAt.Truncate(1 * time.Microsecond)),
 		}
 	})
 	slices.SortFunc(wantTasks, func(a, b domain.Task) int { return int(b.ID - a.ID) })
@@ -79,7 +80,7 @@ func (s *repositorySuite) TestRepository_List() {
 		Page: 1,
 		Size: int64(len(tasks)),
 		Filter: domain.TaskListFilter{
-			VersionID: versionID,
+			TemplateID: templateID,
 		},
 		Sorting: nil,
 	}
@@ -145,8 +146,8 @@ func (s *repositorySuite) TestRepository_List_Filter() {
 		{
 			name: "CreatorID",
 			filter: domain.TaskListFilter{
-				VersionID: versionID,
-				CreatorID: &randomUser.ID,
+				TemplateID: templateID,
+				CreatorID:  &randomUser.ID,
 			},
 			filterPred: func(t domain.Task) bool {
 				return t.CreatorName == randomUser.Name
@@ -284,7 +285,7 @@ func (s *repositorySuite) TestRepository_List_Sorting() {
 				Page: 1,
 				Size: int64(len(tasks)),
 				Filter: domain.TaskListFilter{
-					VersionID: versionID,
+					TemplateID: templateID,
 				},
 				Sorting: tt.sorting,
 			}
@@ -376,7 +377,7 @@ func (s *repositorySuite) TestRepository_List_Pagination() {
 			in := domain.TaskListIn{
 				Page:    tt.page,
 				Size:    tt.size,
-				Filter:  domain.TaskListFilter{VersionID: versionID},
+				Filter:  domain.TaskListFilter{TemplateID: templateID},
 				Sorting: nil,
 			}
 

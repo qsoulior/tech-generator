@@ -10,10 +10,12 @@ import {
   NIcon,
   NText,
   NDivider,
+  NMenu,
   useMessage,
+  type MenuOption,
 } from "naive-ui"
-import { onMounted, ref } from "vue"
-import { useRouter } from "vue-router"
+import { h, onMounted, ref } from "vue"
+import { RouterLink, useRouter } from "vue-router"
 import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
 import RU from "@vavt/cm-extension/dist/locale/ru"
 import "md-editor-v3/lib/style.css"
@@ -21,16 +23,19 @@ import VariableListSearch from "@/components/VariableListSearch.vue"
 import VariableCreateModal from "@/components/VariableCreateModal.vue"
 import VariableUpdateModal from "@/components/VariableUpdateModal.vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
+import TaskCreateModal from "@/components/TaskCreateModal.vue"
 
 const router = useRouter()
 const message = useMessage()
 
 const props = defineProps<{
-  id: number
+  templateID: number
+  projectID: number
 }>()
 
 const showCreateModal = ref(false)
 const showUpdateModal = ref(false)
+const showTaskCreateModal = ref(false)
 
 const inputTypeToString = new Map([
   ["input", "Входная"],
@@ -44,7 +49,8 @@ const typeToString = new Map([
 ])
 
 const name = ref("")
-const version = ref(0)
+const versionNumber = ref(0)
+const versionID = ref<number>()
 const data = ref("")
 
 interface Constraint {
@@ -110,6 +116,7 @@ interface TemplateGetResultVariable {
 }
 
 interface TemplateGetResultVersion {
+  id: number
   number: number
   data: string
   createdAt: string
@@ -122,7 +129,7 @@ interface TemplateGetResult {
 }
 
 async function templateGet() {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/get/${props.id}`, {
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/get/${props.templateID}`, {
     method: "GET",
     credentials: "include",
   })
@@ -145,7 +152,8 @@ async function templateGet() {
     return
   }
 
-  version.value = result.version.number
+  versionID.value = result.version.id
+  versionNumber.value = result.version.number
   data.value = atob(result.version.data)
   variables.value = result.version.variables.map((variable) => ({
     name: variable.name,
@@ -168,7 +176,7 @@ async function versionCreate() {
   const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/version/create`, {
     method: "POST",
     body: JSON.stringify({
-      templateID: props.id,
+      templateID: props.templateID,
       data: btoa(data.value),
       variables: vs,
     }),
@@ -189,13 +197,9 @@ async function versionCreate() {
     return
   }
 
-  version.value++
+  versionNumber.value++
+  message.success("Шаблон сохранен")
 }
-
-/*
-/version/list/{templateID}:
-$ref: "./paths/version_list.yml#/paths/versionList"
-*/
 
 // триггеры
 onMounted(async () => {
@@ -239,29 +243,87 @@ const toolbars: ToolbarNames[] = [
   "preview",
   "previewOnly",
 ]
+
+const menuOptions: MenuOption[] = [
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: "projectList",
+          },
+        },
+        { default: () => "Проекты" },
+      ),
+    key: "projectList",
+  },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: "project",
+            params: { projectID: props.projectID },
+          },
+        },
+        { default: () => "Шаблоны" },
+      ),
+    key: "project",
+  },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            name: "taskList",
+            params: { projectID: props.projectID, templateID: props.templateID },
+          },
+        },
+        { default: () => "Результаты" },
+      ),
+    key: "taskList",
+  },
+]
 </script>
 
 <template>
   <n-layout>
-    <n-layout-header bordered style="padding: 1rem">
-      <n-flex align="center">
-        <n-text>{{ name }}</n-text>
-        <n-text>v{{ version }}</n-text>
-        <n-flex>
+    <n-layout-header bordered style="padding: 0.5rem 1rem">
+      <n-flex align="center" justify="space-between">
+        <n-text strong>tech-generator</n-text>
+        <n-flex align="center" :wrap="false">
+          <n-text>{{ name }}</n-text>
+          <n-text>v{{ versionNumber }}</n-text>
           <n-button secondary @click="versionCreate">Сохранить</n-button>
+          <n-button secondary @click="showTaskCreateModal = true">Выполнить</n-button>
+          <TaskCreateModal
+            v-model:show-modal="showTaskCreateModal"
+            :version-id="versionID ?? 0"
+            :variables="variables.filter((v) => v.inputType == 'input')"
+          />
+        </n-flex>
+        <n-flex>
+          <n-menu mode="horizontal" :options="menuOptions" />
         </n-flex>
       </n-flex>
     </n-layout-header>
-    <n-layout has-sider content-style="height: calc(100vh - 55px)">
+    <n-layout has-sider content-style="height: calc(100vh - 59px)">
       <n-layout-sider collapse-mode="width" width="20%" :collapsed-width="0" show-trigger="bar" bordered>
         <n-flex vertical style="height: 100%">
           <n-flex vertical style="padding: 1rem">
             <n-text>Переменные</n-text>
             <VariableListSearch />
             <n-button secondary style="width: 100%" @click="showCreateModal = true">Добавить переменную</n-button>
-            <VariableCreateModal :template-id="id" v-model:show-modal="showCreateModal" @submit="variableCreate" />
+            <VariableCreateModal
+              :template-id="templateID"
+              v-model:show-modal="showCreateModal"
+              @submit="variableCreate"
+            />
             <VariableUpdateModal
-              :template-id="id"
+              :template-id="templateID"
               v-model:show-modal="showUpdateModal"
               v-model:variable="variableUpdating"
               @submit="handleVariableUpdate"

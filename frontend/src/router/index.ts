@@ -3,6 +3,7 @@ import AuthView from "@/views/AuthView.vue"
 import ProjectListView from "@/views/ProjectListView.vue"
 import ProjectView from "@/views/ProjectView.vue"
 import TemplateView from "@/views/TemplateView.vue"
+import TaskListView from "@/views/TaskListView.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,16 +19,28 @@ const router = createRouter({
       component: ProjectListView,
     },
     {
-      path: "/projects/:id",
+      path: "/projects/:projectID",
       name: "project",
-      props: (route) => ({ id: Number(route.params.id) }),
+      props: (route) => ({ projectID: Number(route.params.projectID) }),
       component: ProjectView,
     },
     {
-      path: "/templates/:id",
+      path: "/projects/:projectID/template/:templateID",
       name: "template",
-      props: (route) => ({ id: Number(route.params.id) }),
+      props: (route) => ({
+        projectID: Number(route.params.projectID),
+        templateID: Number(route.params.templateID),
+      }),
       component: TemplateView,
+    },
+    {
+      path: "/projects/:projectID/template/:templateID/tasks",
+      name: "taskList",
+      props: (route) => ({
+        projectID: Number(route.params.projectID),
+        templateID: Number(route.params.templateID),
+      }),
+      component: TaskListView,
     },
   ],
 })

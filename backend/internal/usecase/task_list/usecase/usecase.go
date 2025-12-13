@@ -56,7 +56,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TaskListIn) (*domain.Tas
 
 func (u *Usecase) handleVersion(ctx context.Context, in domain.TaskListIn) error {
 	// get version
-	version, err := u.versionRepo.GetByID(ctx, in.Filter.VersionID)
+	version, err := u.versionRepo.GetByID(ctx, in.Filter.TemplateID)
 	if err != nil {
 		return fmt.Errorf("version repo - get by id: %w", err)
 	}

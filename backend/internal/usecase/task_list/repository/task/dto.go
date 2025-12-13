@@ -13,19 +13,21 @@ var sortingAttributes = map[string]struct{}{
 }
 
 type task struct {
-	ID          int64      `db:"id"`
-	Status      string     `db:"status"`
-	CreatorName string     `db:"creator_name"`
-	CreatedAt   time.Time  `db:"created_at"`
-	UpdatedAt   *time.Time `db:"updated_at"`
+	ID            int64      `db:"id"`
+	VersionNumber int64      `db:"version_number"`
+	Status        string     `db:"status"`
+	CreatorName   string     `db:"creator_name"`
+	CreatedAt     time.Time  `db:"created_at"`
+	UpdatedAt     *time.Time `db:"updated_at"`
 }
 
 func (t *task) toDomain() domain.Task {
 	return domain.Task{
-		ID:          t.ID,
-		Status:      task_domain.Status(t.Status),
-		CreatorName: t.CreatorName,
-		CreatedAt:   t.CreatedAt,
-		UpdatedAt:   t.UpdatedAt,
+		ID:            t.ID,
+		VersionNumber: t.VersionNumber,
+		Status:        task_domain.Status(t.Status),
+		CreatorName:   t.CreatorName,
+		CreatedAt:     t.CreatedAt,
+		UpdatedAt:     t.UpdatedAt,
 	}
 }

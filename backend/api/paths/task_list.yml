@@ -9,7 +9,7 @@ paths:
         - $ref: "../common.yml#/components/parameters/Page"
         - $ref: "../common.yml#/components/parameters/Size"
         - $ref: "../common.yml#/components/parameters/Sorting"
-        - $ref: "#/components/parameters/TaskVersionID"
+        - $ref: "#/components/parameters/TaskTemplateID"
         - $ref: "#/components/parameters/TaskCreatorID"
       responses:
         200:
@@ -27,9 +27,9 @@ paths:
 
 components:
   parameters:
-    TaskVersionID:
-      name: versionID
-      description: ID версии
+    TaskTemplateID:
+      name: templateID
+      description: ID шаблона
       in: query
       required: true
       schema:
@@ -61,6 +61,7 @@ components:
             description: Задача генерации
             required:
               - id
+              - versionNumber
               - status
               - creatorName
               - createdAt
@@ -69,6 +70,10 @@ components:
                 type: integer
                 format: int64
                 description: ID задачи генерации
+              versionNumber:
+                type: integer
+                format: int64
+                description: Номер версии
               status:
                 $ref: "../common.yml#/components/schemas/TaskStatus"
               creatorName:

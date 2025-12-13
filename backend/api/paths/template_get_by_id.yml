@@ -46,11 +46,16 @@ components:
     TemplateGetByIDVersion:
       type: object
       required:
+        - id
         - number
         - createdAt
         - data
         - variables
       properties:
+        id:
+          type: integer
+          format: int64
+          description: ID последней версии шаблона
         number:
           type: integer
           format: int64

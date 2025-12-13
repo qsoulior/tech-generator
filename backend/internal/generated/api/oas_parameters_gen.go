@@ -612,8 +612,8 @@ type TaskListParams struct {
 	Size int64
 	// Сортировка списка.
 	Sorting OptSorting `json:",omitempty,omitzero"`
-	// ID версии.
-	VersionID int64
+	// ID шаблона.
+	TemplateID int64
 	// ID создателя задачи.
 	CreatorID OptInt64 `json:",omitempty,omitzero"`
 }
@@ -651,10 +651,10 @@ func unpackTaskListParams(packed middleware.Parameters) (params TaskListParams) 
 	}
 	{
 		key := middleware.ParameterKey{
-			Name: "versionID",
+			Name: "templateID",
 			In:   "query",
 		}
-		params.VersionID = packed[key].(int64)
+		params.TemplateID = packed[key].(int64)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -823,10 +823,10 @@ func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 			Err:  err,
 		}
 	}
-	// Decode query: versionID.
+	// Decode query: templateID.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "versionID",
+			Name:    "templateID",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
@@ -843,7 +843,7 @@ func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 					return err
 				}
 
-				params.VersionID = c
+				params.TemplateID = c
 				return nil
 			}); err != nil {
 				return err
@@ -854,7 +854,7 @@ func decodeTaskListParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "versionID",
+			Name: "templateID",
 			In:   "query",
 			Err:  err,
 		}

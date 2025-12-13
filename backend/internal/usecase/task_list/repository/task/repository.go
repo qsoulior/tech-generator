@@ -28,12 +28,14 @@ func (r *Repository) List(ctx context.Context, in domain.TaskListIn) ([]domain.T
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
 			"t.id",
+			"v.number as version_number",
 			"t.status",
 			"u.name as creator_name",
 			"t.created_at",
 			"t.updated_at",
 		).
 		From("task t").
+		Join("template_version v ON t.version_id = v.id").
 		Join("usr u ON t.creator_id = u.id").
 		Where(getWherePred(in.Filter)).
 		OrderBy(getOrderByPred(in.Sorting)).
@@ -63,6 +65,7 @@ func (r *Repository) GetTotal(ctx context.Context, in domain.TaskListIn) (int64,
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select("COUNT(*)").
 		From("task t").
+		Join("template_version v ON t.version_id = v.id").
 		Join("usr u ON t.creator_id = u.id").
 		Where(getWherePred(in.Filter))
 
@@ -84,7 +87,7 @@ func (r *Repository) GetTotal(ctx context.Context, in domain.TaskListIn) (int64,
 
 func getWherePred(filter domain.TaskListFilter) sq.Sqlizer {
 	wherePred := sq.And{
-		sq.Eq{"version_id": filter.VersionID},
+		sq.Eq{"v.template_id": filter.TemplateID},
 	}
 
 	if filter.CreatorID != nil {

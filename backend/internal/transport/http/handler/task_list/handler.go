@@ -45,8 +45,8 @@ func (h *Handler) TaskList(ctx context.Context, params api.TaskListParams) (api.
 
 func convertRequestToIn(params api.TaskListParams) domain.TaskListIn {
 	filter := domain.TaskListFilter{
-		UserID:    params.XUserID,
-		VersionID: params.VersionID,
+		UserID:     params.XUserID,
+		TemplateID: params.TemplateID,
 	}
 
 	if creatorID, ok := params.CreatorID.Get(); ok {
@@ -79,10 +79,11 @@ func convertOutToResponse(out domain.TaskListOut) api.TaskListResponse {
 
 func convertTaskToResponse(task domain.Task) api.TaskListResponseTasksItem {
 	taskResponse := api.TaskListResponseTasksItem{
-		ID:          task.ID,
-		Status:      api.TaskStatus(task.Status),
-		CreatorName: task.CreatorName,
-		CreatedAt:   task.CreatedAt,
+		ID:            task.ID,
+		VersionNumber: task.VersionNumber,
+		Status:        api.TaskStatus(task.Status),
+		CreatorName:   task.CreatorName,
+		CreatedAt:     task.CreatedAt,
 	}
 
 	if task.UpdatedAt != nil {

@@ -51,6 +51,7 @@ func (h *Handler) TemplateGetByID(ctx context.Context, params api.TemplateGetByI
 
 func convertVersionToResponse(version version_get_domain.Version) api.TemplateGetByIDVersion {
 	return api.TemplateGetByIDVersion{
+		ID:        version.ID,
 		Number:    version.Number,
 		CreatedAt: version.CreatedAt,
 		Data:      version.Data,
