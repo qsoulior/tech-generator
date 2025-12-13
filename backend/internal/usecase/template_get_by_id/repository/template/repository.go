@@ -25,6 +25,7 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Template, e
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
+			"t.name",
 			"t.last_version_id",
 			"t.author_id",
 			"p.author_id as project_author_id",

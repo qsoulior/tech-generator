@@ -35,7 +35,12 @@ components:
   schemas:
     TemplateGetByIDResponse:
       type: object
+      required:
+        - name
       properties:
+        name:
+          type: string
+          description: Название шаблона
         version:
           $ref: "#/components/schemas/TemplateGetByIDVersion"
     TemplateGetByIDVersion:

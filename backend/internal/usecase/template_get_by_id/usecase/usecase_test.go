@@ -27,6 +27,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			name: "IsProjectAuthor",
 			setup: func(templateRepo *MocktemplateRepository, versionGetService *MockversionGetService) {
 				template := domain.Template{
+					Name:            "test",
 					LastVersionID:   lo.ToPtr[int64](20),
 					AuthorID:        2,
 					ProjectAuthorID: 1,
@@ -34,24 +35,26 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 				versionGetService.EXPECT().Handle(ctx, int64(20)).Return(&version_get_domain.Version{ID: 20}, nil)
 			},
-			want: domain.TemplateGetByIDOut{Version: &version_get_domain.Version{ID: 20}},
+			want: domain.TemplateGetByIDOut{Name: "test", Version: &version_get_domain.Version{ID: 20}},
 		},
 		{
 			name: "IsAuthor/NoLastVersion",
 			setup: func(templateRepo *MocktemplateRepository, versionGetService *MockversionGetService) {
 				template := domain.Template{
+					Name:            "test",
 					LastVersionID:   nil,
 					AuthorID:        1,
 					ProjectAuthorID: 2,
 				}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 			},
-			want: domain.TemplateGetByIDOut{Version: nil},
+			want: domain.TemplateGetByIDOut{Name: "test", Version: nil},
 		},
 		{
 			name: "IsReader/NoLastVersion",
 			setup: func(templateRepo *MocktemplateRepository, versionGetService *MockversionGetService) {
 				template := domain.Template{
+					Name:            "test",
 					LastVersionID:   nil,
 					AuthorID:        2,
 					ProjectAuthorID: 3,
@@ -59,12 +62,13 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 			},
-			want: domain.TemplateGetByIDOut{Version: nil},
+			want: domain.TemplateGetByIDOut{Name: "test", Version: nil},
 		},
 		{
 			name: "IsWriter/NoLastVersion",
 			setup: func(templateRepo *MocktemplateRepository, versionGetService *MockversionGetService) {
 				template := domain.Template{
+					Name:            "test",
 					LastVersionID:   nil,
 					AuthorID:        2,
 					ProjectAuthorID: 3,
@@ -72,7 +76,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 			},
-			want: domain.TemplateGetByIDOut{Version: nil},
+			want: domain.TemplateGetByIDOut{Name: "test", Version: nil},
 		},
 	}
 	for _, tt := range tests {

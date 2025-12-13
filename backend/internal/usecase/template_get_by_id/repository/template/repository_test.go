@@ -66,6 +66,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		require.NoError(t, err)
 
 		want := domain.Template{
+			Name:            template.Name,
 			LastVersionID:   template.LastVersionID,
 			AuthorID:        *template.AuthorID,
 			ProjectAuthorID: project.AuthorID,

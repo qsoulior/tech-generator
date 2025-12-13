@@ -5,6 +5,7 @@ import (
 )
 
 type Template struct {
+	Name            string
 	LastVersionID   *int64
 	AuthorID        int64
 	ProjectAuthorID int64

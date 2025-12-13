@@ -997,12 +997,24 @@ func (*TemplateDeleteByIDNoContent) templateDeleteByIDRes() {}
 
 // Ref: #/components/schemas/TemplateGetByIDResponse
 type TemplateGetByIDResponse struct {
+	// Название шаблона.
+	Name    string                    `json:"name"`
 	Version OptTemplateGetByIDVersion `json:"version"`
+}
+
+// GetName returns the value of Name.
+func (s *TemplateGetByIDResponse) GetName() string {
+	return s.Name
 }
 
 // GetVersion returns the value of Version.
 func (s *TemplateGetByIDResponse) GetVersion() OptTemplateGetByIDVersion {
 	return s.Version
+}
+
+// SetName sets the value of Name.
+func (s *TemplateGetByIDResponse) SetName(val string) {
+	s.Name = val
 }
 
 // SetVersion sets the value of Version.

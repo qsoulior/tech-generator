@@ -39,7 +39,9 @@ func (h *Handler) TemplateGetByID(ctx context.Context, params api.TemplateGetByI
 		return nil, fmt.Errorf("template get by id usecase: %w", err)
 	}
 
-	var resp api.TemplateGetByIDResponse
+	resp := api.TemplateGetByIDResponse{
+		Name: out.Name,
+	}
 	if out.Version != nil {
 		resp.Version.SetTo(convertVersionToResponse(*out.Version))
 	}

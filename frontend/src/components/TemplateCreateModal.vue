@@ -32,7 +32,6 @@ const rules: FormRules = {
   name: {
     required: true,
     message: "Название шаблона не может быть пустым",
-    trigger: "blur",
   },
 }
 

@@ -28,7 +28,6 @@ const rules: FormRules = {
   name: {
     required: true,
     message: "Название проекта не может быть пустым",
-    trigger: "blur",
   },
 }
 

@@ -43,7 +43,7 @@ async function onPositiveClick() {
 </script>
 
 <template>
-  <router-link :to="{}" style="width: 100%; text-decoration: none">
+  <router-link :to="{ name: 'template', params: { id: id } }" style="width: 100%; text-decoration: none">
     <n-card>
       <n-flex align="center" justify="space-between">
         <n-flex vertical size="small">

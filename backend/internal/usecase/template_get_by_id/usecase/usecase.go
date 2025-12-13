@@ -30,7 +30,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TemplateGetByIDIn) (*dom
 	}
 
 	if template.LastVersionID == nil {
-		return &domain.TemplateGetByIDOut{Version: nil}, nil
+		return &domain.TemplateGetByIDOut{Name: template.Name, Version: nil}, nil
 	}
 
 	// get last version
@@ -39,7 +39,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TemplateGetByIDIn) (*dom
 		return nil, err
 	}
 
-	return &domain.TemplateGetByIDOut{Version: version}, nil
+	return &domain.TemplateGetByIDOut{Name: template.Name, Version: version}, nil
 }
 
 func (u *Usecase) getTemplate(ctx context.Context, in domain.TemplateGetByIDIn) (*domain.Template, error) {

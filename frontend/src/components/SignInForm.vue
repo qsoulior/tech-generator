@@ -25,12 +25,10 @@ const rules: FormRules = {
   name: {
     required: true,
     message: "Имя пользователя не может быть пустым",
-    trigger: "blur",
   },
   password: {
     required: true,
     message: "Пароль не может быть пустым",
-    trigger: "blur",
   },
 }
 

@@ -8,6 +8,7 @@ import (
 )
 
 type template struct {
+	Name            string  `db:"name"`
 	LastVersionID   *int64  `db:"last_version_id"`
 	AuthorID        int64   `db:"author_id"`
 	ProjectAuthorID int64   `db:"project_author_id"`
@@ -30,6 +31,7 @@ func (ts templates) toDomain() *domain.Template {
 	})
 
 	return &domain.Template{
+		Name:            ts[0].Name,
 		LastVersionID:   ts[0].LastVersionID,
 		AuthorID:        ts[0].AuthorID,
 		ProjectAuthorID: ts[0].ProjectAuthorID,
