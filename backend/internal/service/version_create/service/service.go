@@ -34,22 +34,30 @@ func New(
 	}
 }
 
-func (u *Service) Handle(ctx context.Context, in domain.VersionCreateIn) error {
+func (u *Service) Handle(ctx context.Context, in domain.VersionCreateIn) (int64, error) {
 	// validate input
 	if err := in.Validate(); err != nil {
-		return err
+		return 0, err
 	}
 
 	// create version
-	err := u.trManager.Do(ctx, func(ctx context.Context) error { return u.createVersion(ctx, in) })
+	var versionID int64
+	err := u.trManager.Do(ctx, func(ctx context.Context) error {
+		var err error
+		versionID, err = u.createVersion(ctx, in)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	return versionID, nil
 }
 
-func (u *Service) createVersion(ctx context.Context, in domain.VersionCreateIn) error {
+func (u *Service) createVersion(ctx context.Context, in domain.VersionCreateIn) (int64, error) {
 	// create version
 	version := domain.Version{
 		TemplateID: in.TemplateID,
@@ -59,13 +67,13 @@ func (u *Service) createVersion(ctx context.Context, in domain.VersionCreateIn) 
 
 	versionID, err := u.versionRepo.Create(ctx, version)
 	if err != nil {
-		return fmt.Errorf("version repo - create: %w", err)
+		return 0, fmt.Errorf("version repo - create: %w", err)
 	}
 
 	// create variables
 	err = u.createVariables(ctx, versionID, in.Variables)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	// update template
@@ -76,10 +84,10 @@ func (u *Service) createVersion(ctx context.Context, in domain.VersionCreateIn) 
 
 	err = u.templateRepo.UpdateByID(ctx, templateToUpdate)
 	if err != nil {
-		return fmt.Errorf("template repo - update by id: %w", err)
+		return 0, fmt.Errorf("template repo - update by id: %w", err)
 	}
 
-	return nil
+	return versionID, nil
 }
 
 func (u *Service) createVariables(ctx context.Context, templateVersionID int64, variables []domain.Variable) error {

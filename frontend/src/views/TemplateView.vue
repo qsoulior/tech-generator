@@ -164,6 +164,10 @@ async function templateGet() {
   }))
 }
 
+interface VersionCreateResult {
+  id: number
+}
+
 async function versionCreate() {
   const vs = variables.value.map((variable: Variable) => ({
     name: variable.name,
@@ -197,6 +201,8 @@ async function versionCreate() {
     return
   }
 
+  const result: VersionCreateResult = await response.json()
+  versionID.value = result.id
   versionNumber.value++
   message.success("Шаблон сохранен")
 }

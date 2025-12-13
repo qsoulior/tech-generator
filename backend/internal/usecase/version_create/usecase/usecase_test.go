@@ -26,22 +26,25 @@ func TestUsecase_Handle_Success(t *testing.T) {
 	tests := []struct {
 		name  string
 		setup func(templateRepo *MocktemplateRepository, versionCreateService *MockversionCreateService)
+		want  int64
 	}{
 		{
 			name: "IsAuthor",
 			setup: func(templateRepo *MocktemplateRepository, versionCreateService *MockversionCreateService) {
 				template := domain.Template{AuthorID: 1, ProjectAuthorID: 2}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
-				versionCreateService.EXPECT().Handle(ctx, in).Return(nil)
+				versionCreateService.EXPECT().Handle(ctx, in).Return(int64(20), nil)
 			},
+			want: 20,
 		},
 		{
 			name: "IsRootAuthor",
 			setup: func(templateRepo *MocktemplateRepository, versionCreateService *MockversionCreateService) {
 				template := domain.Template{AuthorID: 2, ProjectAuthorID: 1}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
-				versionCreateService.EXPECT().Handle(ctx, in).Return(nil)
+				versionCreateService.EXPECT().Handle(ctx, in).Return(int64(20), nil)
 			},
+			want: 20,
 		},
 		{
 			name: "IsWriter",
@@ -52,8 +55,9 @@ func TestUsecase_Handle_Success(t *testing.T) {
 					Users:           []domain.TemplateUser{{ID: 1, Role: user_domain.RoleWrite}},
 				}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
-				versionCreateService.EXPECT().Handle(ctx, in).Return(nil)
+				versionCreateService.EXPECT().Handle(ctx, in).Return(int64(20), nil)
 			},
+			want: 20,
 		},
 	}
 	for _, tt := range tests {
@@ -67,8 +71,9 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			tt.setup(templateRepo, versionCreateService)
 
 			usecase := New(templateRepo, versionCreateService)
-			err := usecase.Handle(ctx, in)
+			got, err := usecase.Handle(ctx, in)
 			require.NoError(t, err)
+			require.Equal(t, tt.want, got)
 		})
 	}
 }
@@ -115,7 +120,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			setup: func(templateRepo *MocktemplateRepository, versionCreateService *MockversionCreateService) {
 				template := domain.Template{AuthorID: 1, ProjectAuthorID: 2}
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
-				versionCreateService.EXPECT().Handle(ctx, in).Return(errors.New("test2"))
+				versionCreateService.EXPECT().Handle(ctx, in).Return(int64(0), errors.New("test2"))
 			},
 			want: "test2",
 		},
@@ -131,7 +136,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			tt.setup(templateRepo, versionCreateService)
 
 			usecase := New(templateRepo, versionCreateService)
-			err := usecase.Handle(ctx, in)
+			_, err := usecase.Handle(ctx, in)
 			require.ErrorContains(t, err, tt.want)
 		})
 	}

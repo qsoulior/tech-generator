@@ -24,7 +24,7 @@ func New(usecase usecase) *Handler {
 }
 
 func (h *Handler) VersionCreate(ctx context.Context, req *api.VersionCreateRequest, params api.VersionCreateParams) (api.VersionCreateRes, error) {
-	err := h.usecase.Handle(ctx, convertRequestToIn(req, params))
+	versionID, err := h.usecase.Handle(ctx, convertRequestToIn(req, params))
 	if err != nil {
 		var baseErr *error_domain.BaseError
 		if errors.As(err, &baseErr) {
@@ -39,7 +39,7 @@ func (h *Handler) VersionCreate(ctx context.Context, req *api.VersionCreateReque
 		return nil, fmt.Errorf("version create usecase: %w", err)
 	}
 
-	return &api.VersionCreateCreated{}, nil
+	return &api.VersionCreateResponse{ID: versionID}, nil
 }
 
 func convertRequestToIn(req *api.VersionCreateRequest, params api.VersionCreateParams) version_create_domain.VersionCreateIn {

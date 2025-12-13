@@ -423,8 +423,15 @@ func encodeUserTokenCreateResponse(response UserTokenCreateRes, w http.ResponseW
 
 func encodeVersionCreateResponse(response VersionCreateRes, w http.ResponseWriter) error {
 	switch response := response.(type) {
-	case *VersionCreateCreated:
+	case *VersionCreateResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(201)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
 
 		return nil
 

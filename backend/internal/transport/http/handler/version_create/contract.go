@@ -9,5 +9,5 @@ import (
 )
 
 type usecase interface {
-	Handle(ctx context.Context, in version_create_domain.VersionCreateIn) error
+	Handle(ctx context.Context, in version_create_domain.VersionCreateIn) (int64, error)
 }

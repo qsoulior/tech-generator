@@ -23,15 +23,15 @@ func New(templateRepo templateRepository, versionCreateService versionCreateServ
 	}
 }
 
-func (u *Usecase) Handle(ctx context.Context, in version_create_domain.VersionCreateIn) error {
+func (u *Usecase) Handle(ctx context.Context, in version_create_domain.VersionCreateIn) (int64, error) {
 	// get template
 	template, err := u.templateRepo.GetByID(ctx, in.TemplateID)
 	if err != nil {
-		return fmt.Errorf("template repo - get by id: %w", err)
+		return 0, fmt.Errorf("template repo - get by id: %w", err)
 	}
 
 	if template == nil {
-		return domain.ErrTemplateNotFound
+		return 0, domain.ErrTemplateNotFound
 	}
 
 	// check permission
@@ -40,14 +40,14 @@ func (u *Usecase) Handle(ctx context.Context, in version_create_domain.VersionCr
 	})
 
 	if template.ProjectAuthorID != in.AuthorID && template.AuthorID != in.AuthorID && !isWriter {
-		return domain.ErrTemplateInvalid
+		return 0, domain.ErrTemplateInvalid
 	}
 
 	// create version
-	err = u.versionCreateService.Handle(ctx, in)
+	versionID, err := u.versionCreateService.Handle(ctx, in)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	return versionID, nil
 }

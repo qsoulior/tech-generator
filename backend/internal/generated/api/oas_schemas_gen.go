@@ -1527,11 +1527,6 @@ func (s *UserTokenCreateRequest) SetPassword(val string) {
 	s.Password = val
 }
 
-// VersionCreateCreated is response for VersionCreate operation.
-type VersionCreateCreated struct{}
-
-func (*VersionCreateCreated) versionCreateRes() {}
-
 // VersionCreateFromCreated is response for VersionCreateFrom operation.
 type VersionCreateFromCreated struct{}
 
@@ -1757,6 +1752,24 @@ func (s *VersionCreateRequestVariablesItemType) UnmarshalText(data []byte) error
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+// Ref: #/components/schemas/VersionCreateResponse
+type VersionCreateResponse struct {
+	// ID версии.
+	ID int64 `json:"id"`
+}
+
+// GetID returns the value of ID.
+func (s *VersionCreateResponse) GetID() int64 {
+	return s.ID
+}
+
+// SetID sets the value of ID.
+func (s *VersionCreateResponse) SetID(val int64) {
+	s.ID = val
+}
+
+func (*VersionCreateResponse) versionCreateRes() {}
 
 // Ref: #/components/schemas/VersionListResponse
 type VersionListResponse struct {

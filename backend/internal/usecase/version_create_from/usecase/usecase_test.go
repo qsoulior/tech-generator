@@ -81,7 +81,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 						},
 					},
 				}
-				versionCreateService.EXPECT().Handle(ctx, in).Return(nil)
+				versionCreateService.EXPECT().Handle(ctx, in).Return(int64(20), nil)
 			},
 		},
 		{
@@ -91,7 +91,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 				version := version_get_domain.Version{TemplateID: 10}
 				versionGetService.EXPECT().Handle(ctx, int64(20)).Return(&version, nil)
-				versionCreateService.EXPECT().Handle(ctx, gomock.Any()).Return(nil)
+				versionCreateService.EXPECT().Handle(ctx, gomock.Any()).Return(int64(20), nil)
 			},
 		},
 	}
@@ -174,7 +174,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 				templateRepo.EXPECT().GetByID(ctx, int64(10)).Return(&template, nil)
 				version := version_get_domain.Version{TemplateID: 10}
 				versionGetService.EXPECT().Handle(ctx, int64(20)).Return(&version, nil)
-				versionCreateService.EXPECT().Handle(ctx, gomock.Any()).Return(errors.New("test3"))
+				versionCreateService.EXPECT().Handle(ctx, gomock.Any()).Return(int64(0), errors.New("test3"))
 			},
 			want: "test3",
 		},

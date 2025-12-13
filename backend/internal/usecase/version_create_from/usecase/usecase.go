@@ -50,7 +50,7 @@ func (u *Usecase) Handle(ctx context.Context, in domain.VersionCreateFromIn) err
 		Variables:  convertVariables(version.Variables),
 	}
 
-	err = u.versionCreateService.Handle(ctx, versionCreateIn)
+	_, err = u.versionCreateService.Handle(ctx, versionCreateIn)
 	if err != nil {
 		return err
 	}

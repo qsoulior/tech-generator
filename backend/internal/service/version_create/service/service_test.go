@@ -22,6 +22,7 @@ func TestService_Handle_Success(t *testing.T) {
 		name  string
 		in    domain.VersionCreateIn
 		setup func(templateRepo *MocktemplateRepository, versionRepo *MockversionRepository, variableRepo *MockvariableRepository, constraintRepo *MockconstraintRepository)
+		want  int64
 	}{
 		{
 			name: "VariablesConstraints",
@@ -75,6 +76,7 @@ func TestService_Handle_Success(t *testing.T) {
 				templateToUpdate := domain.TemplateToUpdate{ID: 10, LastVersionID: 20}
 				templateRepo.EXPECT().UpdateByID(trCtx, templateToUpdate).Return(nil)
 			},
+			want: 20,
 		},
 		{
 			name: "NoConstraints",
@@ -108,6 +110,7 @@ func TestService_Handle_Success(t *testing.T) {
 				templateToUpdate := domain.TemplateToUpdate{ID: 10, LastVersionID: 20}
 				templateRepo.EXPECT().UpdateByID(trCtx, templateToUpdate).Return(nil)
 			},
+			want: 20,
 		},
 		{
 			name: "NoVariables",
@@ -128,6 +131,7 @@ func TestService_Handle_Success(t *testing.T) {
 				templateToUpdate := domain.TemplateToUpdate{ID: 10, LastVersionID: 20}
 				templateRepo.EXPECT().UpdateByID(trCtx, templateToUpdate).Return(nil)
 			},
+			want: 20,
 		},
 	}
 	for _, tt := range tests {
@@ -145,8 +149,9 @@ func TestService_Handle_Success(t *testing.T) {
 
 			usecase := New(templateRepo, versionRepo, variableRepo, constraintRepo, trManager)
 
-			err := usecase.Handle(ctx, tt.in)
+			got, err := usecase.Handle(ctx, tt.in)
 			require.NoError(t, err)
+			require.Equal(t, tt.want, got)
 		})
 	}
 }
@@ -263,7 +268,7 @@ func TestService_Handle_Error(t *testing.T) {
 
 			usecase := New(templateRepo, versionRepo, variableRepo, constraintRepo, trManager)
 
-			err := usecase.Handle(ctx, tt.in)
+			_, err := usecase.Handle(ctx, tt.in)
 			require.ErrorContains(t, err, tt.want)
 		})
 	}
