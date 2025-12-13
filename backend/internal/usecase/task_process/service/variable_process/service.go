@@ -199,12 +199,12 @@ func processConstraint(name string, value any, constraint domain.Constraint) *ta
 
 	program, err := expr.Compile(constraint.Expression, expr.Env(env), expr.AsBool())
 	if err != nil {
-		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageVariableCompile}
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintCompile}
 	}
 
 	check, err := expr.Run(program, env)
 	if err != nil {
-		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageVariableExec}
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintExec}
 	}
 
 	if !check.(bool) {

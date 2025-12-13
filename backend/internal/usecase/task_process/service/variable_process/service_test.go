@@ -220,12 +220,12 @@ func TestService_Handle_Error(t *testing.T) {
 							{
 								ID:      1,
 								Name:    "expr1",
-								Message: task_domain.MessageVariableCompile,
+								Message: task_domain.MessageConstraintCompile,
 							},
 							{
 								ID:      2,
 								Name:    "expr2",
-								Message: task_domain.MessageVariableCompile,
+								Message: task_domain.MessageConstraintCompile,
 							},
 						},
 					},

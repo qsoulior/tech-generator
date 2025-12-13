@@ -203,7 +203,7 @@ const menuOptionsRight: MenuOption[] = [
     <n-layout-header bordered style="padding: 0.5rem 1rem">
       <n-flex align="center" justify="space-between">
         <n-text strong>tech-generator</n-text>
-        <n-flex align="center" :wrap="false">
+        <n-flex>
           <n-menu mode="horizontal" :options="menuOptionsCenter" />
         </n-flex>
         <n-flex>
@@ -211,7 +211,7 @@ const menuOptionsRight: MenuOption[] = [
         </n-flex>
       </n-flex>
     </n-layout-header>
-    <n-layout has-sider content-style="height: calc(100vh - 59px)">
+    <n-layout content-style="height: calc(100vh - 59px)">
       <n-layout-content content-class="layout-content" embedded>
         <n-flex vertical align="center" style="max-width: 50rem; margin: auto">
           <TaskListItem

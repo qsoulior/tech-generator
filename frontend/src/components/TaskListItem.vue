@@ -31,7 +31,7 @@ const statusToType = new Map<string, TagType>([
 
 <template>
   <router-link
-    :to="{ name: 'template', params: { projectID: projectId, templateID: templateId } }"
+    :to="{ name: 'task', params: { projectID: projectId, templateID: templateId, taskID: taskId } }"
     style="width: 100%; text-decoration: none"
   >
     <n-card>

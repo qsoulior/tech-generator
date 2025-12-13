@@ -15,6 +15,8 @@ var (
 	MessageVariableCompile     = "Ошибка компиляции переменной"
 	MessageVariableExec        = "Ошибка выполнения переменной"
 	MessageConstraintCheck     = "Нарушение ограничения"
+	MessageConstraintCompile   = "Ошибка компиляции ограничения"
+	MessageConstraintExec      = "Ошибка выполнения ограничения"
 	MessageTemplateParse       = "Ошибка парсинга шаблона"
 	MessageTemplateExec        = "Ошибка выполнения шаблона"
 )
