@@ -329,7 +329,7 @@ const menuOptions: MenuOption[] = [
       </n-flex>
     </n-layout-header>
     <n-layout has-sider content-style="height: calc(100vh - 59px)">
-      <n-layout-sider collapse-mode="width" width="20%" :collapsed-width="0" show-trigger="bar" bordered>
+      <n-layout-sider collapse-mode="width" width="25%" :collapsed-width="0" show-trigger="bar" bordered>
         <n-flex vertical style="height: 100%">
           <n-flex vertical style="padding: 1rem">
             <n-text>Переменные</n-text>
