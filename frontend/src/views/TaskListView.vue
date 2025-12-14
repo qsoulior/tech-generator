@@ -212,7 +212,7 @@ const menuOptionsRight: MenuOption[] = [
       </n-flex>
     </n-layout-header>
     <n-layout content-style="height: calc(100vh - 59px)">
-      <n-layout-content content-class="layout-content" embedded>
+      <n-layout-content content-class="layout-content" embedded style="height: 100%">
         <n-flex vertical align="center" style="max-width: 50rem; margin: auto">
           <TaskListItem
             v-for="task in tasks"

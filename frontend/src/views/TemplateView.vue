@@ -154,7 +154,7 @@ async function templateGet() {
 
   versionID.value = result.version.id
   versionNumber.value = result.version.number
-  data.value = atob(result.version.data)
+  data.value = fromBase64(result.version.data)
   variables.value = result.version.variables.map((variable) => ({
     name: variable.name,
     type: variable.type,
@@ -162,6 +162,18 @@ async function templateGet() {
     inputType: variable.isInput ? "input" : "computed",
     constraints: variable.constraints,
   }))
+}
+
+function fromBase64(data: string) {
+  const bin = atob(data)
+  const base64 = Uint8Array.from(bin, (m) => m.codePointAt(0) ?? 0)
+  return new TextDecoder().decode(base64)
+}
+
+function toBase64(data: string) {
+  const encoded = new TextEncoder().encode(data)
+  const bin = Array.from(encoded, (byte) => String.fromCodePoint(byte)).join("")
+  return btoa(bin)
 }
 
 interface VersionCreateResult {
@@ -181,7 +193,7 @@ async function versionCreate() {
     method: "POST",
     body: JSON.stringify({
       templateID: props.templateID,
-      data: btoa(data.value),
+      data: toBase64(data.value),
       variables: vs,
     }),
     credentials: "include",

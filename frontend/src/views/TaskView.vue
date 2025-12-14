@@ -86,10 +86,16 @@ async function taskGet() {
   const result: TaskGetResult = await response.json()
 
   if (result.result != null) {
-    data.value = atob(result.result)
+    data.value = fromBase64(result.result)
   } else {
     error.value = result.task.error
   }
+}
+
+function fromBase64(data: string) {
+  const bin = atob(data)
+  const base64 = Uint8Array.from(bin, (m) => m.codePointAt(0) ?? 0)
+  return new TextDecoder().decode(base64)
 }
 
 // запрос шаблона

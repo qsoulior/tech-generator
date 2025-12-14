@@ -102,7 +102,7 @@ function handleValidateClick(e: MouseEvent) {
 
 function handleAddClick(e: MouseEvent, index: number) {
   e.preventDefault()
-  modelRef.value.constraints.splice(index, 0, {
+  modelRef.value.constraints.splice(index + 1, 0, {
     name: "",
     expression: "",
     isActive: true,
