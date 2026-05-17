@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { NFlex, NCard, NText, NButton, NIcon, NPopconfirm, useMessage } from "naive-ui"
+import { NFlex, NCard, NText, NButton, NIcon, NPopconfirm } from "naive-ui"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
-import { useRouter } from "vue-router"
+import { templateDelete } from "@/api/template"
+import { useApiCall } from "@/composables/useApiCall"
 
-const router = useRouter()
-const message = useMessage()
+const apiCall = useApiCall()
 
 const props = defineProps<{
   projectId: number
@@ -18,28 +18,10 @@ const emit = defineEmits<{
   delete: []
 }>()
 
-async function templateDelete() {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/delete/${props.templateId}`, {
-    method: "DELETE",
-    credentials: "include",
-  })
-
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
-
-  emit("delete")
-}
-
 async function onPositiveClick() {
-  await templateDelete()
+  const r = await apiCall(() => templateDelete(props.templateId))
+  if (!r.ok) return
+  emit("delete")
 }
 </script>
 

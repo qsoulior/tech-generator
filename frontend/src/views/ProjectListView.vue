@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NText, NLayoutHeader, useMessage } from "naive-ui"
+import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NText, NLayoutHeader } from "naive-ui"
 import { onMounted, ref } from "vue"
 import ProjectListItem from "@/components/ProjectListItem.vue"
 import ProjectListSearch from "@/components/ProjectListSearch.vue"
-import { useRouter } from "vue-router"
 import ProjectCreateModal from "@/components/ProjectCreateModal.vue"
+import { projectList as fetchProjects, type ProjectListItem as Project } from "@/api/project"
+import { useApiCall } from "@/composables/useApiCall"
 
-const router = useRouter()
-const message = useMessage()
+const apiCall = useApiCall()
 
 const totalProjects = ref(0)
 const totalPages = ref(0)
@@ -25,68 +25,23 @@ const pageSizes = [
   { label: "500 проектов", value: 500 },
 ]
 
-interface Project {
-  id: number
-  name: string
-  authorName: string
-}
-
 const projects = ref<Project[]>([])
 
-// запрос списка проектов
-interface ProjectListResultProject {
-  id: number
-  name: string
-  authorName: string
-}
-
-interface ProjectListResult {
-  projects: ProjectListResultProject[]
-  totalProjects: number
-  totalPages: number
-}
-
 async function projectList() {
-  const params = new URLSearchParams({
-    page: page.value.toString(),
-    size: pageSize.value.toString(),
-  })
+  const r = await apiCall(() =>
+    fetchProjects({
+      page: page.value,
+      size: pageSize.value,
+      projectName: projectName.value || undefined,
+    }),
+  )
+  if (!r.ok) return
 
-  if (projectName.value !== "") {
-    params.append("projectName", projectName.value)
-  }
-
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/project/list?${params}`, {
-    method: "GET",
-    credentials: "include",
-  })
-
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
-
-  const result: ProjectListResult = await response.json()
-
-  totalProjects.value = result.totalProjects
-  totalPages.value = result.totalPages
-
-  projects.value = result.projects.map((project) => {
-    return {
-      id: project.id,
-      name: project.name,
-      authorName: project.authorName,
-    }
-  })
+  totalProjects.value = r.value.totalProjects
+  totalPages.value = r.value.totalPages
+  projects.value = r.value.projects
 }
 
-// триггеры для обновления списка проектов
 onMounted(async () => {
   await projectList()
 })

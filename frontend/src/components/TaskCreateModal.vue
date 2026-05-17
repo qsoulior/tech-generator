@@ -2,11 +2,11 @@
 import { NModal, NForm, NFormItem, NInput, NButton, useMessage } from "naive-ui"
 import type { FormRules, FormInst } from "naive-ui"
 import { ref, watch } from "vue"
-import { useRouter } from "vue-router"
-
-const router = useRouter()
+import { taskCreate } from "@/api/task"
+import { useApiCall } from "@/composables/useApiCall"
 
 const message = useMessage()
+const apiCall = useApiCall()
 
 const showModal = defineModel("showModal", { default: false })
 
@@ -47,36 +47,21 @@ function handleValidateClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      await taskCreate()
+      await submit()
     }
   })
 }
 
-async function taskCreate() {
+async function submit() {
   if (props.versionId == undefined) return
 
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/task/create`, {
-    method: "POST",
-    body: JSON.stringify({
+  const r = await apiCall(() =>
+    taskCreate({
       versionID: props.versionId,
-      payload: Object.fromEntries(new Map(modelRef.value.variables.map((v) => [v.name, v.value]))),
+      payload: Object.fromEntries(modelRef.value.variables.map((v) => [v.name, v.value])),
     }),
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
+  )
+  if (!r.ok) return
 
   message.success("Запущена генерация документа")
   showModal.value = false

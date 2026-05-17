@@ -15,7 +15,7 @@ import {
   type MenuOption,
 } from "naive-ui"
 import { h, onMounted, ref } from "vue"
-import { RouterLink, useRouter } from "vue-router"
+import { RouterLink } from "vue-router"
 import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
 import RU from "@vavt/cm-extension/dist/locale/ru"
 import "md-editor-v3/lib/style.css"
@@ -24,9 +24,12 @@ import VariableCreateModal from "@/components/VariableCreateModal.vue"
 import VariableUpdateModal from "@/components/VariableUpdateModal.vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
 import TaskCreateModal from "@/components/TaskCreateModal.vue"
+import { templateGet } from "@/api/template"
+import { versionCreate } from "@/api/version"
+import { useApiCall } from "@/composables/useApiCall"
 
-const router = useRouter()
 const message = useMessage()
+const apiCall = useApiCall()
 
 const props = defineProps<{
   templateID: number
@@ -101,61 +104,20 @@ function variableDelete(index: number) {
   variables.value.splice(index, 1)
 }
 
-interface TemplateGetResultConstraint {
-  name: string
-  expression: string
-  isActive: boolean
-}
+async function loadTemplate() {
+  const r = await apiCall(() => templateGet(props.templateID))
+  if (!r.ok) return
 
-interface TemplateGetResultVariable {
-  name: string
-  type: string
-  isInput: boolean
-  expression: string
-  constraints: TemplateGetResultConstraint[]
-}
+  name.value = r.value.name
 
-interface TemplateGetResultVersion {
-  id: number
-  number: number
-  data: string
-  createdAt: string
-  variables: TemplateGetResultVariable[]
-}
-
-interface TemplateGetResult {
-  name: string
-  version?: TemplateGetResultVersion
-}
-
-async function templateGet() {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/get/${props.templateID}`, {
-    method: "GET",
-    credentials: "include",
-  })
-
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
+  if (r.value.version == undefined) {
     return
   }
 
-  const result: TemplateGetResult = await response.json()
-  name.value = result.name
-
-  if (result.version == undefined) {
-    return
-  }
-
-  versionID.value = result.version.id
-  versionNumber.value = result.version.number
-  data.value = fromBase64(result.version.data)
-  variables.value = result.version.variables.map((variable) => ({
+  versionID.value = r.value.version.id
+  versionNumber.value = r.value.version.number
+  data.value = fromBase64(r.value.version.data)
+  variables.value = r.value.version.variables.map((variable) => ({
     name: variable.name,
     type: variable.type,
     expression: variable.expression,
@@ -176,52 +138,29 @@ function toBase64(data: string) {
   return btoa(bin)
 }
 
-interface VersionCreateResult {
-  id: number
-}
-
-async function versionCreate() {
-  const vs = variables.value.map((variable: Variable) => ({
-    name: variable.name,
-    type: variable.type,
-    expression: variable.expression,
-    isInput: variable.inputType == "input",
-    constraints: variable.constraints,
-  }))
-
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/version/create`, {
-    method: "POST",
-    body: JSON.stringify({
+async function saveVersion() {
+  const r = await apiCall(() =>
+    versionCreate({
       templateID: props.templateID,
       data: toBase64(data.value),
-      variables: vs,
+      variables: variables.value.map((variable) => ({
+        name: variable.name,
+        type: variable.type,
+        expression: variable.expression,
+        isInput: variable.inputType == "input",
+        constraints: variable.constraints,
+      })),
     }),
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+  )
+  if (!r.ok) return
 
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
-
-  const result: VersionCreateResult = await response.json()
-  versionID.value = result.id
+  versionID.value = r.value.id
   versionNumber.value++
   message.success("Шаблон сохранен")
 }
 
-// триггеры
 onMounted(async () => {
-  await templateGet()
+  await loadTemplate()
 })
 
 config({
@@ -315,7 +254,7 @@ const menuOptions: MenuOption[] = [
         <n-flex align="center" :wrap="false">
           <n-text>{{ name }}</n-text>
           <n-text>v{{ versionNumber }}</n-text>
-          <n-button secondary @click="versionCreate">Сохранить</n-button>
+          <n-button secondary @click="saveVersion">Сохранить</n-button>
           <n-button secondary @click="showTaskCreateModal = true">Выполнить</n-button>
           <TaskCreateModal
             v-model:show-modal="showTaskCreateModal"

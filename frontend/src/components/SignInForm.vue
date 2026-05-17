@@ -3,9 +3,12 @@ import { useMessage, NForm, NFormItem, NInput, NCheckbox, NButton } from "naive-
 import type { FormInst, FormRules } from "naive-ui"
 import { ref } from "vue"
 import { useRouter } from "vue-router"
+import { userTokenCreate } from "@/api/user"
+import { useApiCall } from "@/composables/useApiCall"
 
 const router = useRouter()
 const message = useMessage()
+const apiCall = useApiCall()
 
 const formRef = ref<FormInst | null>(null)
 
@@ -36,32 +39,17 @@ function handleValidateClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      await userTokenCreate(modelRef.value)
+      await signIn(modelRef.value)
     }
   })
 }
 
-async function userTokenCreate(model: Model) {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/token/create`, {
-    method: "POST",
-    body: JSON.stringify({
-      name: model.name,
-      password: model.password,
-    }),
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+async function signIn(model: Model) {
+  const r = await apiCall(() => userTokenCreate({ name: model.name, password: model.password }))
+  if (!r.ok) return
 
-  if (response.ok) {
-    router.push({ name: "projectList" })
-    message.success("Вы успешно вошли")
-    return
-  }
-
-  const result = await response.json()
-  message.error(result.message)
+  router.push({ name: "projectList" })
+  message.success("Вы успешно вошли")
 }
 </script>
 

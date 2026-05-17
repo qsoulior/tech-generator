@@ -8,21 +8,21 @@ import {
   NFlex,
   NPagination,
   NButton,
-  useMessage,
   type MenuOption,
 } from "naive-ui"
 import { h, onMounted, ref } from "vue"
 import TemplateListItem from "@/components/TemplateListItem.vue"
 import TemplateListSearch from "@/components/TemplateListSearch.vue"
-import { RouterLink, useRouter } from "vue-router"
+import { RouterLink } from "vue-router"
 import TemplateCreateModal from "@/components/TemplateCreateModal.vue"
+import { templateList as fetchTemplates } from "@/api/template"
+import { useApiCall } from "@/composables/useApiCall"
 
 const props = defineProps<{
   projectID: number
 }>()
 
-const router = useRouter()
-const message = useMessage()
+const apiCall = useApiCall()
 
 const totalTemplates = ref(0)
 const totalPages = ref(0)
@@ -49,62 +49,28 @@ interface Template {
 
 const templates = ref<Template[]>([])
 
-// запрос списка шаблонов
-interface TemplateListResultTemplate {
-  id: number
-  name: string
-  authorName: string
-  createdAt: string
-}
-
-interface TemplateListResult {
-  templates: TemplateListResultTemplate[]
-  totalTemplates: number
-  totalPages: number
-}
-
 async function templateList() {
-  const params = new URLSearchParams({
-    page: page.value.toString(),
-    size: pageSize.value.toString(),
-  })
+  const r = await apiCall(() =>
+    fetchTemplates({
+      projectID: props.projectID,
+      page: page.value,
+      size: pageSize.value,
+      templateName: templateName.value || undefined,
+    }),
+  )
+  if (!r.ok) return
 
-  if (templateName.value !== "") {
-    params.append("templateName", templateName.value)
-  }
+  totalTemplates.value = r.value.totalTemplates
+  totalPages.value = r.value.totalPages
 
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/list/${props.projectID}?${params}`, {
-    method: "GET",
-    credentials: "include",
-  })
-
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
-
-  const result: TemplateListResult = await response.json()
-
-  totalTemplates.value = result.totalTemplates
-  totalPages.value = result.totalPages
-
-  templates.value = result.templates.map((template) => {
-    return {
-      id: template.id,
-      name: template.name,
-      authorName: template.authorName,
-      createdAt: new Date(template.createdAt),
-    }
-  })
+  templates.value = r.value.templates.map((template) => ({
+    id: template.id,
+    name: template.name,
+    authorName: template.authorName,
+    createdAt: new Date(template.createdAt),
+  }))
 }
 
-// триггеры для обновления списка шаблонов
 onMounted(async () => {
   await templateList()
 })

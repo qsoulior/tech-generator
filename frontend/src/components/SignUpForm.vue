@@ -3,9 +3,12 @@ import { useMessage, NForm, NFormItem, NInput, NButton } from "naive-ui"
 import type { FormInst, FormRules, FormItemRule } from "naive-ui"
 import { ref } from "vue"
 import { useRouter } from "vue-router"
+import { userCreate, userTokenCreate } from "@/api/user"
+import { useApiCall } from "@/composables/useApiCall"
 
 const router = useRouter()
 const message = useMessage()
+const apiCall = useApiCall()
 
 const formRef = ref<FormInst | null>(null)
 
@@ -57,52 +60,22 @@ function handleValidateClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      await userCreate(modelRef.value)
+      await signUp(modelRef.value)
     }
   })
 }
 
-async function userCreate(model: Model) {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/create`, {
-    method: "POST",
-    body: JSON.stringify({
-      name: model.name,
-      email: model.email,
-      password: model.password,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+async function signUp(model: Model) {
+  const created = await apiCall(() =>
+    userCreate({ name: model.name, email: model.email, password: model.password }),
+  )
+  if (!created.ok) return
 
-  if (response.ok) {
-    return userTokenCreate(model.name, model.password)
-  }
+  const signedIn = await apiCall(() => userTokenCreate({ name: model.name, password: model.password }))
+  if (!signedIn.ok) return
 
-  const result = await response.json()
-  message.error(result.message)
-}
-
-async function userTokenCreate(name: string, password: string) {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/token/create`, {
-    method: "POST",
-    body: JSON.stringify({
-      name: name,
-      password: password,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-
-  if (response.ok) {
-    router.push({ name: "projectList" })
-    message.success("Вы успешно зарегистрировались")
-    return
-  }
-
-  const result = await response.json()
-  message.error(result.message)
+  router.push({ name: "projectList" })
+  message.success("Вы успешно зарегистрировались")
 }
 </script>
 

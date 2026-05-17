@@ -7,3 +7,4 @@ go.work
 dist/
 .vscode/
 node_modules/
+.eslintcache

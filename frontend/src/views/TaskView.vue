@@ -9,17 +9,18 @@ import {
   NButton,
   NCard,
   NTable,
-  useMessage,
   type MenuOption,
 } from "naive-ui"
 import { h, onMounted, ref } from "vue"
-import { RouterLink, useRouter } from "vue-router"
+import { RouterLink } from "vue-router"
 import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
 import RU from "@vavt/cm-extension/dist/locale/ru"
 import "md-editor-v3/lib/preview.css"
+import { taskGet, type TaskGetError } from "@/api/task"
+import { templateGet } from "@/api/template"
+import { useApiCall } from "@/composables/useApiCall"
 
-const router = useRouter()
-const message = useMessage()
+const apiCall = useApiCall()
 
 const props = defineProps<{
   templateID: number
@@ -29,66 +30,16 @@ const props = defineProps<{
 
 const templateName = ref("")
 const data = ref<string | null>(null)
-const error = ref<TaskGetResultError | null>(null)
+const error = ref<TaskGetError | null>(null)
 
-// запрос задачи
-interface TaskGetResultConstraintError {
-  id: string
-  name: string
-  message: string
-}
+async function loadTask() {
+  const r = await apiCall(() => taskGet(props.taskID))
+  if (!r.ok) return
 
-interface TaskGetResultVariableError {
-  id: number
-  name: string
-  message?: string
-  constraintErrors: TaskGetResultConstraintError[]
-}
-
-interface TaskGetResultError {
-  message?: string
-  variableErrors: TaskGetResultVariableError[]
-}
-
-interface TaskGetResultTask {
-  id: number
-  versionID: number
-  status: string
-  payload: Record<string, string>
-  error: TaskGetResultError
-  creatorName: string
-  createdAt: string
-  updatedAt: string
-}
-
-interface TaskGetResult {
-  task: TaskGetResultTask
-  result: string | null
-}
-
-async function taskGet() {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/task/get/${props.taskID}`, {
-    method: "GET",
-    credentials: "include",
-  })
-
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
-
-  const result: TaskGetResult = await response.json()
-
-  if (result.result != null) {
-    data.value = fromBase64(result.result)
+  if (r.value.result != null) {
+    data.value = fromBase64(r.value.result)
   } else {
-    error.value = result.task.error
+    error.value = r.value.task.error
   }
 }
 
@@ -98,36 +49,10 @@ function fromBase64(data: string) {
   return new TextDecoder().decode(base64)
 }
 
-// запрос шаблона
-interface TemplateGetResultVersion {
-  id: number
-  number: number
-}
-
-interface TemplateGetResult {
-  name: string
-  version?: TemplateGetResultVersion
-}
-
-async function templateGet() {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/get/${props.templateID}`, {
-    method: "GET",
-    credentials: "include",
-  })
-
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
-
-  const result: TemplateGetResult = await response.json()
-  templateName.value = result.name
+async function loadTemplate() {
+  const r = await apiCall(() => templateGet(props.templateID))
+  if (!r.ok) return
+  templateName.value = r.value.name
 }
 
 function download() {
@@ -148,10 +73,9 @@ function download() {
   window.URL.revokeObjectURL(url)
 }
 
-// триггеры
 onMounted(async () => {
-  await templateGet()
-  await taskGet()
+  await loadTemplate()
+  await loadTask()
 })
 
 config({

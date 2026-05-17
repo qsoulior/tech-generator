@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { NModal, NForm, NFormItem, NInput, NButton, useMessage } from "naive-ui"
+import { NModal, NForm, NFormItem, NInput, NButton } from "naive-ui"
 import type { FormRules, FormInst } from "naive-ui"
 import { ref } from "vue"
-import { useRouter } from "vue-router"
+import { templateCreate } from "@/api/template"
+import { useApiCall } from "@/composables/useApiCall"
 
-const router = useRouter()
-
-const message = useMessage()
+const apiCall = useApiCall()
 
 const showModal = defineModel("showModal", { default: false })
 
@@ -39,34 +38,14 @@ function handleValidateClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      await templateCreate(modelRef.value)
+      await submit(modelRef.value)
     }
   })
 }
 
-async function templateCreate(model: Model) {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/create`, {
-    method: "POST",
-    body: JSON.stringify({
-      name: model.name,
-      projectID: props.projectId,
-    }),
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
+async function submit(model: Model) {
+  const r = await apiCall(() => templateCreate({ name: model.name, projectID: props.projectId }))
+  if (!r.ok) return
 
   emit("submit")
   showModal.value = false

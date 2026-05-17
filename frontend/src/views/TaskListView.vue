@@ -9,18 +9,19 @@ import {
   NMenu,
   NPagination,
   type MenuOption,
-  useMessage,
 } from "naive-ui"
 import { h, onMounted, ref } from "vue"
-import { RouterLink, useRouter } from "vue-router"
+import { RouterLink } from "vue-router"
+import { taskList as fetchTasks } from "@/api/task"
+import { templateGet } from "@/api/template"
+import { useApiCall } from "@/composables/useApiCall"
 
 const props = defineProps<{
   templateID: number
   projectID: number
 }>()
 
-const router = useRouter()
-const message = useMessage()
+const apiCall = useApiCall()
 
 const totalTasks = ref(0)
 const totalPages = ref(0)
@@ -46,96 +47,37 @@ interface Task {
 const templateName = ref("")
 const tasks = ref<Task[]>([])
 
-// запрос списка задач
-interface TaskListResultTask {
-  id: number
-  status: string
-  versionNumber: number
-  creatorName: string
-  createdAt: string
-  updatedAt: string
-}
-
-interface TaskListResult {
-  tasks: TaskListResultTask[]
-  totalTasks: number
-  totalPages: number
-}
-
 async function taskList() {
-  const params = new URLSearchParams({
-    page: page.value.toString(),
-    size: pageSize.value.toString(),
-    templateID: props.templateID.toString(),
-  })
+  const r = await apiCall(() =>
+    fetchTasks({
+      templateID: props.templateID,
+      page: page.value,
+      size: pageSize.value,
+    }),
+  )
+  if (!r.ok) return
 
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/task/list?${params}`, {
-    method: "GET",
-    credentials: "include",
-  })
+  totalTasks.value = r.value.totalTasks
+  totalPages.value = r.value.totalPages
 
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
-
-  const result: TaskListResult = await response.json()
-
-  totalTasks.value = result.totalTasks
-  totalPages.value = result.totalPages
-
-  tasks.value = result.tasks.map((task) => {
-    return {
-      id: task.id,
-      status: task.status,
-      versionNumber: task.versionNumber,
-      creatorName: task.creatorName,
-      createdAt: new Date(task.createdAt),
-      updatedAt: new Date(task.updatedAt),
-    }
-  })
+  tasks.value = r.value.tasks.map((task) => ({
+    id: task.id,
+    status: task.status,
+    versionNumber: task.versionNumber,
+    creatorName: task.creatorName,
+    createdAt: new Date(task.createdAt),
+    updatedAt: new Date(task.updatedAt),
+  }))
 }
 
-// запрос шаблона
-interface TemplateGetResultVersion {
-  id: number
-  number: number
-}
-
-interface TemplateGetResult {
-  name: string
-  version?: TemplateGetResultVersion
-}
-
-async function templateGet() {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/template/get/${props.templateID}`, {
-    method: "GET",
-    credentials: "include",
-  })
-
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      router.push({ name: "auth" })
-      return
-    }
-
-    const result = await response.json()
-    message.error(result.message)
-    return
-  }
-
-  const result: TemplateGetResult = await response.json()
-  templateName.value = result.name
+async function loadTemplate() {
+  const r = await apiCall(() => templateGet(props.templateID))
+  if (!r.ok) return
+  templateName.value = r.value.name
 }
 
 onMounted(async () => {
-  await templateGet()
+  await loadTemplate()
   await taskList()
 })
 
