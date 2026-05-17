@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NLayoutHeader } from "naive-ui"
+import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NLayoutHeader, NText } from "naive-ui"
 import { onMounted, ref } from "vue"
 import ProjectListItem from "@/components/ProjectListItem.vue"
 import ProjectListSearch from "@/components/ProjectListSearch.vue"
@@ -79,6 +79,7 @@ async function onDeleteProject(id: number) {
           <ProjectListSearch v-model:value="projectName" @submit="onSubmitSearch" />
           <n-button secondary style="width: 100%" @click="showModal = true">Добавить проект</n-button>
           <ProjectCreateModal v-model:show-modal="showModal" @submit="onSubmitModal" />
+          <n-text depth="3" style="width: 100%">Всего: {{ totalProjects }}</n-text>
           <ProjectListItem
             v-for="project in projects"
             :id="project.id"

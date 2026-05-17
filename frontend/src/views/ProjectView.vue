@@ -102,6 +102,7 @@ const menuItems: HeaderMenuItem[] = [{ key: "projectList", label: "Проект�
           <TemplateListSearch v-model:value="templateName" @submit="onSubmitSearch" />
           <n-button secondary style="width: 100%" @click="showModal = true">Добавить шаблон</n-button>
           <TemplateCreateModal :project-id="projectID" v-model:show-modal="showModal" @submit="onSubmitModal" />
+          <n-text depth="3" style="width: 100%">Всего: {{ totalTemplates }}</n-text>
           <TemplateListItem
             v-for="template in templates"
             :project-id="projectID"

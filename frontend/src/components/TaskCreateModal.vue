@@ -53,8 +53,6 @@ function handleValidateClick(e: MouseEvent) {
 }
 
 async function submit() {
-  if (props.versionId == undefined) return
-
   const r = await apiCall(() =>
     taskCreate({
       versionID: props.versionId,

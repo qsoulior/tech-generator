@@ -2,7 +2,7 @@
 import TaskListItem from "@/components/TaskListItem.vue"
 import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
 import AppBrand from "@/components/AppBrand.vue"
-import { NLayout, NLayoutHeader, NLayoutContent, NFlex, NPagination } from "naive-ui"
+import { NLayout, NLayoutHeader, NLayoutContent, NFlex, NPagination, NText } from "naive-ui"
 import { computed, onMounted, ref } from "vue"
 import { taskList as fetchTasks, type TaskStatus } from "@/api/task"
 import { useApiCall } from "@/composables/useApiCall"
@@ -104,6 +104,7 @@ const menuItemsRight: HeaderMenuItem[] = [
     <n-layout content-style="height: calc(100vh - 59px)">
       <n-layout-content content-class="layout-content" embedded style="height: 100%">
         <n-flex vertical align="center" style="max-width: 50rem; margin: auto">
+          <n-text depth="3" style="width: 100%">Всего: {{ totalTasks }}</n-text>
           <TaskListItem
             v-for="task in tasks"
             :key="task.id"

@@ -215,10 +215,13 @@ const menuItems: HeaderMenuItem[] = [
           <n-text>{{ name }}</n-text>
           <n-text>v{{ versionNumber }}</n-text>
           <n-button secondary @click="saveVersion">Сохранить</n-button>
-          <n-button secondary @click="showTaskCreateModal = true">Выполнить</n-button>
+          <n-button secondary :disabled="versionID == undefined" @click="showTaskCreateModal = true">
+            Выполнить
+          </n-button>
           <TaskCreateModal
+            v-if="versionID != undefined"
             v-model:show-modal="showTaskCreateModal"
-            :version-id="versionID ?? 0"
+            :version-id="versionID"
             :variables="variables.filter((v) => v.inputType == 'input')"
           />
         </n-flex>
