@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import TaskListItem from "@/components/TaskListItem.vue"
 import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
-import { NLayout, NLayoutHeader, NLayoutContent, NFlex, NText, NPagination } from "naive-ui"
+import AppBrand from "@/components/AppBrand.vue"
+import { NLayout, NLayoutHeader, NLayoutContent, NFlex, NPagination } from "naive-ui"
 import { computed, onMounted, ref } from "vue"
 import { taskList as fetchTasks, type TaskStatus } from "@/api/task"
-import { templateGet } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
 import { usePagination } from "@/composables/usePagination"
+import { useTemplateStore } from "@/stores/template"
 
 const props = defineProps<{
   templateID: number
@@ -14,6 +15,7 @@ const props = defineProps<{
 }>()
 
 const apiCall = useApiCall()
+const templateStore = useTemplateStore()
 
 const { page, pageSize, totalPages, pageSizes } = usePagination("результатов")
 const totalTasks = ref(0)
@@ -54,7 +56,7 @@ async function taskList() {
 }
 
 async function loadTemplate() {
-  const r = await apiCall(() => templateGet(props.templateID))
+  const r = await apiCall(() => templateStore.ensureLoaded(props.templateID))
   if (!r.ok) return
   templateName.value = r.value.name
 }
@@ -90,7 +92,7 @@ const menuItemsRight: HeaderMenuItem[] = [
   <n-layout>
     <n-layout-header bordered style="padding: 0.5rem 1rem">
       <n-flex align="center" justify="space-between">
-        <n-text strong>tech-generator</n-text>
+        <AppBrand />
         <n-flex>
           <HeaderMenu :items="menuItemsCenter" />
         </n-flex>

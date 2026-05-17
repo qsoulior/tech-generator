@@ -22,13 +22,15 @@ import VariableUpdateModal from "@/components/VariableUpdateModal.vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
 import TaskCreateModal from "@/components/TaskCreateModal.vue"
 import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
-import { templateGet } from "@/api/template"
+import AppBrand from "@/components/AppBrand.vue"
 import { versionCreate, type VersionCreateVariable } from "@/api/version"
 import { useApiCall } from "@/composables/useApiCall"
+import { useTemplateStore } from "@/stores/template"
 import { fromBase64, toBase64 } from "@/utils/base64"
 
 const message = useMessage()
 const apiCall = useApiCall()
+const templateStore = useTemplateStore()
 
 const props = defineProps<{
   templateID: number
@@ -104,7 +106,7 @@ function variableDelete(index: number) {
 }
 
 async function loadTemplate() {
-  const r = await apiCall(() => templateGet(props.templateID))
+  const r = await apiCall(() => templateStore.ensureLoaded(props.templateID))
   if (!r.ok) return
 
   name.value = r.value.name
@@ -147,6 +149,7 @@ async function saveVersion() {
 
   versionID.value = r.value.id
   versionNumber.value++
+  templateStore.invalidate(props.templateID)
   message.success("Шаблон сохранен")
 }
 
@@ -207,7 +210,7 @@ const menuItems: HeaderMenuItem[] = [
   <n-layout>
     <n-layout-header bordered style="padding: 0.5rem 1rem">
       <n-flex align="center" justify="space-between">
-        <n-text strong>tech-generator</n-text>
+        <AppBrand />
         <n-flex align="center" :wrap="false">
           <n-text>{{ name }}</n-text>
           <n-text>v{{ versionNumber }}</n-text>

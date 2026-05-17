@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import { NLayout, NText, NLayoutContent, NLayoutHeader, NFlex, NPagination, NButton } from "naive-ui"
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 import TemplateListItem from "@/components/TemplateListItem.vue"
 import TemplateListSearch from "@/components/TemplateListSearch.vue"
 import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
+import AppBrand from "@/components/AppBrand.vue"
 import TemplateCreateModal from "@/components/TemplateCreateModal.vue"
 import { templateList as fetchTemplates } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
 import { usePagination } from "@/composables/usePagination"
+import { useProjectStore } from "@/stores/project"
 
 const props = defineProps<{
   projectID: number
 }>()
 
 const apiCall = useApiCall()
+const projectStore = useProjectStore()
+
+const projectName = computed(() => projectStore.get(props.projectID)?.name ?? "")
 
 const { page, pageSize, totalPages, pageSizes } = usePagination("шаблонов")
 const totalTemplates = ref(0)
@@ -84,7 +89,8 @@ const menuItems: HeaderMenuItem[] = [{ key: "projectList", label: "Проект�
   <n-layout>
     <n-layout-header bordered style="padding: 0.5rem 1rem">
       <n-flex align="center" justify="space-between">
-        <n-text strong>tech-generator</n-text>
+        <AppBrand />
+        <n-text v-if="projectName">{{ projectName }}</n-text>
         <n-flex>
           <HeaderMenu :items="menuItems" />
         </n-flex>

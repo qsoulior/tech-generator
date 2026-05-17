@@ -14,13 +14,13 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  delete: []
+  delete: [id: number]
 }>()
 
 async function onPositiveClick() {
   const r = await apiCall(() => projectDelete(props.id))
   if (!r.ok) return
-  emit("delete")
+  emit("delete", props.id)
 }
 </script>
 

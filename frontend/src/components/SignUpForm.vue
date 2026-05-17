@@ -5,10 +5,12 @@ import { ref } from "vue"
 import { useRouter } from "vue-router"
 import { userCreate, userTokenCreate } from "@/api/user"
 import { useApiCall } from "@/composables/useApiCall"
+import { useAuthStore } from "@/stores/auth"
 
 const router = useRouter()
 const message = useMessage()
 const apiCall = useApiCall()
+const authStore = useAuthStore()
 
 const formRef = ref<FormInst | null>(null)
 
@@ -74,6 +76,7 @@ async function signUp(model: Model) {
   const signedIn = await apiCall(() => userTokenCreate({ name: model.name, password: model.password }))
   if (!signedIn.ok) return
 
+  authStore.clear()
   router.push({ name: "projectList" })
   message.success("Вы успешно зарегистрировались")
 }

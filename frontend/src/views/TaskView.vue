@@ -5,12 +5,14 @@ import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
 import RU from "@vavt/cm-extension/dist/locale/ru"
 import "md-editor-v3/lib/preview.css"
 import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
+import AppBrand from "@/components/AppBrand.vue"
 import { taskGet, type TaskGetError } from "@/api/task"
-import { templateGet } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
+import { useTemplateStore } from "@/stores/template"
 import { fromBase64 } from "@/utils/base64"
 
 const apiCall = useApiCall()
+const templateStore = useTemplateStore()
 
 const props = defineProps<{
   templateID: number
@@ -34,7 +36,7 @@ async function loadTask() {
 }
 
 async function loadTemplate() {
-  const r = await apiCall(() => templateGet(props.templateID))
+  const r = await apiCall(() => templateStore.ensureLoaded(props.templateID))
   if (!r.ok) return
   templateName.value = r.value.name
 }
@@ -95,7 +97,7 @@ const menuItemsRight: HeaderMenuItem[] = [
   <n-layout>
     <n-layout-header bordered style="padding: 0.5rem 1rem">
       <n-flex align="center" justify="space-between">
-        <n-text strong>tech-generator</n-text>
+        <AppBrand />
         <n-flex align="center">
           <n-flex>
             <HeaderMenu :items="menuItemsCenter" />

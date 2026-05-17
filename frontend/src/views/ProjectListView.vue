@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NText, NLayoutHeader } from "naive-ui"
+import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NLayoutHeader } from "naive-ui"
 import { onMounted, ref } from "vue"
 import ProjectListItem from "@/components/ProjectListItem.vue"
 import ProjectListSearch from "@/components/ProjectListSearch.vue"
 import ProjectCreateModal from "@/components/ProjectCreateModal.vue"
+import AppBrand from "@/components/AppBrand.vue"
 import { projectList as fetchProjects, type ProjectListItem as Project } from "@/api/project"
 import { useApiCall } from "@/composables/useApiCall"
 import { usePagination } from "@/composables/usePagination"
+import { useProjectStore } from "@/stores/project"
 
 const apiCall = useApiCall()
+const projectStore = useProjectStore()
 
 const { page, pageSize, totalPages, pageSizes } = usePagination("проектов")
 const totalProjects = ref(0)
@@ -32,6 +35,9 @@ async function projectList() {
   totalProjects.value = r.value.totalProjects
   totalPages.value = r.value.totalPages
   projects.value = r.value.projects
+  for (const project of r.value.projects) {
+    projectStore.put(project)
+  }
 }
 
 onMounted(async () => {
@@ -54,7 +60,8 @@ async function onSubmitSearch() {
   await projectList()
 }
 
-async function onDeleteProject() {
+async function onDeleteProject(id: number) {
+  projectStore.invalidate(id)
   await projectList()
 }
 </script>
@@ -63,7 +70,7 @@ async function onDeleteProject() {
   <n-layout>
     <n-layout-header bordered style="padding: 0.5rem 1rem">
       <n-flex align="center" justify="start" style="padding: 10px 0">
-        <n-text strong>tech-generator</n-text>
+        <AppBrand />
       </n-flex>
     </n-layout-header>
     <n-layout content-style="height: calc(100vh - 59px)">
