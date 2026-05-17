@@ -215,6 +215,94 @@ func (s *Server) handleProjectDeleteByIDRequest(args [1]string, argsEscaped bool
 	}
 }
 
+// handleProjectGetByIDRequest handles projectGetByID operation.
+//
+// Получить проект по ID.
+//
+// GET /project/get/{projectID}
+func (s *Server) handleProjectGetByIDRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	ctx := r.Context()
+
+	var (
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: ProjectGetByIDOperation,
+			ID:   "projectGetByID",
+		}
+	)
+	params, err := decodeProjectGetByIDParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+
+	var response ProjectGetByIDRes
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    ProjectGetByIDOperation,
+			OperationSummary: "Получить проект по ID",
+			OperationID:      "projectGetByID",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+				{
+					Name: "projectID",
+					In:   "path",
+				}: params.ProjectID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = ProjectGetByIDParams
+			Response = ProjectGetByIDRes
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackProjectGetByIDParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.ProjectGetByID(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.ProjectGetByID(ctx, params)
+	}
+	if err != nil {
+		defer recordError("Internal", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	if err := encodeProjectGetByIDResponse(response, w); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleProjectListRequest handles projectList operation.
 //
 // Получить список проектов.

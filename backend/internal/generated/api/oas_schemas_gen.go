@@ -26,6 +26,7 @@ func (s *Error) SetMessage(val string) {
 
 func (*Error) projectCreateRes()      {}
 func (*Error) projectDeleteByIDRes()  {}
+func (*Error) projectGetByIDRes()     {}
 func (*Error) projectListRes()        {}
 func (*Error) taskCreateRes()         {}
 func (*Error) taskGetByIDRes()        {}
@@ -342,6 +343,36 @@ func (s *ProjectCreateRequest) SetName(val string) {
 type ProjectDeleteByIDNoContent struct{}
 
 func (*ProjectDeleteByIDNoContent) projectDeleteByIDRes() {}
+
+// Ref: #/components/schemas/ProjectGetByIDResponse
+type ProjectGetByIDResponse struct {
+	// Название проекта.
+	Name string `json:"name"`
+	// Имя автора проекта.
+	AuthorName string `json:"authorName"`
+}
+
+// GetName returns the value of Name.
+func (s *ProjectGetByIDResponse) GetName() string {
+	return s.Name
+}
+
+// GetAuthorName returns the value of AuthorName.
+func (s *ProjectGetByIDResponse) GetAuthorName() string {
+	return s.AuthorName
+}
+
+// SetName sets the value of Name.
+func (s *ProjectGetByIDResponse) SetName(val string) {
+	s.Name = val
+}
+
+// SetAuthorName sets the value of AuthorName.
+func (s *ProjectGetByIDResponse) SetAuthorName(val string) {
+	s.AuthorName = val
+}
+
+func (*ProjectGetByIDResponse) projectGetByIDRes() {}
 
 // Ref: #/components/schemas/ProjectListResponse
 type ProjectListResponse struct {

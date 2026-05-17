@@ -36,7 +36,7 @@ async function projectList() {
   totalPages.value = r.value.totalPages
   projects.value = r.value.projects
   for (const project of r.value.projects) {
-    projectStore.put(project)
+    projectStore.put(project.id, { name: project.name, authorName: project.authorName })
   }
 }
 

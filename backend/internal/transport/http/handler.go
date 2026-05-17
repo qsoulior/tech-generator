@@ -3,6 +3,7 @@ package http
 import (
 	project_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_create"
 	project_delete_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_delete"
+	project_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_get_by_id"
 	project_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_list"
 	task_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_create"
 	task_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_get_by_id"
@@ -22,6 +23,7 @@ import (
 type Handler struct {
 	*ProjectCreateHandler
 	*ProjectDeleteHandler
+	*ProjectGetByIDHandler
 	*ProjectListHandler
 	*TaskCreateHandler
 	*TaskGetByIDHandler
@@ -41,6 +43,7 @@ type Handler struct {
 type (
 	ProjectCreateHandler     = project_create_handler.Handler
 	ProjectDeleteHandler     = project_delete_handler.Handler
+	ProjectGetByIDHandler    = project_get_by_id_handler.Handler
 	ProjectListHandler       = project_list_handler.Handler
 	TaskCreateHandler        = task_create_handler.Handler
 	TaskGetByIDHandler       = task_get_by_id_handler.Handler

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NLayout, NText, NLayoutContent, NLayoutHeader, NFlex, NPagination, NButton } from "naive-ui"
-import { computed, onMounted, ref } from "vue"
+import { onMounted, ref } from "vue"
 import TemplateListItem from "@/components/TemplateListItem.vue"
 import TemplateListSearch from "@/components/TemplateListSearch.vue"
 import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
@@ -18,7 +18,7 @@ const props = defineProps<{
 const apiCall = useApiCall()
 const projectStore = useProjectStore()
 
-const projectName = computed(() => projectStore.get(props.projectID)?.name ?? "")
+const projectName = ref("")
 
 const { page, pageSize, totalPages, pageSizes } = usePagination("шаблонов")
 const totalTemplates = ref(0)
@@ -58,7 +58,14 @@ async function templateList() {
   }))
 }
 
+async function loadProject() {
+  const r = await apiCall(() => projectStore.ensureLoaded(props.projectID))
+  if (!r.ok) return
+  projectName.value = r.value.name
+}
+
 onMounted(async () => {
+  await loadProject()
   await templateList()
 })
 

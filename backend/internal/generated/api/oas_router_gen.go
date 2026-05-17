@@ -124,6 +124,37 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 
+				case 'g': // Prefix: "get/"
+
+					if l := len("get/"); len(elem) >= l && elem[0:l] == "get/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "projectID"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleProjectGetByIDRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
 				case 'l': // Prefix: "list"
 
 					if l := len("list"); len(elem) >= l && elem[0:l] == "list" {
@@ -695,6 +726,40 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.operationID = "projectDeleteByID"
 							r.operationGroup = "ProjectDeleteByID"
 							r.pathPattern = "/project/delete/{projectID}"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
+					}
+
+				case 'g': // Prefix: "get/"
+
+					if l := len("get/"); len(elem) >= l && elem[0:l] == "get/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "projectID"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = ProjectGetByIDOperation
+							r.summary = "Получить проект по ID"
+							r.operationID = "projectGetByID"
+							r.operationGroup = "ProjectGetByID"
+							r.pathPattern = "/project/get/{projectID}"
 							r.args = args
 							r.count = 1
 							return r, true

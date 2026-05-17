@@ -20,6 +20,7 @@ import (
 	error_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/error"
 	project_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_create"
 	project_delete_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_delete"
+	project_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_get_by_id"
 	project_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_list"
 	task_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_create"
 	task_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_get_by_id"
@@ -37,6 +38,7 @@ import (
 	auth_middleware "github.com/qsoulior/tech-generator/backend/internal/transport/http/middleware/auth"
 	project_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_create"
 	project_delete_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_delete"
+	project_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_get_by_id"
 	project_list_by_user_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_list_by_user"
 	task_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_create"
 	task_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_get_by_id"
@@ -137,6 +139,7 @@ func run() (code int) {
 
 	projectCreateUsecase := project_create_usecase.New(db)
 	projectDeleteUsecase := project_delete_usecase.New(db)
+	projectGetByIDUsecase := project_get_by_id_usecase.New(db)
 	projectListUsecase := project_list_by_user_usecase.New(db)
 	taskCreateUsecase := task_create_usecase.New(db, ch)
 	taskGetByIDUsecase := task_get_by_id_usecase.New(db)
@@ -156,6 +159,7 @@ func run() (code int) {
 	apiHandler := &http.Handler{
 		ProjectCreateHandler:     project_create_handler.New(projectCreateUsecase),
 		ProjectDeleteHandler:     project_delete_handler.New(projectDeleteUsecase),
+		ProjectGetByIDHandler:    project_get_by_id_handler.New(projectGetByIDUsecase),
 		ProjectListHandler:       project_list_handler.New(projectListUsecase),
 		TaskCreateHandler:        task_create_handler.New(taskCreateUsecase),
 		TaskGetByIDHandler:       task_get_by_id_handler.New(taskGetByIDUsecase),

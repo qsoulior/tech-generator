@@ -180,6 +180,116 @@ func decodeProjectDeleteByIDParams(args [1]string, argsEscaped bool, r *http.Req
 	return params, nil
 }
 
+// ProjectGetByIDParams is parameters of projectGetByID operation.
+type ProjectGetByIDParams struct {
+	// ID пользователя.
+	XUserID int64
+	// ID проекта.
+	ProjectID int64
+}
+
+func unpackProjectGetByIDParams(packed middleware.Parameters) (params ProjectGetByIDParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "projectID",
+			In:   "path",
+		}
+		params.ProjectID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeProjectGetByIDParams(args [1]string, argsEscaped bool, r *http.Request) (params ProjectGetByIDParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	// Decode path: projectID.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "projectID",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.ProjectID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "projectID",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // ProjectListParams is parameters of projectList operation.
 type ProjectListParams struct {
 	// ID пользователя.

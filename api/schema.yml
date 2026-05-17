@@ -7,6 +7,8 @@ paths:
     $ref: "./paths/project_create.yml#/paths/projectCreate"
   /project/delete/{projectID}:
     $ref: "./paths/project_delete_by_id.yml#/paths/projectDeleteByID"
+  /project/get/{projectID}:
+    $ref: "./paths/project_get_by_id.yml#/paths/projectGetByID"
   /project/list:
     $ref: "./paths/project_list.yml#/paths/projectList"
   /task/create:

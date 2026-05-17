@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/project/get/{projectID}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Получить проект по ID */
+        get: operations["projectGetByID"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/project/list": {
         parameters: {
             query?: never;
@@ -287,6 +304,12 @@ export interface components {
         /** @description Ошибка */
         Error: {
             message: string;
+        };
+        ProjectGetByIDResponse: {
+            /** @description Название проекта */
+            name: string;
+            /** @description Имя автора проекта */
+            authorName: string;
         };
         ProjectListResponse: {
             /** @description Список проектов */
@@ -739,6 +762,41 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    projectGetByID: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description ID пользователя */
+                "X-User-Id": components["parameters"]["UserID"];
+            };
+            path: {
+                /** @description ID проекта */
+                projectID: components["parameters"]["ProjectID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectGetByIDResponse"];
+                };
             };
             /** @description Bad request */
             400: {

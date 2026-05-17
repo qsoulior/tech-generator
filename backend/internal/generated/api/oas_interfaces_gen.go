@@ -9,6 +9,10 @@ type ProjectDeleteByIDRes interface {
 	projectDeleteByIDRes()
 }
 
+type ProjectGetByIDRes interface {
+	projectGetByIDRes()
+}
+
 type ProjectListRes interface {
 	projectListRes()
 }

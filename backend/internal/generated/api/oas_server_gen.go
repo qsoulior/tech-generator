@@ -10,6 +10,7 @@ import (
 type Handler interface {
 	ProjectCreateHandler
 	ProjectDeleteByIDHandler
+	ProjectGetByIDHandler
 	ProjectListHandler
 	TaskCreateHandler
 	TaskGetByIDHandler
@@ -48,6 +49,18 @@ type ProjectDeleteByIDHandler interface {
 	//
 	// DELETE /project/delete/{projectID}
 	ProjectDeleteByID(ctx context.Context, params ProjectDeleteByIDParams) (ProjectDeleteByIDRes, error)
+}
+
+// ProjectGetByIDHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: ProjectGetByID
+type ProjectGetByIDHandler interface {
+	// ProjectGetByID implements projectGetByID operation.
+	//
+	// Получить проект по ID.
+	//
+	// GET /project/get/{projectID}
+	ProjectGetByID(ctx context.Context, params ProjectGetByIDParams) (ProjectGetByIDRes, error)
 }
 
 // ProjectListHandler handles operations described by OpenAPI v3 specification.

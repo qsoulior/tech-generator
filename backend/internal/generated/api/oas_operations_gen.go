@@ -8,6 +8,7 @@ type OperationName = string
 const (
 	ProjectCreateOperation      OperationName = "ProjectCreate"
 	ProjectDeleteByIDOperation  OperationName = "ProjectDeleteByID"
+	ProjectGetByIDOperation     OperationName = "ProjectGetByID"
 	ProjectListOperation        OperationName = "ProjectList"
 	TaskCreateOperation         OperationName = "TaskCreate"
 	TaskGetByIDOperation        OperationName = "TaskGetByID"

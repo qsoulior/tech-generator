@@ -1,0 +1,47 @@
+paths:
+  projectGetByID:
+    x-ogen-operation-group: ProjectGetByID
+    get:
+      operationId: projectGetByID
+      summary: Получить проект по ID
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
+        - $ref: "#/components/parameters/ProjectID"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectGetByIDResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    ProjectID:
+      name: projectID
+      description: ID проекта
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+  schemas:
+    ProjectGetByIDResponse:
+      type: object
+      required:
+        - name
+        - authorName
+      properties:
+        name:
+          type: string
+          description: Название проекта
+        authorName:
+          type: string
+          description: Имя автора проекта
