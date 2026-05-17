@@ -4,15 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/brianvoe/gofakeit/v7"
-	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
 	test_db "github.com/qsoulior/tech-generator/backend/internal/pkg/test/db"
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_create/domain"
 )
-
-const codeUniqueViolation = "23505"
 
 type repositorySuite struct {
 	test_db.PsqlTestSuite
@@ -37,10 +34,7 @@ func (s *repositorySuite) TestRepository_Create() {
 		defer func() { require.NoError(t, test_db.DeleteEntityByID(s.C(), "usr", userID)) }()
 
 		err = repo.Create(ctx, user.Name, want.Email, want.Password)
-
-		var pgErr *pgconn.PgError
-		require.ErrorAs(t, err, &pgErr)
-		require.Equal(t, codeUniqueViolation, pgErr.Code)
+		require.ErrorIs(t, err, domain.ErrUserExists)
 	})
 
 	s.T().Run("ExistsByEmail", func(t *testing.T) {
@@ -51,10 +45,7 @@ func (s *repositorySuite) TestRepository_Create() {
 		defer func() { require.NoError(t, test_db.DeleteEntityByID(s.C(), "usr", userID)) }()
 
 		err = repo.Create(ctx, want.Name, user.Email, want.Password)
-
-		var pgErr *pgconn.PgError
-		require.ErrorAs(t, err, &pgErr)
-		require.Equal(t, codeUniqueViolation, pgErr.Code)
+		require.ErrorIs(t, err, domain.ErrUserExists)
 	})
 
 	s.T().Run("DoesNotExist", func(t *testing.T) {
@@ -72,37 +63,3 @@ func (s *repositorySuite) TestRepository_Create() {
 	})
 }
 
-func (s *repositorySuite) TestRepository_ExistsByNameOrEmail() {
-	ctx := context.Background()
-	repo := New(s.C().DB())
-
-	s.T().Run("ExistsByName", func(t *testing.T) {
-		user := test_db.GenerateEntity[test_db.User]()
-
-		userID, err := test_db.InsertEntityWithID[int64](s.C(), "usr", user)
-		require.NoError(s.T(), err)
-		defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "usr", userID)) }()
-
-		got, err := repo.ExistsByNameOrEmail(ctx, user.Name, gofakeit.Email())
-		require.NoError(t, err)
-		require.True(t, got)
-	})
-
-	s.T().Run("ExistsByEmail", func(t *testing.T) {
-		user := test_db.GenerateEntity[test_db.User]()
-
-		userID, err := test_db.InsertEntityWithID[int64](s.C(), "usr", user)
-		require.NoError(s.T(), err)
-		defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "usr", userID)) }()
-
-		got, err := repo.ExistsByNameOrEmail(ctx, gofakeit.Username(), user.Email)
-		require.NoError(t, err)
-		require.True(t, got)
-	})
-
-	s.T().Run("DoesNotExist", func(t *testing.T) {
-		got, err := repo.ExistsByNameOrEmail(ctx, gofakeit.Username(), gofakeit.Email())
-		require.NoError(t, err)
-		require.False(t, got)
-	})
-}

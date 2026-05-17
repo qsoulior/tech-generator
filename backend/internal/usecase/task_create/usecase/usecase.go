@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/avito-tech/go-transaction-manager/trm/v2"
 	"github.com/samber/lo"
 
 	user_domain "github.com/qsoulior/tech-generator/backend/internal/domain/user"
@@ -14,13 +15,15 @@ type Usecase struct {
 	versionRepo versionRepository
 	taskRepo    taskRepository
 	publisher   publisher
+	trManager   trm.Manager
 }
 
-func New(versionRepo versionRepository, taskRepo taskRepository, publisher publisher) *Usecase {
+func New(versionRepo versionRepository, taskRepo taskRepository, publisher publisher, trManager trm.Manager) *Usecase {
 	return &Usecase{
 		versionRepo: versionRepo,
 		taskRepo:    taskRepo,
 		publisher:   publisher,
+		trManager:   trManager,
 	}
 }
 
@@ -31,19 +34,19 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TaskCreateIn) error {
 		return err
 	}
 
-	// insert task
-	taskID, err := u.taskRepo.Insert(ctx, in)
-	if err != nil {
-		return fmt.Errorf("task repo - insert: %w", err)
-	}
+	// insert task + publish message atomically
+	return u.trManager.Do(ctx, func(ctx context.Context) error {
+		taskID, err := u.taskRepo.Insert(ctx, in)
+		if err != nil {
+			return fmt.Errorf("task repo - insert: %w", err)
+		}
 
-	// send message
-	err = u.publisher.PublishTaskCreated(ctx, taskID)
-	if err != nil {
-		return fmt.Errorf("publisher - publish task created: %w", err)
-	}
+		if err := u.publisher.PublishTaskCreated(ctx, taskID); err != nil {
+			return fmt.Errorf("publisher - publish task created: %w", err)
+		}
 
-	return nil
+		return nil
+	})
 }
 
 func (u *Usecase) handleVersion(ctx context.Context, in domain.TaskCreateIn) error {

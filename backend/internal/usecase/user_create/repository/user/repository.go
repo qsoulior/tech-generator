@@ -2,11 +2,17 @@ package user_repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jmoiron/sqlx"
+
+	"github.com/qsoulior/tech-generator/backend/internal/usecase/user_create/domain"
 )
+
+const pgUniqueViolation = "23505"
 
 type Repository struct {
 	db *sqlx.DB
@@ -34,35 +40,13 @@ func (r *Repository) Create(ctx context.Context, name, email string, password []
 
 	_, err = r.db.ExecContext(ctx, query, args...)
 	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == pgUniqueViolation {
+			return domain.ErrUserExists
+		}
 		return fmt.Errorf("exec query %q: %w", op, err)
 	}
 
 	return nil
 }
 
-func (r *Repository) ExistsByNameOrEmail(ctx context.Context, name, email string) (bool, error) {
-	op := "usr - exists by name or email"
-	selectBuilder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
-		Select("1").
-		From("usr").
-		Where(sq.Or{sq.Eq{"name": name}, sq.Eq{"email": email}})
-
-	existsBuilder := selectBuilder.
-		Prefix("SELECT EXISTS (").
-		Suffix(")")
-
-	query, args, err := existsBuilder.ToSql()
-	if err != nil {
-		return false, fmt.Errorf("build query %q: %w", op, err)
-	}
-
-	query = fmt.Sprintf("-- %s\n%s", op, query)
-
-	var exists bool
-	err = r.db.GetContext(ctx, &exists, query, args...)
-	if err != nil {
-		return false, fmt.Errorf("exec query %q: %w", op, err)
-	}
-
-	return exists, nil
-}

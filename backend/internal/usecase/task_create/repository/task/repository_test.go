@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	trmsqlx "github.com/avito-tech/go-transaction-manager/drivers/sqlx/v2"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
@@ -22,7 +23,7 @@ func Test_repositorySuite(t *testing.T) {
 
 func (s *repositorySuite) TestRepository_Insert() {
 	ctx := context.Background()
-	repo := New(s.C().DB())
+	repo := New(s.C().DB(), trmsqlx.DefaultCtxGetter)
 
 	// user
 	user := test_db.GenerateEntity[test_db.User]()

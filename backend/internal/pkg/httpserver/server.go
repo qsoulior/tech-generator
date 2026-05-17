@@ -11,8 +11,9 @@ import (
 )
 
 type Server struct {
-	server *http.Server
-	logger *slog.Logger
+	server          *http.Server
+	logger          *slog.Logger
+	shutdownTimeout time.Duration
 }
 
 func New(handler http.Handler, logger *slog.Logger, opts ...OptionFunc) *Server {
@@ -27,8 +28,9 @@ func New(handler http.Handler, logger *slog.Logger, opts ...OptionFunc) *Server 
 	}
 
 	server := &Server{
-		server: httpServer,
-		logger: logger,
+		server:          httpServer,
+		logger:          logger,
+		shutdownTimeout: 10 * time.Second,
 	}
 
 	for _, opt := range opts {
@@ -54,7 +56,10 @@ func (s *Server) Run(ctx context.Context) error {
 
 	select {
 	case <-ctx.Done():
-		return s.server.Shutdown(ctx)
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), s.shutdownTimeout)
+		defer cancel()
+
+		return s.server.Shutdown(shutdownCtx)
 	case err := <-errCh:
 		return err
 	}

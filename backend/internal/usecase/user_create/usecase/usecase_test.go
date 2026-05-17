@@ -27,7 +27,6 @@ func TestUsecase_Handle_Success(t *testing.T) {
 		Password: domain.Password("aB12345-"),
 	}
 
-	userRepo.EXPECT().ExistsByNameOrEmail(ctx, in.Name, in.Email).Return(false, nil)
 	passwordHasher.EXPECT().Hash(in.Password).Return([]byte{1, 2, 3}, nil)
 	userRepo.EXPECT().Create(ctx, in.Name, in.Email, []byte{1, 2, 3}).Return(nil)
 
@@ -60,25 +59,8 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			want:  domain.ErrValueEmpty,
 		},
 		{
-			name: "userRepo_ExistsByNameOrEmail",
-			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {
-				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(false, testErr)
-			},
-			in:   validIn,
-			want: testErr,
-		},
-		{
-			name: "userRepo_ExistsByNameOrEmail_UserExists",
-			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {
-				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(true, nil)
-			},
-			in:   validIn,
-			want: domain.ErrUserExists,
-		},
-		{
 			name: "passwordHasher_Hash",
 			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {
-				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(false, nil)
 				passwordHasher.EXPECT().Hash(gomock.Any()).Return(nil, testErr)
 			},
 			in:   validIn,
@@ -87,12 +69,20 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		{
 			name: "userRepo_Create",
 			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {
-				userRepo.EXPECT().ExistsByNameOrEmail(ctx, gomock.Any(), gomock.Any()).Return(false, nil)
 				passwordHasher.EXPECT().Hash(gomock.Any()).Return([]byte{}, nil)
 				userRepo.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(testErr)
 			},
 			in:   validIn,
 			want: testErr,
+		},
+		{
+			name: "userRepo_Create_UserExists",
+			setup: func(userRepo *MockuserRepository, passwordHasher *MockpasswordHasher) {
+				passwordHasher.EXPECT().Hash(gomock.Any()).Return([]byte{}, nil)
+				userRepo.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(domain.ErrUserExists)
+			},
+			in:   validIn,
+			want: domain.ErrUserExists,
 		},
 	}
 	for _, tt := range tests {

@@ -15,3 +15,9 @@ func WriteTimeout(timeout time.Duration) OptionFunc {
 		s.server.WriteTimeout = timeout
 	}
 }
+
+func ShutdownTimeout(timeout time.Duration) OptionFunc {
+	return func(s *Server) {
+		s.shutdownTimeout = timeout
+	}
+}

@@ -10,7 +10,6 @@ import (
 
 type userRepository interface {
 	Create(ctx context.Context, name, email string, password []byte) error
-	ExistsByNameOrEmail(ctx context.Context, name, email string) (bool, error)
 }
 
 type passwordHasher interface {

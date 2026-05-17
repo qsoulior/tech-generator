@@ -55,21 +55,6 @@ func (mr *MockuserRepositoryMockRecorder) Create(ctx, name, email, password any)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockuserRepository)(nil).Create), ctx, name, email, password)
 }
 
-// ExistsByNameOrEmail mocks base method.
-func (m *MockuserRepository) ExistsByNameOrEmail(ctx context.Context, name, email string) (bool, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ExistsByNameOrEmail", ctx, name, email)
-	ret0, _ := ret[0].(bool)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ExistsByNameOrEmail indicates an expected call of ExistsByNameOrEmail.
-func (mr *MockuserRepositoryMockRecorder) ExistsByNameOrEmail(ctx, name, email any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExistsByNameOrEmail", reflect.TypeOf((*MockuserRepository)(nil).ExistsByNameOrEmail), ctx, name, email)
-}
-
 // MockpasswordHasher is a mock of passwordHasher interface.
 type MockpasswordHasher struct {
 	ctrl     *gomock.Controller
