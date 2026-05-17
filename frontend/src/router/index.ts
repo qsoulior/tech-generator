@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router"
-import AuthView from "@/views/AuthView.vue"
-import ProjectListView from "@/views/ProjectListView.vue"
-import ProjectView from "@/views/ProjectView.vue"
-import TemplateView from "@/views/TemplateView.vue"
-import TaskListView from "@/views/TaskListView.vue"
-import TaskView from "@/views/TaskView.vue"
+import { useAuthStore } from "@/stores/auth"
+
+declare module "vue-router" {
+  interface RouteMeta {
+    requiresAuth?: boolean
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,18 +13,20 @@ const router = createRouter({
     {
       path: "/",
       name: "auth",
-      component: AuthView,
+      component: () => import("@/views/AuthView.vue"),
     },
     {
       path: "/projects",
       name: "projectList",
-      component: ProjectListView,
+      component: () => import("@/views/ProjectListView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/projects/:projectID",
       name: "project",
       props: (route) => ({ projectID: Number(route.params.projectID) }),
-      component: ProjectView,
+      component: () => import("@/views/ProjectView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/projects/:projectID/template/:templateID",
@@ -32,7 +35,8 @@ const router = createRouter({
         projectID: Number(route.params.projectID),
         templateID: Number(route.params.templateID),
       }),
-      component: TemplateView,
+      component: () => import("@/views/TemplateView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/projects/:projectID/template/:templateID/tasks",
@@ -41,7 +45,8 @@ const router = createRouter({
         projectID: Number(route.params.projectID),
         templateID: Number(route.params.templateID),
       }),
-      component: TaskListView,
+      component: () => import("@/views/TaskListView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/projects/:projectID/template/:templateID/tasks/:taskID",
@@ -51,9 +56,21 @@ const router = createRouter({
         templateID: Number(route.params.templateID),
         taskID: Number(route.params.taskID),
       }),
-      component: TaskView,
+      component: () => import("@/views/TaskView.vue"),
+      meta: { requiresAuth: true },
     },
   ],
+})
+
+router.beforeEach(async (to) => {
+  if (!to.meta.requiresAuth) return true
+  const authStore = useAuthStore()
+  try {
+    await authStore.ensureLoaded()
+    return true
+  } catch {
+    return { name: "auth" }
+  }
 })
 
 export default router
