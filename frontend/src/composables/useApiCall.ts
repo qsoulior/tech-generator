@@ -1,6 +1,7 @@
 import { useMessage } from "naive-ui"
 import { useRouter } from "vue-router"
 import { ApiError, UnauthorizedApiError } from "@/api/client"
+import { useAuthStore } from "@/stores/auth"
 
 export type ApiCallResult<T> = { ok: true; value: T } | { ok: false }
 
@@ -16,12 +17,14 @@ export type ApiCallResult<T> = { ok: true; value: T } | { ok: false }
 export function useApiCall() {
   const message = useMessage()
   const router = useRouter()
+  const authStore = useAuthStore()
 
   return async function call<T>(fn: () => Promise<T>): Promise<ApiCallResult<T>> {
     try {
       return { ok: true, value: await fn() }
     } catch (e) {
       if (e instanceof UnauthorizedApiError) {
+        authStore.clear()
         if (router.currentRoute.value.name !== "auth") {
           router.push({ name: "auth" })
           return { ok: false }

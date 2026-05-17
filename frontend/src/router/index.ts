@@ -59,12 +59,28 @@ const router = createRouter({
       component: () => import("@/views/TaskView.vue"),
       meta: { requiresAuth: true },
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "notFound",
+      component: () => import("@/views/NotFoundView.vue"),
+    },
   ],
 })
 
 router.beforeEach(async (to) => {
-  if (!to.meta.requiresAuth) return true
   const authStore = useAuthStore()
+
+  if (to.name === "auth") {
+    try {
+      await authStore.ensureLoaded()
+      return { name: "projectList" }
+    } catch {
+      return true
+    }
+  }
+
+  if (!to.meta.requiresAuth) return true
+
   try {
     await authStore.ensureLoaded()
     return true
