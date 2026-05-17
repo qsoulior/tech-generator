@@ -62,4 +62,3 @@ func (s *repositorySuite) TestRepository_Create() {
 		require.Equal(t, want.Password, got[0].Password)
 	})
 }
-

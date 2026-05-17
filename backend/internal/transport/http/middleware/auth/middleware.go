@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/go-faster/jx"
+
 	error_domain "github.com/qsoulior/tech-generator/backend/internal/domain/error"
 	"github.com/qsoulior/tech-generator/backend/internal/generated/api"
 )
@@ -54,8 +56,16 @@ func (m *Middleware) Handle(next *api.Server) http.Handler {
 		if err != nil {
 			var baseErr *error_domain.BaseError
 			if errors.As(err, &baseErr) {
+				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusForbidden)
-				_, _ = w.Write([]byte(err.Error()))
+
+				e := jx.GetEncoder()
+				e.ObjStart()
+				e.FieldStart("error")
+				e.StrEscape(baseErr.Error())
+				e.ObjEnd()
+				_, _ = w.Write(e.Bytes())
+				jx.PutEncoder(e)
 				return
 			}
 

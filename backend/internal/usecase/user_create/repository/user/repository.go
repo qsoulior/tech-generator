@@ -49,4 +49,3 @@ func (r *Repository) Create(ctx context.Context, name, email string, password []
 
 	return nil
 }
-

@@ -7,7 +7,7 @@ defaults:
 on:
   push:
     branches: ["*"]
-    paths: ["backend/**", ".github/workflows/backend.yml"]
+    paths: ["backend/**", "api/**", ".github/workflows/backend.yml"]
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
       - name: Lint
         uses: golangci/golangci-lint-action@v8
         with:
-          version: v2.4
+          version: v2.11
           working-directory: ./backend
 
       - name: Build
