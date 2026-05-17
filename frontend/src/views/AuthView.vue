@@ -5,10 +5,10 @@ import SignUpForm from "@/components/SignUpForm.vue"
 </script>
 
 <template>
-  <n-layout style="min-height: 100dvh">
+  <n-layout class="layout">
     <n-layout-content content-class="layout-content" embedded>
-      <n-flex vertical align="center" justify="center" style="min-height: 100dvh">
-        <n-card style="width: 40rem">
+      <n-flex vertical align="center" justify="center" class="content">
+        <n-card class="card">
           <n-tabs type="line" size="large">
             <n-tab-pane name="Вход">
               <SignInForm />
@@ -24,6 +24,15 @@ import SignUpForm from "@/components/SignUpForm.vue"
 </template>
 
 <style scoped>
+.layout,
+.content {
+  min-height: 100dvh;
+}
+
+.card {
+  width: 40rem;
+}
+
 :deep(.layout-content) {
   padding: 1rem;
   min-height: 100dvh;
@@ -32,7 +41,6 @@ import SignUpForm from "@/components/SignUpForm.vue"
 @media screen and (min-width: 768px) {
   :deep(.layout-content) {
     padding: 2rem;
-    min-height: 100dvh;
   }
 }
 </style>

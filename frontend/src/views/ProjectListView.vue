@@ -44,22 +44,6 @@ onMounted(async () => {
   await projectList()
 })
 
-async function onUpdatePage() {
-  await projectList()
-}
-
-async function onUpdatePageSize() {
-  await projectList()
-}
-
-async function onSubmitModal() {
-  await projectList()
-}
-
-async function onSubmitSearch() {
-  await projectList()
-}
-
 async function onDeleteProject(id: number) {
   projectStore.invalidate(id)
   await projectList()
@@ -68,18 +52,18 @@ async function onDeleteProject(id: number) {
 
 <template>
   <n-layout>
-    <n-layout-header bordered style="padding: 0.5rem 1rem">
-      <n-flex align="center" justify="start" style="padding: 10px 0">
+    <n-layout-header bordered class="header">
+      <n-flex align="center" justify="start" class="header-inner">
         <AppBrand />
       </n-flex>
     </n-layout-header>
     <n-layout content-style="height: calc(100vh - 59px)">
-      <n-layout-content content-class="layout-content" embedded style="height: 100%">
-        <n-flex vertical align="center" style="max-width: 50rem; margin: auto">
-          <ProjectListSearch v-model:value="projectName" @submit="onSubmitSearch" />
-          <n-button secondary style="width: 100%" @click="showModal = true">Добавить проект</n-button>
-          <ProjectCreateModal v-model:show-modal="showModal" @submit="onSubmitModal" />
-          <n-text depth="3" style="width: 100%">Всего: {{ totalProjects }}</n-text>
+      <n-layout-content content-class="layout-content" embedded class="content">
+        <n-flex vertical align="center" class="content-inner">
+          <ProjectListSearch v-model:value="projectName" @submit="projectList" />
+          <n-button secondary class="full-width" @click="showModal = true">Добавить проект</n-button>
+          <ProjectCreateModal v-model:show-modal="showModal" @submit="projectList" />
+          <n-text depth="3" class="full-width">Всего: {{ totalProjects }}</n-text>
           <ProjectListItem
             v-for="project in projects"
             :id="project.id"
@@ -95,8 +79,8 @@ async function onDeleteProject(id: number) {
             :page-count="totalPages"
             show-size-picker
             :page-sizes="pageSizes"
-            @update:page="onUpdatePage"
-            @update:page-size="onUpdatePageSize"
+            @update:page="projectList"
+            @update:page-size="projectList"
           />
         </n-flex>
       </n-layout-content>
@@ -105,6 +89,27 @@ async function onDeleteProject(id: number) {
 </template>
 
 <style scoped>
+.header {
+  padding: 0.5rem 1rem;
+}
+
+.header-inner {
+  padding: 10px 0;
+}
+
+.content {
+  height: 100%;
+}
+
+.content-inner {
+  max-width: 50rem;
+  margin: auto;
+}
+
+.full-width {
+  width: 100%;
+}
+
 :deep(.layout-content) {
   padding: 1.5rem;
 }

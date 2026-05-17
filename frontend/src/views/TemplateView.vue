@@ -208,7 +208,7 @@ const menuItems: HeaderMenuItem[] = [
 
 <template>
   <n-layout>
-    <n-layout-header bordered style="padding: 0.5rem 1rem">
+    <n-layout-header bordered class="header">
       <n-flex align="center" justify="space-between">
         <AppBrand />
         <n-flex align="center" :wrap="false">
@@ -232,11 +232,11 @@ const menuItems: HeaderMenuItem[] = [
     </n-layout-header>
     <n-layout has-sider content-style="height: calc(100vh - 59px)">
       <n-layout-sider collapse-mode="width" width="25%" :collapsed-width="0" show-trigger="bar" bordered>
-        <n-flex vertical style="height: 100%">
-          <n-flex vertical style="padding: 1rem">
+        <n-flex vertical class="sider">
+          <n-flex vertical class="sider-section">
             <n-text>Переменные</n-text>
             <VariableListSearch />
-            <n-button secondary style="width: 100%" @click="showCreateModal = true">Добавить переменную</n-button>
+            <n-button secondary class="full-width" @click="showCreateModal = true">Добавить переменную</n-button>
             <VariableCreateModal
               :template-id="templateID"
               v-model:show-modal="showCreateModal"
@@ -249,16 +249,11 @@ const menuItems: HeaderMenuItem[] = [
               @submit="handleVariableUpdate"
             />
           </n-flex>
-          <n-divider style="margin: 0" />
-          <n-scrollbar style="max-height: 100%" content-style="padding: 1rem">
+          <n-divider class="flush-divider" />
+          <n-scrollbar class="variables" content-style="padding: 1rem">
             <n-flex vertical size="large">
               <n-flex v-for="(variable, index) in variables" :key="index" align="center" justify="space-between">
-                <n-flex
-                  vertical
-                  @click="variableUpdate(variable, index)"
-                  style="flex-grow: 1; cursor: pointer"
-                  :size="0"
-                >
+                <n-flex vertical class="variable-row" :size="0" @click="variableUpdate(variable, index)">
                   <n-text>
                     {{ variable.name }}
                   </n-text>
@@ -282,13 +277,46 @@ const menuItems: HeaderMenuItem[] = [
         </n-flex>
       </n-layout-sider>
       <n-layout-content content-class="layout-content" embedded>
-        <MdEditor v-model="data" language="ru" :toolbars="toolbars" style="height: 100%" />
+        <MdEditor v-model="data" language="ru" :toolbars="toolbars" class="editor" />
       </n-layout-content>
     </n-layout>
   </n-layout>
 </template>
 
 <style scoped>
+.header {
+  padding: 0.5rem 1rem;
+}
+
+.sider {
+  height: 100%;
+}
+
+.sider-section {
+  padding: 1rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.flush-divider {
+  margin: 0;
+}
+
+.variables {
+  max-height: 100%;
+}
+
+.variable-row {
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.editor {
+  height: 100%;
+}
+
 :deep(.layout-content) {
   padding-left: 1.5rem;
 }

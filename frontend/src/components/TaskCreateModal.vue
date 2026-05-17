@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { NModal, NForm, NFormItem, NInput, NButton, useMessage } from "naive-ui"
-import type { FormRules, FormInst } from "naive-ui"
+import { NModal, NForm, NFormItem, NInput, NInputNumber, NButton, useMessage } from "naive-ui"
+import type { FormInst, FormItemRule } from "naive-ui"
 import { ref, watch } from "vue"
 import { taskCreate } from "@/api/task"
 import { useApiCall } from "@/composables/useApiCall"
@@ -23,10 +23,12 @@ interface Variable {
 const formRef = ref<FormInst | null>(null)
 const loading = ref(false)
 
+type VariableValue = string | number | null
+
 interface ModelVariable {
   name: string
   type: string
-  value: string
+  value: VariableValue
 }
 
 interface Model {
@@ -37,11 +39,27 @@ const modelRef = ref<Model>({
   variables: [],
 })
 
-const rules: FormRules = {
-  name: {
-    required: true,
-    message: "Название шаблона не может быть пустым",
+const valueRule: FormItemRule = {
+  required: true,
+  trigger: ["blur", "change"],
+  validator: (_rule, value: VariableValue) => {
+    if (value === null || value === undefined || value === "") {
+      return new Error("Значение не может быть пустым")
+    }
+    return true
   },
+}
+
+function initialValue(type: string): VariableValue {
+  return type === "integer" || type === "float" ? null : ""
+}
+
+function asNumber(value: VariableValue): number | null {
+  return typeof value === "number" ? value : null
+}
+
+function asString(value: VariableValue): string {
+  return typeof value === "string" ? value : ""
 }
 
 function handleValidateClick(e: MouseEvent) {
@@ -59,7 +77,9 @@ async function submit() {
     const r = await apiCall(() =>
       taskCreate({
         versionID: props.versionId,
-        payload: Object.fromEntries(modelRef.value.variables.map((v) => [v.name, v.value])),
+        payload: Object.fromEntries(
+          modelRef.value.variables.map((v) => [v.name, v.value === null ? "" : String(v.value)]),
+        ),
       }),
     )
     if (!r.ok) return
@@ -76,7 +96,7 @@ watch(showModal, (value) => {
     modelRef.value.variables = props.variables.map((variable) => ({
       name: variable.name,
       type: variable.type,
-      value: "",
+      value: initialValue(variable.type),
     }))
   }
 })
@@ -86,14 +106,35 @@ watch(showModal, (value) => {
   <n-modal v-model:show="showModal" preset="card" style="width: 50rem">
     <template #header>Выполнение генерации</template>
     <template #default>
-      <n-form ref="formRef" :model="modelRef" :rules="rules">
+      <n-form ref="formRef" :model="modelRef">
         <n-form-item
           v-for="(variable, index) in modelRef.variables"
           :key="index"
           :path="`variables[${index}].value`"
           :label="variable.name"
+          :rule="valueRule"
         >
-          <n-input v-model:value="variable.value" placeholder="Введите значение" />
+          <n-input-number
+            v-if="variable.type === 'integer'"
+            :value="asNumber(variable.value)"
+            :precision="0"
+            placeholder="Введите целое число"
+            style="width: 100%"
+            @update:value="(v) => (variable.value = v)"
+          />
+          <n-input-number
+            v-else-if="variable.type === 'float'"
+            :value="asNumber(variable.value)"
+            placeholder="Введите число"
+            style="width: 100%"
+            @update:value="(v) => (variable.value = v)"
+          />
+          <n-input
+            v-else
+            :value="asString(variable.value)"
+            placeholder="Введите строку"
+            @update:value="(v) => (variable.value = v)"
+          />
         </n-form-item>
         <n-form-item>
           <n-button
