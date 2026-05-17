@@ -2,6 +2,7 @@
 *.out
 *.log
 *.env
+keys/
 go.work
 dist/
 .vscode/

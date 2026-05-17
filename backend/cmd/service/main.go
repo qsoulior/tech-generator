@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/ed25519"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -13,6 +12,7 @@ import (
 
 	"github.com/qsoulior/tech-generator/backend/internal/config"
 	"github.com/qsoulior/tech-generator/backend/internal/generated/api"
+	"github.com/qsoulior/tech-generator/backend/internal/pkg/ed25519key"
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/httpserver"
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/postgres"
 	"github.com/qsoulior/tech-generator/backend/internal/pkg/rabbitmq"
@@ -123,9 +123,15 @@ func run() (code int) {
 		return 1
 	}
 
-	publicKey, privateKey, err := ed25519.GenerateKey(nil)
+	privateKey, err := ed25519key.LoadPrivateKey(cfg.Ed25519PrivateKeyPath)
 	if err != nil {
-		logger.Error("generate ed25519 key", slog.String("err", err.Error()))
+		logger.Error("load ed25519 private key", slog.String("err", err.Error()))
+		return 1
+	}
+
+	publicKey, err := ed25519key.LoadPublicKey(cfg.Ed25519PublicKeyPath)
+	if err != nil {
+		logger.Error("load ed25519 public key", slog.String("err", err.Error()))
 		return 1
 	}
 

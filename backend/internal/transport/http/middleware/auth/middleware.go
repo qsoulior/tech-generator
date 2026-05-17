@@ -31,6 +31,8 @@ func New(usecase usecase, logger *slog.Logger) *Middleware {
 
 func (m *Middleware) Handle(next *api.Server) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.Header.Del(headerUserID)
+
 		route, ok := next.FindRoute(r.Method, r.URL.Path)
 		if !ok {
 			next.ServeHTTP(w, r)
