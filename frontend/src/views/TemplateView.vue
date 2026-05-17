@@ -10,12 +10,9 @@ import {
   NIcon,
   NText,
   NDivider,
-  NMenu,
   useMessage,
-  type MenuOption,
 } from "naive-ui"
-import { h, onMounted, ref } from "vue"
-import { RouterLink } from "vue-router"
+import { onMounted, ref } from "vue"
 import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
 import RU from "@vavt/cm-extension/dist/locale/ru"
 import "md-editor-v3/lib/style.css"
@@ -24,9 +21,11 @@ import VariableCreateModal from "@/components/VariableCreateModal.vue"
 import VariableUpdateModal from "@/components/VariableUpdateModal.vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
 import TaskCreateModal from "@/components/TaskCreateModal.vue"
+import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
 import { templateGet } from "@/api/template"
 import { versionCreate, type VersionCreateVariable } from "@/api/version"
 import { useApiCall } from "@/composables/useApiCall"
+import { fromBase64, toBase64 } from "@/utils/base64"
 
 const message = useMessage()
 const apiCall = useApiCall()
@@ -130,18 +129,6 @@ async function loadTemplate() {
   }))
 }
 
-function fromBase64(data: string) {
-  const bin = atob(data)
-  const base64 = Uint8Array.from(bin, (m) => m.codePointAt(0) ?? 0)
-  return new TextDecoder().decode(base64)
-}
-
-function toBase64(data: string) {
-  const encoded = new TextEncoder().encode(data)
-  const bin = Array.from(encoded, (byte) => String.fromCodePoint(byte)).join("")
-  return btoa(bin)
-}
-
 async function saveVersion() {
   const r = await apiCall(() =>
     versionCreate({
@@ -205,47 +192,13 @@ const toolbars: ToolbarNames[] = [
   "previewOnly",
 ]
 
-const menuOptions: MenuOption[] = [
+const menuItems: HeaderMenuItem[] = [
+  { key: "projectList", label: "Проекты", to: { name: "projectList" } },
+  { key: "project", label: "Шаблоны", to: { name: "project", params: { projectID: props.projectID } } },
   {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "projectList",
-          },
-        },
-        { default: () => "Проекты" },
-      ),
-    key: "projectList",
-  },
-  {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "project",
-            params: { projectID: props.projectID },
-          },
-        },
-        { default: () => "Шаблоны" },
-      ),
-    key: "project",
-  },
-  {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "taskList",
-            params: { projectID: props.projectID, templateID: props.templateID },
-          },
-        },
-        { default: () => "Результаты" },
-      ),
     key: "taskList",
+    label: "Результаты",
+    to: { name: "taskList", params: { projectID: props.projectID, templateID: props.templateID } },
   },
 ]
 </script>
@@ -267,7 +220,7 @@ const menuOptions: MenuOption[] = [
           />
         </n-flex>
         <n-flex>
-          <n-menu mode="horizontal" :options="menuOptions" />
+          <HeaderMenu :items="menuItems" />
         </n-flex>
       </n-flex>
     </n-layout-header>

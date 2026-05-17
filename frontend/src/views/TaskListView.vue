@@ -1,20 +1,12 @@
 <script setup lang="ts">
 import TaskListItem from "@/components/TaskListItem.vue"
-import {
-  NLayout,
-  NLayoutHeader,
-  NLayoutContent,
-  NFlex,
-  NText,
-  NMenu,
-  NPagination,
-  type MenuOption,
-} from "naive-ui"
-import { h, onMounted, ref } from "vue"
-import { RouterLink } from "vue-router"
+import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
+import { NLayout, NLayoutHeader, NLayoutContent, NFlex, NText, NPagination } from "naive-ui"
+import { computed, onMounted, ref } from "vue"
 import { taskList as fetchTasks, type TaskStatus } from "@/api/task"
 import { templateGet } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
+import { usePagination } from "@/composables/usePagination"
 
 const props = defineProps<{
   templateID: number
@@ -23,17 +15,8 @@ const props = defineProps<{
 
 const apiCall = useApiCall()
 
+const { page, pageSize, totalPages, pageSizes } = usePagination("результатов")
 const totalTasks = ref(0)
-const totalPages = ref(0)
-const page = ref(1)
-const pageSize = ref(50)
-
-const pageSizes = [
-  { label: "10 результатов", value: 10 },
-  { label: "50 результатов", value: 50 },
-  { label: "100 результатов", value: 100 },
-  { label: "500 результатов", value: 500 },
-]
 
 interface Task {
   id: number
@@ -89,54 +72,17 @@ async function onUpdatePageSize() {
   await taskList()
 }
 
-const menuOptionsCenter: MenuOption[] = [
+const menuItemsCenter = computed<HeaderMenuItem[]>(() => [
   {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "template",
-            params: {
-              projectID: props.projectID,
-              templateID: props.templateID,
-            },
-          },
-        },
-        { default: () => templateName.value },
-      ),
     key: "template",
+    label: templateName.value,
+    to: { name: "template", params: { projectID: props.projectID, templateID: props.templateID } },
   },
-]
+])
 
-const menuOptionsRight: MenuOption[] = [
-  {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "projectList",
-          },
-        },
-        { default: () => "Проекты" },
-      ),
-    key: "projectList",
-  },
-  {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "project",
-            params: { projectID: props.projectID },
-          },
-        },
-        { default: () => "Шаблоны" },
-      ),
-    key: "project",
-  },
+const menuItemsRight: HeaderMenuItem[] = [
+  { key: "projectList", label: "Проекты", to: { name: "projectList" } },
+  { key: "project", label: "Шаблоны", to: { name: "project", params: { projectID: props.projectID } } },
 ]
 </script>
 
@@ -146,10 +92,10 @@ const menuOptionsRight: MenuOption[] = [
       <n-flex align="center" justify="space-between">
         <n-text strong>tech-generator</n-text>
         <n-flex>
-          <n-menu mode="horizontal" :options="menuOptionsCenter" />
+          <HeaderMenu :items="menuItemsCenter" />
         </n-flex>
         <n-flex>
-          <n-menu mode="horizontal" :options="menuOptionsRight" />
+          <HeaderMenu :items="menuItemsRight" />
         </n-flex>
       </n-flex>
     </n-layout-header>

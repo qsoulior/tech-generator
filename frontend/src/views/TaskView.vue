@@ -1,24 +1,14 @@
 <script setup lang="ts">
-import {
-  NLayout,
-  NLayoutHeader,
-  NLayoutContent,
-  NFlex,
-  NText,
-  NMenu,
-  NButton,
-  NCard,
-  NTable,
-  type MenuOption,
-} from "naive-ui"
-import { h, onMounted, ref } from "vue"
-import { RouterLink } from "vue-router"
+import { NLayout, NLayoutHeader, NLayoutContent, NFlex, NText, NButton, NCard, NTable } from "naive-ui"
+import { computed, onMounted, ref } from "vue"
 import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
 import RU from "@vavt/cm-extension/dist/locale/ru"
 import "md-editor-v3/lib/preview.css"
+import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
 import { taskGet, type TaskGetError } from "@/api/task"
 import { templateGet } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
+import { fromBase64 } from "@/utils/base64"
 
 const apiCall = useApiCall()
 
@@ -41,12 +31,6 @@ async function loadTask() {
   } else {
     error.value = r.value.task.error ?? null
   }
-}
-
-function fromBase64(data: string) {
-  const bin = atob(data)
-  const base64 = Uint8Array.from(bin, (m) => m.codePointAt(0) ?? 0)
-  return new TextDecoder().decode(base64)
 }
 
 async function loadTemplate() {
@@ -88,67 +72,21 @@ config({
 
 const toolbars: ToolbarNames[] = ["preview", "previewOnly"]
 
-const menuOptionsCenter: MenuOption[] = [
+const menuItemsCenter = computed<HeaderMenuItem[]>(() => [
   {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "template",
-            params: {
-              projectID: props.projectID,
-              templateID: props.templateID,
-            },
-          },
-        },
-        { default: () => templateName.value },
-      ),
     key: "template",
+    label: templateName.value,
+    to: { name: "template", params: { projectID: props.projectID, templateID: props.templateID } },
   },
-]
+])
 
-const menuOptionsRight: MenuOption[] = [
+const menuItemsRight: HeaderMenuItem[] = [
+  { key: "projectList", label: "Проекты", to: { name: "projectList" } },
+  { key: "project", label: "Шаблоны", to: { name: "project", params: { projectID: props.projectID } } },
   {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "projectList",
-          },
-        },
-        { default: () => "Проекты" },
-      ),
-    key: "projectList",
-  },
-  {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "project",
-            params: { projectID: props.projectID },
-          },
-        },
-        { default: () => "Шаблоны" },
-      ),
-    key: "project",
-  },
-  {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "taskList",
-            params: { projectID: props.projectID, templateID: props.templateID },
-          },
-        },
-        { default: () => "Результаты" },
-      ),
     key: "taskList",
+    label: "Результаты",
+    to: { name: "taskList", params: { projectID: props.projectID, templateID: props.templateID } },
   },
 ]
 </script>
@@ -160,12 +98,12 @@ const menuOptionsRight: MenuOption[] = [
         <n-text strong>tech-generator</n-text>
         <n-flex align="center">
           <n-flex>
-            <n-menu mode="horizontal" :options="menuOptionsCenter" />
+            <HeaderMenu :items="menuItemsCenter" />
           </n-flex>
           <n-button v-if="data != null" secondary @click="download()">Скачать</n-button>
         </n-flex>
         <n-flex>
-          <n-menu mode="horizontal" :options="menuOptionsRight" />
+          <HeaderMenu :items="menuItemsRight" />
         </n-flex>
       </n-flex>
     </n-layout-header>

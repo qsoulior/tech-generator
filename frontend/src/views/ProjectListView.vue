@@ -6,24 +6,16 @@ import ProjectListSearch from "@/components/ProjectListSearch.vue"
 import ProjectCreateModal from "@/components/ProjectCreateModal.vue"
 import { projectList as fetchProjects, type ProjectListItem as Project } from "@/api/project"
 import { useApiCall } from "@/composables/useApiCall"
+import { usePagination } from "@/composables/usePagination"
 
 const apiCall = useApiCall()
 
+const { page, pageSize, totalPages, pageSizes } = usePagination("проектов")
 const totalProjects = ref(0)
-const totalPages = ref(0)
-const page = ref(1)
-const pageSize = ref(50)
 
 const projectName = ref<string>("")
 
 const showModal = ref(false)
-
-const pageSizes = [
-  { label: "10 проектов", value: 10 },
-  { label: "50 проектов", value: 50 },
-  { label: "100 проектов", value: 100 },
-  { label: "500 проектов", value: 500 },
-]
 
 const projects = ref<Project[]>([])
 

@@ -1,22 +1,13 @@
 <script setup lang="ts">
-import {
-  NLayout,
-  NText,
-  NLayoutContent,
-  NLayoutHeader,
-  NMenu,
-  NFlex,
-  NPagination,
-  NButton,
-  type MenuOption,
-} from "naive-ui"
-import { h, onMounted, ref } from "vue"
+import { NLayout, NText, NLayoutContent, NLayoutHeader, NFlex, NPagination, NButton } from "naive-ui"
+import { onMounted, ref } from "vue"
 import TemplateListItem from "@/components/TemplateListItem.vue"
 import TemplateListSearch from "@/components/TemplateListSearch.vue"
-import { RouterLink } from "vue-router"
+import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
 import TemplateCreateModal from "@/components/TemplateCreateModal.vue"
 import { templateList as fetchTemplates } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
+import { usePagination } from "@/composables/usePagination"
 
 const props = defineProps<{
   projectID: number
@@ -24,21 +15,12 @@ const props = defineProps<{
 
 const apiCall = useApiCall()
 
+const { page, pageSize, totalPages, pageSizes } = usePagination("шаблонов")
 const totalTemplates = ref(0)
-const totalPages = ref(0)
-const page = ref(1)
-const pageSize = ref(50)
 
 const templateName = ref<string>("")
 
 const showModal = ref(false)
-
-const pageSizes = [
-  { label: "10 шаблонов", value: 10 },
-  { label: "50 шаблонов", value: 50 },
-  { label: "100 шаблонов", value: 100 },
-  { label: "500 шаблонов", value: 500 },
-]
 
 interface Template {
   id: number
@@ -95,21 +77,7 @@ async function onDeleteTemplate() {
   await templateList()
 }
 
-const menuOptions: MenuOption[] = [
-  {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: {
-            name: "projectList",
-          },
-        },
-        { default: () => "Проекты" },
-      ),
-    key: "projectList",
-  },
-]
+const menuItems: HeaderMenuItem[] = [{ key: "projectList", label: "Проекты", to: { name: "projectList" } }]
 </script>
 
 <template>
@@ -118,7 +86,7 @@ const menuOptions: MenuOption[] = [
       <n-flex align="center" justify="space-between">
         <n-text strong>tech-generator</n-text>
         <n-flex>
-          <n-menu mode="horizontal" :options="menuOptions" />
+          <HeaderMenu :items="menuItems" />
         </n-flex>
       </n-flex>
     </n-layout-header>
