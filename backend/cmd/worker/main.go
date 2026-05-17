@@ -61,7 +61,7 @@ func run() (code int) {
 
 	ch, err := conn.Channel()
 	if err != nil {
-		logger.Error("connect  rabbitmq channel", slog.String("err", err.Error()))
+		logger.Error("connect rabbitmq channel", slog.String("err", err.Error()))
 		return 1
 	}
 	defer func() {

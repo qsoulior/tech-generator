@@ -207,7 +207,12 @@ func processConstraint(name string, value any, constraint domain.Constraint) *ta
 		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintExec}
 	}
 
-	if !check.(bool) {
+	result, ok := check.(bool)
+	if !ok {
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintExec}
+	}
+
+	if !result {
 		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintCheck}
 	}
 

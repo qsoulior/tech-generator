@@ -36,7 +36,7 @@ func (s *Service) Build(userID int64, tokenExpiration time.Duration) (domain.Use
 
 	tokenString, err := token.SignedString(s.privateKey)
 	if err != nil {
-		return domain.UserCreateTokenOut{}, fmt.Errorf("token - signed string")
+		return domain.UserCreateTokenOut{}, fmt.Errorf("token - signed string: %v", err)
 	}
 
 	out := domain.UserCreateTokenOut{
