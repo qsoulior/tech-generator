@@ -33,7 +33,7 @@ async function onPositiveClick() {
           <n-text>Автор: {{ props.authorName }}</n-text>
         </n-flex>
         <n-flex>
-          <n-button secondary @click.prevent>
+          <n-button secondary aria-label="Редактировать проект" title="Редактировать проект" @click.prevent>
             <template #icon>
               <n-icon>
                 <IconEditOutlined />
@@ -42,7 +42,7 @@ async function onPositiveClick() {
           </n-button>
           <n-popconfirm positive-text="Да" negative-text="Нет" @positive-click="onPositiveClick">
             <template #trigger>
-              <n-button secondary @click.prevent>
+              <n-button secondary aria-label="Удалить проект" title="Удалить проект" @click.prevent>
                 <template #icon>
                   <n-icon>
                     <IconDeleteOutlined />

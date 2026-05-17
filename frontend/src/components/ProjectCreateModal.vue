@@ -14,6 +14,7 @@ const emit = defineEmits<{
 }>()
 
 const formRef = ref<FormInst | null>(null)
+const loading = ref(false)
 
 interface Model {
   name: string
@@ -40,11 +41,16 @@ function handleValidateClick(e: MouseEvent) {
 }
 
 async function submit(model: Model) {
-  const r = await apiCall(() => projectCreate({ name: model.name }))
-  if (!r.ok) return
+  loading.value = true
+  try {
+    const r = await apiCall(() => projectCreate({ name: model.name }))
+    if (!r.ok) return
 
-  emit("submit")
-  showModal.value = false
+    emit("submit")
+    showModal.value = false
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -57,7 +63,16 @@ async function submit(model: Model) {
           <n-input v-model:value="modelRef.name" placeholder="Введите название проекта" />
         </n-form-item>
         <n-form-item>
-          <n-button style="width: 100%" secondary type="primary" @click="handleValidateClick">Добавить</n-button>
+          <n-button
+            style="width: 100%"
+            secondary
+            type="primary"
+            :loading="loading"
+            :disabled="loading"
+            @click="handleValidateClick"
+          >
+            Добавить
+          </n-button>
         </n-form-item>
       </n-form>
     </template>

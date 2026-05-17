@@ -13,6 +13,7 @@ const apiCall = useApiCall()
 const authStore = useAuthStore()
 
 const formRef = ref<FormInst | null>(null)
+const loading = ref(false)
 
 interface Model {
   name: string
@@ -47,12 +48,17 @@ function handleValidateClick(e: MouseEvent) {
 }
 
 async function signIn(model: Model) {
-  const r = await apiCall(() => userTokenCreate({ name: model.name, password: model.password }))
-  if (!r.ok) return
+  loading.value = true
+  try {
+    const r = await apiCall(() => userTokenCreate({ name: model.name, password: model.password }))
+    if (!r.ok) return
 
-  authStore.clear()
-  router.push({ name: "projectList" })
-  message.success("Вы успешно вошли")
+    authStore.clear()
+    router.push({ name: "projectList" })
+    message.success("Вы успешно вошли")
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -73,7 +79,9 @@ async function signIn(model: Model) {
       <n-checkbox v-model:checked="modelRef.remember"> Запомнить меня </n-checkbox>
     </n-form-item>
     <n-form-item>
-      <n-button secondary type="primary" @click="handleValidateClick">Войти</n-button>
+      <n-button secondary type="primary" :loading="loading" :disabled="loading" @click="handleValidateClick">
+        Войти
+      </n-button>
     </n-form-item>
   </n-form>
 </template>

@@ -39,7 +39,7 @@ async function onPositiveClick() {
         </n-flex>
         <n-popconfirm positive-text="Да" negative-text="Нет" @positive-click="onPositiveClick">
           <template #trigger>
-            <n-button secondary @click.prevent>
+            <n-button secondary aria-label="Удалить шаблон" title="Удалить шаблон" @click.prevent>
               <template #icon>
                 <n-icon>
                   <IconDeleteOutlined />

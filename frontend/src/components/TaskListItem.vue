@@ -42,7 +42,7 @@ const statusToType = new Map<string, TagType>([
         </n-flex>
         <n-text>Автор: {{ props.creatorName }}</n-text>
         <n-text>
-          Создан: {{ props.createdAt.toLocaleString() }} · Обновлен: {{ props.createdAt.toLocaleString() }}
+          Создан: {{ props.createdAt.toLocaleString() }} · Обновлен: {{ props.updatedAt.toLocaleString() }}
         </n-text>
       </n-flex>
     </n-card>

@@ -21,6 +21,7 @@ interface Variable {
 }
 
 const formRef = ref<FormInst | null>(null)
+const loading = ref(false)
 
 interface ModelVariable {
   name: string
@@ -53,16 +54,21 @@ function handleValidateClick(e: MouseEvent) {
 }
 
 async function submit() {
-  const r = await apiCall(() =>
-    taskCreate({
-      versionID: props.versionId,
-      payload: Object.fromEntries(modelRef.value.variables.map((v) => [v.name, v.value])),
-    }),
-  )
-  if (!r.ok) return
+  loading.value = true
+  try {
+    const r = await apiCall(() =>
+      taskCreate({
+        versionID: props.versionId,
+        payload: Object.fromEntries(modelRef.value.variables.map((v) => [v.name, v.value])),
+      }),
+    )
+    if (!r.ok) return
 
-  message.success("Запущена генерация документа")
-  showModal.value = false
+    message.success("Запущена генерация документа")
+    showModal.value = false
+  } finally {
+    loading.value = false
+  }
 }
 
 watch(showModal, (value) => {
@@ -90,7 +96,14 @@ watch(showModal, (value) => {
           <n-input v-model:value="variable.value" placeholder="Введите значение" />
         </n-form-item>
         <n-form-item>
-          <n-button style="width: 100%" secondary type="primary" @click="handleValidateClick">
+          <n-button
+            style="width: 100%"
+            secondary
+            type="primary"
+            :loading="loading"
+            :disabled="loading"
+            @click="handleValidateClick"
+          >
             Запустить генерацию
           </n-button>
         </n-form-item>

@@ -13,6 +13,7 @@ const apiCall = useApiCall()
 const authStore = useAuthStore()
 
 const formRef = ref<FormInst | null>(null)
+const loading = ref(false)
 
 interface Model {
   name: string
@@ -68,17 +69,22 @@ function handleValidateClick(e: MouseEvent) {
 }
 
 async function signUp(model: Model) {
-  const created = await apiCall(() =>
-    userCreate({ name: model.name, email: model.email, password: model.password }),
-  )
-  if (!created.ok) return
+  loading.value = true
+  try {
+    const created = await apiCall(() =>
+      userCreate({ name: model.name, email: model.email, password: model.password }),
+    )
+    if (!created.ok) return
 
-  const signedIn = await apiCall(() => userTokenCreate({ name: model.name, password: model.password }))
-  if (!signedIn.ok) return
+    const signedIn = await apiCall(() => userTokenCreate({ name: model.name, password: model.password }))
+    if (!signedIn.ok) return
 
-  authStore.clear()
-  router.push({ name: "projectList" })
-  message.success("Вы успешно зарегистрировались")
+    authStore.clear()
+    router.push({ name: "projectList" })
+    message.success("Вы успешно зарегистрировались")
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -107,7 +113,9 @@ async function signUp(model: Model) {
       />
     </n-form-item>
     <n-form-item>
-      <n-button secondary type="primary" @click="handleValidateClick">Зарегистрироваться</n-button>
+      <n-button secondary type="primary" :loading="loading" :disabled="loading" @click="handleValidateClick">
+        Зарегистрироваться
+      </n-button>
     </n-form-item>
   </n-form>
 </template>
