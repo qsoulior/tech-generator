@@ -1,19 +1,15 @@
 import { apiGet, apiPost } from "./client"
+import type { components } from "./schema.gen"
 
-export interface TaskListItem {
-  id: number
-  status: string
-  versionNumber: number
-  creatorName: string
-  createdAt: string
-  updatedAt: string
-}
-
-export interface TaskListResult {
-  tasks: TaskListItem[]
-  totalTasks: number
-  totalPages: number
-}
+export type TaskListResult = components["schemas"]["TaskListResponse"]
+export type TaskListItem = TaskListResult["tasks"][number]
+export type TaskStatus = components["schemas"]["TaskStatus"]
+export type TaskGetResult = components["schemas"]["TaskGetByIDResponse"]
+export type TaskGetTask = TaskGetResult["task"]
+export type TaskGetError = NonNullable<TaskGetTask["error"]>
+export type TaskGetVariableError = NonNullable<TaskGetError["variableErrors"]>[number]
+export type TaskGetConstraintError = NonNullable<TaskGetVariableError["constraintErrors"]>[number]
+export type TaskCreateInput = components["schemas"]["TaskCreateRequest"]
 
 export interface TaskListParams {
   templateID: number
@@ -30,47 +26,8 @@ export function taskList(params: TaskListParams): Promise<TaskListResult> {
   return apiGet<TaskListResult>(`/task/list?${search}`)
 }
 
-export interface TaskGetConstraintError {
-  id: string
-  name: string
-  message: string
-}
-
-export interface TaskGetVariableError {
-  id: number
-  name: string
-  message?: string
-  constraintErrors: TaskGetConstraintError[]
-}
-
-export interface TaskGetError {
-  message?: string
-  variableErrors: TaskGetVariableError[]
-}
-
-export interface TaskGetTask {
-  id: number
-  versionID: number
-  status: string
-  payload: Record<string, string>
-  error: TaskGetError
-  creatorName: string
-  createdAt: string
-  updatedAt: string
-}
-
-export interface TaskGetResult {
-  task: TaskGetTask
-  result: string | null
-}
-
 export function taskGet(taskID: number): Promise<TaskGetResult> {
   return apiGet<TaskGetResult>(`/task/get/${taskID}`)
-}
-
-export interface TaskCreateInput {
-  versionID: number
-  payload: Record<string, string>
 }
 
 export function taskCreate(input: TaskCreateInput): Promise<void> {

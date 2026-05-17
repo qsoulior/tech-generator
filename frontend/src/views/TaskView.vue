@@ -39,7 +39,7 @@ async function loadTask() {
   if (r.value.result != null) {
     data.value = fromBase64(r.value.result)
   } else {
-    error.value = r.value.task.error
+    error.value = r.value.task.error ?? null
   }
 }
 

@@ -12,7 +12,7 @@ import {
 } from "naive-ui"
 import { h, onMounted, ref } from "vue"
 import { RouterLink } from "vue-router"
-import { taskList as fetchTasks } from "@/api/task"
+import { taskList as fetchTasks, type TaskStatus } from "@/api/task"
 import { templateGet } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
 
@@ -37,7 +37,7 @@ const pageSizes = [
 
 interface Task {
   id: number
-  status: string
+  status: TaskStatus
   versionNumber: number
   creatorName: string
   createdAt: Date
@@ -66,7 +66,7 @@ async function taskList() {
     versionNumber: task.versionNumber,
     creatorName: task.creatorName,
     createdAt: new Date(task.createdAt),
-    updatedAt: new Date(task.updatedAt),
+    updatedAt: new Date(task.updatedAt ?? task.createdAt),
   }))
 }
 

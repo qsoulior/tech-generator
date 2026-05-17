@@ -1,17 +1,13 @@
 import { apiDelete, apiGet, apiPost } from "./client"
+import type { components } from "./schema.gen"
 
-export interface TemplateListItem {
-  id: number
-  name: string
-  authorName: string
-  createdAt: string
-}
-
-export interface TemplateListResult {
-  templates: TemplateListItem[]
-  totalTemplates: number
-  totalPages: number
-}
+export type TemplateListResult = components["schemas"]["TemplateListResponse"]
+export type TemplateListItem = TemplateListResult["templates"][number]
+export type TemplateGetResult = components["schemas"]["TemplateGetByIDResponse"]
+export type TemplateGetVersion = components["schemas"]["TemplateGetByIDVersion"]
+export type TemplateGetVariable = TemplateGetVersion["variables"][number]
+export type TemplateGetConstraint = TemplateGetVariable["constraints"][number]
+export type TemplateCreateInput = components["schemas"]["TemplateCreateRequest"]
 
 export interface TemplateListParams {
   projectID: number
@@ -31,40 +27,8 @@ export function templateList(params: TemplateListParams): Promise<TemplateListRe
   return apiGet<TemplateListResult>(`/template/list/${params.projectID}?${search}`)
 }
 
-export interface TemplateGetConstraint {
-  name: string
-  expression: string
-  isActive: boolean
-}
-
-export interface TemplateGetVariable {
-  name: string
-  type: string
-  isInput: boolean
-  expression: string
-  constraints: TemplateGetConstraint[]
-}
-
-export interface TemplateGetVersion {
-  id: number
-  number: number
-  data: string
-  createdAt: string
-  variables: TemplateGetVariable[]
-}
-
-export interface TemplateGetResult {
-  name: string
-  version?: TemplateGetVersion
-}
-
 export function templateGet(templateID: number): Promise<TemplateGetResult> {
   return apiGet<TemplateGetResult>(`/template/get/${templateID}`)
-}
-
-export interface TemplateCreateInput {
-  name: string
-  projectID: number
 }
 
 export function templateCreate(input: TemplateCreateInput): Promise<void> {

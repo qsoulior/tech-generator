@@ -1,28 +1,10 @@
 import { apiPost } from "./client"
+import type { components } from "./schema.gen"
 
-export interface VersionCreateConstraint {
-  name: string
-  expression: string
-  isActive: boolean
-}
-
-export interface VersionCreateVariable {
-  name: string
-  type: string
-  expression: string
-  isInput: boolean
-  constraints: VersionCreateConstraint[]
-}
-
-export interface VersionCreateInput {
-  templateID: number
-  data: string
-  variables: VersionCreateVariable[]
-}
-
-export interface VersionCreateResult {
-  id: number
-}
+export type VersionCreateInput = components["schemas"]["VersionCreateRequest"]
+export type VersionCreateVariable = VersionCreateInput["variables"][number]
+export type VersionCreateConstraint = VersionCreateVariable["constraints"][number]
+export type VersionCreateResult = components["schemas"]["VersionCreateResponse"]
 
 export function versionCreate(input: VersionCreateInput): Promise<VersionCreateResult> {
   return apiPost<VersionCreateResult>(`/version/create`, input)

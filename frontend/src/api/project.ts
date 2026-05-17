@@ -1,16 +1,9 @@
 import { apiDelete, apiGet, apiPost } from "./client"
+import type { components } from "./schema.gen"
 
-export interface ProjectListItem {
-  id: number
-  name: string
-  authorName: string
-}
-
-export interface ProjectListResult {
-  projects: ProjectListItem[]
-  totalProjects: number
-  totalPages: number
-}
+export type ProjectListResult = components["schemas"]["ProjectListResponse"]
+export type ProjectListItem = ProjectListResult["projects"][number]
+export type ProjectCreateInput = components["schemas"]["ProjectCreateRequest"]
 
 export interface ProjectListParams {
   page: number
@@ -27,10 +20,6 @@ export function projectList(params: ProjectListParams): Promise<ProjectListResul
     search.append("projectName", params.projectName)
   }
   return apiGet<ProjectListResult>(`/project/list?${search}`)
-}
-
-export interface ProjectCreateInput {
-  name: string
 }
 
 export function projectCreate(input: ProjectCreateInput): Promise<void> {

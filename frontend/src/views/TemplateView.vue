@@ -25,7 +25,7 @@ import VariableUpdateModal from "@/components/VariableUpdateModal.vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
 import TaskCreateModal from "@/components/TaskCreateModal.vue"
 import { templateGet } from "@/api/template"
-import { versionCreate } from "@/api/version"
+import { versionCreate, type VersionCreateVariable } from "@/api/version"
 import { useApiCall } from "@/composables/useApiCall"
 
 const message = useMessage()
@@ -120,9 +120,13 @@ async function loadTemplate() {
   variables.value = r.value.version.variables.map((variable) => ({
     name: variable.name,
     type: variable.type,
-    expression: variable.expression,
+    expression: variable.expression ?? "",
     inputType: variable.isInput ? "input" : "computed",
-    constraints: variable.constraints,
+    constraints: variable.constraints.map((constraint) => ({
+      name: constraint.name,
+      expression: constraint.expression,
+      isActive: constraint.isActive,
+    })),
   }))
 }
 
@@ -143,9 +147,9 @@ async function saveVersion() {
     versionCreate({
       templateID: props.templateID,
       data: toBase64(data.value),
-      variables: variables.value.map((variable) => ({
+      variables: variables.value.map<VersionCreateVariable>((variable) => ({
         name: variable.name,
-        type: variable.type,
+        type: variable.type as VersionCreateVariable["type"],
         expression: variable.expression,
         isInput: variable.inputType == "input",
         constraints: variable.constraints,

@@ -1,18 +1,11 @@
 import { apiPost } from "./client"
+import type { components } from "./schema.gen"
 
-export interface UserCreateInput {
-  name: string
-  email: string
-  password: string
-}
+export type UserCreateInput = components["schemas"]["UserCreateRequest"]
+export type UserTokenCreateInput = components["schemas"]["UserTokenCreateRequest"]
 
 export function userCreate(input: UserCreateInput): Promise<void> {
   return apiPost<void>(`/user/create`, input)
-}
-
-export interface UserTokenCreateInput {
-  name: string
-  password: string
 }
 
 export function userTokenCreate(input: UserTokenCreateInput): Promise<void> {
