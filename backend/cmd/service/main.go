@@ -184,7 +184,7 @@ func run() (code int) {
 
 	corsMiddleware := cors.New(cors.Options{
 		AllowedOrigins:   cfg.ServiceAllowedOrigins,
-		AllowedHeaders:   []string{"*"},
+		AllowedHeaders:   []string{"Content-Type", "Accept"},
 		AllowedMethods:   []string{"GET", "HEAD", "POST", "DELETE"},
 		AllowCredentials: true,
 	})

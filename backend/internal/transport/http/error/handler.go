@@ -25,7 +25,6 @@ func (h *Handler) Handle(ctx context.Context, w http.ResponseWriter, r *http.Req
 	w.WriteHeader(code)
 
 	if code == http.StatusInternalServerError {
-		w.WriteHeader(http.StatusInternalServerError)
 		h.logger.Error("internal server error",
 			slog.String("path", r.URL.Path),
 			slog.String("err", err.Error()))
