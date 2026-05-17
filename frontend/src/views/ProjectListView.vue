@@ -48,6 +48,11 @@ async function onDeleteProject(id: number) {
   projectStore.invalidate(id)
   await projectList()
 }
+
+function onUpdateProject(id: number, name: string) {
+  const project = projects.value.find((p) => p.id === id)
+  if (project) project.name = name
+}
 </script>
 
 <template>
@@ -71,6 +76,7 @@ async function onDeleteProject(id: number) {
             :name="project.name"
             :author-name="project.authorName"
             @delete="onDeleteProject"
+            @update="onUpdateProject"
           >
           </ProjectListItem>
           <n-pagination

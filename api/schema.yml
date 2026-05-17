@@ -11,6 +11,8 @@ paths:
     $ref: "./paths/project_get_by_id.yml#/paths/projectGetByID"
   /project/list:
     $ref: "./paths/project_list.yml#/paths/projectList"
+  /project/update/{projectID}:
+    $ref: "./paths/project_update_by_id.yml#/paths/projectUpdateByID"
   /task/create:
     $ref: "./paths/task_create.yml#/paths/taskCreate"
   /task/get/{taskID}:
@@ -25,6 +27,8 @@ paths:
     $ref: "./paths/template_get_by_id.yml#/paths/templateGetByID"
   /template/list/{projectID}:
     $ref: "./paths/template_list.yml#/paths/templateList"
+  /template/update/{templateID}:
+    $ref: "./paths/template_update_by_id.yml#/paths/templateUpdateByID"
   /user/create:
     $ref: "./paths/user_create.yml#/paths/userCreate"
   /user/get:

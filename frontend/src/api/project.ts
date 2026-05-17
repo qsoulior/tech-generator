@@ -5,6 +5,7 @@ export type ProjectListResult = components["schemas"]["ProjectListResponse"]
 export type ProjectListItem = ProjectListResult["projects"][number]
 export type ProjectGetResult = components["schemas"]["ProjectGetByIDResponse"]
 export type ProjectCreateInput = components["schemas"]["ProjectCreateRequest"]
+export type ProjectUpdateInput = components["schemas"]["ProjectUpdateRequest"]
 
 export interface ProjectListParams {
   page: number
@@ -29,6 +30,10 @@ export function projectGet(projectID: number): Promise<ProjectGetResult> {
 
 export function projectCreate(input: ProjectCreateInput): Promise<void> {
   return apiPost<void>(`/project/create`, input)
+}
+
+export function projectUpdate(id: number, input: ProjectUpdateInput): Promise<void> {
+  return apiPost<void>(`/project/update/${id}`, input)
 }
 
 export function projectDelete(id: number): Promise<void> {

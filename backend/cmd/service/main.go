@@ -22,6 +22,7 @@ import (
 	project_delete_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_delete"
 	project_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_get_by_id"
 	project_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_list"
+	project_update_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_update"
 	task_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_create"
 	task_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_get_by_id"
 	task_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_list"
@@ -29,6 +30,7 @@ import (
 	template_delete_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_delete"
 	template_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_get_by_id"
 	template_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_list"
+	template_update_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_update"
 	user_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_create"
 	user_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_get_by_id"
 	user_token_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_token_create"
@@ -40,6 +42,7 @@ import (
 	project_delete_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_delete"
 	project_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_get_by_id"
 	project_list_by_user_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_list_by_user"
+	project_update_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_update"
 	task_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_create"
 	task_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_get_by_id"
 	task_list_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_list"
@@ -47,6 +50,7 @@ import (
 	template_delete_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_delete"
 	template_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id"
 	template_list_by_user_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_list_by_user"
+	template_update_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_update"
 	user_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_create"
 	user_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_get_by_id"
 	user_token_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_token_create"
@@ -141,6 +145,7 @@ func run() (code int) {
 	projectDeleteUsecase := project_delete_usecase.New(db)
 	projectGetByIDUsecase := project_get_by_id_usecase.New(db)
 	projectListUsecase := project_list_by_user_usecase.New(db)
+	projectUpdateUsecase := project_update_usecase.New(db)
 	taskCreateUsecase := task_create_usecase.New(db, ch)
 	taskGetByIDUsecase := task_get_by_id_usecase.New(db)
 	taskListUsecase := task_list_usecase.New(db)
@@ -148,6 +153,7 @@ func run() (code int) {
 	templateDeleteUsecase := template_delete_usecase.New(db)
 	templateGetByIDUsecase := template_get_by_id_usecase.New(db)
 	templateListUsecase := template_list_by_user_usecase.New(db)
+	templateUpdateUsecase := template_update_usecase.New(db)
 	userCreateUsecase := user_create_usecase.New(db)
 	userGetByIDUsecase := user_get_by_id_usecase.New(db)
 	userTokenCreateUsecase := user_token_create_usecase.New(db, privateKey, cfg)
@@ -161,6 +167,7 @@ func run() (code int) {
 		ProjectDeleteHandler:     project_delete_handler.New(projectDeleteUsecase),
 		ProjectGetByIDHandler:    project_get_by_id_handler.New(projectGetByIDUsecase),
 		ProjectListHandler:       project_list_handler.New(projectListUsecase),
+		ProjectUpdateHandler:     project_update_handler.New(projectUpdateUsecase),
 		TaskCreateHandler:        task_create_handler.New(taskCreateUsecase),
 		TaskGetByIDHandler:       task_get_by_id_handler.New(taskGetByIDUsecase),
 		TaskListHandler:          task_list_handler.New(taskListUsecase),
@@ -168,6 +175,7 @@ func run() (code int) {
 		TemplateDeleteHandler:    template_delete_handler.New(templateDeleteUsecase),
 		TemplateGetByIDHandler:   template_get_by_id_handler.New(templateGetByIDUsecase),
 		TemplateListHandler:      template_list_handler.New(templateListUsecase),
+		TemplateUpdateHandler:    template_update_handler.New(templateUpdateUsecase),
 		UserCreateHandler:        user_create_handler.New(userCreateUsecase),
 		UserGetByIDHandler:       user_get_by_id_handler.New(userGetByIDUsecase),
 		UserTokenCreateHandler:   user_token_create_handler.New(userTokenCreateUsecase),

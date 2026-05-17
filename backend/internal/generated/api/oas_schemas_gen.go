@@ -28,6 +28,7 @@ func (*Error) projectCreateRes()      {}
 func (*Error) projectDeleteByIDRes()  {}
 func (*Error) projectGetByIDRes()     {}
 func (*Error) projectListRes()        {}
+func (*Error) projectUpdateByIDRes()  {}
 func (*Error) taskCreateRes()         {}
 func (*Error) taskGetByIDRes()        {}
 func (*Error) taskListRes()           {}
@@ -35,6 +36,7 @@ func (*Error) templateCreateRes()     {}
 func (*Error) templateDeleteByIDRes() {}
 func (*Error) templateGetByIDRes()    {}
 func (*Error) templateListRes()       {}
+func (*Error) templateUpdateByIDRes() {}
 func (*Error) userCreateRes()         {}
 func (*Error) userGetByIDRes()        {}
 func (*Error) userTokenCreateRes()    {}
@@ -454,6 +456,27 @@ func (s *ProjectListResponseProjectsItem) SetName(val string) {
 // SetAuthorName sets the value of AuthorName.
 func (s *ProjectListResponseProjectsItem) SetAuthorName(val string) {
 	s.AuthorName = val
+}
+
+// ProjectUpdateByIDNoContent is response for ProjectUpdateByID operation.
+type ProjectUpdateByIDNoContent struct{}
+
+func (*ProjectUpdateByIDNoContent) projectUpdateByIDRes() {}
+
+// Ref: #/components/schemas/ProjectUpdateRequest
+type ProjectUpdateRequest struct {
+	// Название проекта.
+	Name string `json:"name"`
+}
+
+// GetName returns the value of Name.
+func (s *ProjectUpdateRequest) GetName() string {
+	return s.Name
+}
+
+// SetName sets the value of Name.
+func (s *ProjectUpdateRequest) SetName(val string) {
+	s.Name = val
 }
 
 type Sorting struct {
@@ -1412,6 +1435,27 @@ func (s *TemplateListResponseTemplatesItem) SetCreatedAt(val time.Time) {
 // SetUpdatedAt sets the value of UpdatedAt.
 func (s *TemplateListResponseTemplatesItem) SetUpdatedAt(val OptDateTime) {
 	s.UpdatedAt = val
+}
+
+// TemplateUpdateByIDNoContent is response for TemplateUpdateByID operation.
+type TemplateUpdateByIDNoContent struct{}
+
+func (*TemplateUpdateByIDNoContent) templateUpdateByIDRes() {}
+
+// Ref: #/components/schemas/TemplateUpdateRequest
+type TemplateUpdateRequest struct {
+	// Название шаблона.
+	Name string `json:"name"`
+}
+
+// GetName returns the value of Name.
+func (s *TemplateUpdateRequest) GetName() string {
+	return s.Name
+}
+
+// SetName sets the value of Name.
+func (s *TemplateUpdateRequest) SetName(val string) {
+	s.Name = val
 }
 
 // UserCreateCreated is response for UserCreate operation.

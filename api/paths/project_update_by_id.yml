@@ -1,0 +1,44 @@
+paths:
+  projectUpdateByID:
+    x-ogen-operation-group: ProjectUpdateByID
+    post:
+      operationId: projectUpdateByID
+      summary: Обновить проект
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
+        - $ref: "#/components/parameters/ProjectID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectUpdateRequest"
+      responses:
+        204:
+          description: No content
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    ProjectID:
+      name: projectID
+      description: ID проекта
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+  schemas:
+    ProjectUpdateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Название проекта

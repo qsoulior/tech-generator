@@ -20,7 +20,9 @@ import VariableListSearch from "@/components/VariableListSearch.vue"
 import VariableCreateModal from "@/components/VariableCreateModal.vue"
 import VariableUpdateModal from "@/components/VariableUpdateModal.vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
+import IconEditOutlined from "@/components/icons/IconEditOutlined.vue"
 import TaskCreateModal from "@/components/TaskCreateModal.vue"
+import TemplateUpdateModal from "@/components/TemplateUpdateModal.vue"
 import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
 import AppBrand from "@/components/AppBrand.vue"
 import { versionCreate, type VersionCreateVariable } from "@/api/version"
@@ -40,6 +42,7 @@ const props = defineProps<{
 const showCreateModal = ref(false)
 const showUpdateModal = ref(false)
 const showTaskCreateModal = ref(false)
+const showTemplateUpdateModal = ref(false)
 
 const inputTypeToString = new Map([
   ["input", "Входная"],
@@ -131,6 +134,11 @@ async function loadTemplate() {
   }))
 }
 
+function onTemplateRename(newName: string) {
+  name.value = newName
+  templateStore.invalidate(props.templateID)
+}
+
 async function saveVersion() {
   const r = await apiCall(() =>
     versionCreate({
@@ -213,6 +221,24 @@ const menuItems: HeaderMenuItem[] = [
         <AppBrand />
         <n-flex align="center" :wrap="false">
           <n-text>{{ name }}</n-text>
+          <n-button
+            secondary
+            aria-label="Редактировать шаблон"
+            title="Редактировать шаблон"
+            @click="showTemplateUpdateModal = true"
+          >
+            <template #icon>
+              <n-icon>
+                <IconEditOutlined />
+              </n-icon>
+            </template>
+          </n-button>
+          <TemplateUpdateModal
+            v-model:show-modal="showTemplateUpdateModal"
+            :template-id="templateID"
+            :initial-name="name"
+            @submit="onTemplateRename"
+          />
           <n-text>v{{ versionNumber }}</n-text>
           <n-button secondary @click="saveVersion">Сохранить</n-button>
           <n-button secondary :disabled="versionID == undefined" @click="showTaskCreateModal = true">

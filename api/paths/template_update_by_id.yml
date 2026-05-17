@@ -1,0 +1,44 @@
+paths:
+  templateUpdateByID:
+    x-ogen-operation-group: TemplateUpdateByID
+    post:
+      operationId: templateUpdateByID
+      summary: Обновить шаблон
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
+        - $ref: "#/components/parameters/TemplateID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TemplateUpdateRequest"
+      responses:
+        204:
+          description: No content
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    TemplateID:
+      name: templateID
+      description: ID шаблона
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+  schemas:
+    TemplateUpdateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Название шаблона

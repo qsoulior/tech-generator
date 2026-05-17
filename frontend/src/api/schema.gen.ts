@@ -72,6 +72,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/project/update/{projectID}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Обновить проект */
+        post: operations["projectUpdateByID"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/task/create": {
         parameters: {
             query?: never;
@@ -185,6 +202,23 @@ export interface paths {
         get: operations["templateList"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/template/update/{templateID}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Обновить шаблон */
+        post: operations["templateUpdateByID"];
         delete?: never;
         options?: never;
         head?: never;
@@ -334,6 +368,10 @@ export interface components {
              * @description Общее количество страниц
              */
             totalPages: number;
+        };
+        ProjectUpdateRequest: {
+            /** @description Название проекта */
+            name: string;
         };
         TaskCreateRequest: {
             /**
@@ -551,6 +589,10 @@ export interface components {
              * @description Общее количество страниц
              */
             totalPages: number;
+        };
+        TemplateUpdateRequest: {
+            /** @description Название шаблона */
+            name: string;
         };
         UserCreateRequest: {
             /** @description Имя пользователя */
@@ -850,6 +892,43 @@ export interface operations {
             };
         };
     };
+    projectUpdateByID: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description ID пользователя */
+                "X-User-Id": components["parameters"]["UserID"];
+            };
+            path: {
+                /** @description ID проекта */
+                projectID: components["parameters"]["ProjectID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     taskCreate: {
         parameters: {
             query?: never;
@@ -1096,6 +1175,43 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["TemplateListResponse"];
                 };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    templateUpdateByID: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description ID пользователя */
+                "X-User-Id": components["parameters"]["UserID"];
+            };
+            path: {
+                /** @description ID шаблона */
+                templateID: components["parameters"]["TemplateID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemplateUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Bad request */
             400: {

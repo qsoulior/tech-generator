@@ -12,6 +12,7 @@ type Handler interface {
 	ProjectDeleteByIDHandler
 	ProjectGetByIDHandler
 	ProjectListHandler
+	ProjectUpdateByIDHandler
 	TaskCreateHandler
 	TaskGetByIDHandler
 	TaskListHandler
@@ -19,6 +20,7 @@ type Handler interface {
 	TemplateDeleteByIDHandler
 	TemplateGetByIDHandler
 	TemplateListHandler
+	TemplateUpdateByIDHandler
 	UserCreateHandler
 	UserGetByIDHandler
 	UserTokenCreateHandler
@@ -73,6 +75,18 @@ type ProjectListHandler interface {
 	//
 	// GET /project/list
 	ProjectList(ctx context.Context, params ProjectListParams) (ProjectListRes, error)
+}
+
+// ProjectUpdateByIDHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: ProjectUpdateByID
+type ProjectUpdateByIDHandler interface {
+	// ProjectUpdateByID implements projectUpdateByID operation.
+	//
+	// Обновить проект.
+	//
+	// POST /project/update/{projectID}
+	ProjectUpdateByID(ctx context.Context, req *ProjectUpdateRequest, params ProjectUpdateByIDParams) (ProjectUpdateByIDRes, error)
 }
 
 // TaskCreateHandler handles operations described by OpenAPI v3 specification.
@@ -157,6 +171,18 @@ type TemplateListHandler interface {
 	//
 	// GET /template/list/{projectID}
 	TemplateList(ctx context.Context, params TemplateListParams) (TemplateListRes, error)
+}
+
+// TemplateUpdateByIDHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: TemplateUpdateByID
+type TemplateUpdateByIDHandler interface {
+	// TemplateUpdateByID implements templateUpdateByID operation.
+	//
+	// Обновить шаблон.
+	//
+	// POST /template/update/{templateID}
+	TemplateUpdateByID(ctx context.Context, req *TemplateUpdateRequest, params TemplateUpdateByIDParams) (TemplateUpdateByIDRes, error)
 }
 
 // UserCreateHandler handles operations described by OpenAPI v3 specification.

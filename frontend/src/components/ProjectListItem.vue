@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { NFlex, NCard, NText, NButton, NIcon, NPopconfirm } from "naive-ui"
+import { ref } from "vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
 import IconEditOutlined from "@/components/icons/IconEditOutlined.vue"
+import ProjectUpdateModal from "@/components/ProjectUpdateModal.vue"
 import { projectDelete } from "@/api/project"
 import { useApiCall } from "@/composables/useApiCall"
+import { useProjectStore } from "@/stores/project"
 
 const apiCall = useApiCall()
+const projectStore = useProjectStore()
 
 const props = defineProps<{
   id: number
@@ -15,12 +19,24 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   delete: [id: number]
+  update: [id: number, name: string]
 }>()
+
+const showUpdateModal = ref(false)
 
 async function onPositiveClick() {
   const r = await apiCall(() => projectDelete(props.id))
   if (!r.ok) return
   emit("delete", props.id)
+}
+
+function onEditClick() {
+  showUpdateModal.value = true
+}
+
+function onUpdateSubmit(name: string) {
+  projectStore.put(props.id, { name, authorName: props.authorName })
+  emit("update", props.id, name)
 }
 </script>
 
@@ -33,7 +49,7 @@ async function onPositiveClick() {
           <n-text>Автор: {{ props.authorName }}</n-text>
         </n-flex>
         <n-flex>
-          <n-button secondary aria-label="Редактировать проект" title="Редактировать проект" @click.prevent>
+          <n-button secondary aria-label="Редактировать проект" title="Редактировать проект" @click.prevent="onEditClick">
             <template #icon>
               <n-icon>
                 <IconEditOutlined />
@@ -55,5 +71,11 @@ async function onPositiveClick() {
         </n-flex>
       </n-flex>
     </n-card>
+    <ProjectUpdateModal
+      v-model:show-modal="showUpdateModal"
+      :project-id="id"
+      :initial-name="name"
+      @submit="onUpdateSubmit"
+    />
   </router-link>
 </template>

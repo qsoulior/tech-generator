@@ -89,6 +89,11 @@ async function onDeleteTemplate() {
   await templateList()
 }
 
+function onUpdateTemplate(id: number, name: string) {
+  const template = templates.value.find((t) => t.id === id)
+  if (template) template.name = name
+}
+
 const menuItems: HeaderMenuItem[] = [{ key: "projectList", label: "Проекты", to: { name: "projectList" } }]
 </script>
 
@@ -119,6 +124,7 @@ const menuItems: HeaderMenuItem[] = [{ key: "projectList", label: "Проект�
             :author-name="template.authorName"
             :created-at="template.createdAt"
             @delete="onDeleteTemplate"
+            @update="onUpdateTemplate"
           >
           </TemplateListItem>
           <n-pagination

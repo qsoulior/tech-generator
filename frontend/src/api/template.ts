@@ -8,6 +8,7 @@ export type TemplateGetVersion = components["schemas"]["TemplateGetByIDVersion"]
 export type TemplateGetVariable = TemplateGetVersion["variables"][number]
 export type TemplateGetConstraint = TemplateGetVariable["constraints"][number]
 export type TemplateCreateInput = components["schemas"]["TemplateCreateRequest"]
+export type TemplateUpdateInput = components["schemas"]["TemplateUpdateRequest"]
 
 export interface TemplateListParams {
   projectID: number
@@ -33,6 +34,10 @@ export function templateGet(templateID: number): Promise<TemplateGetResult> {
 
 export function templateCreate(input: TemplateCreateInput): Promise<void> {
   return apiPost<void>(`/template/create`, input)
+}
+
+export function templateUpdate(templateID: number, input: TemplateUpdateInput): Promise<void> {
+  return apiPost<void>(`/template/update/${templateID}`, input)
 }
 
 export function templateDelete(templateID: number): Promise<void> {

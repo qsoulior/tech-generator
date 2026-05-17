@@ -17,6 +17,10 @@ type ProjectListRes interface {
 	projectListRes()
 }
 
+type ProjectUpdateByIDRes interface {
+	projectUpdateByIDRes()
+}
+
 type TaskCreateRes interface {
 	taskCreateRes()
 }
@@ -43,6 +47,10 @@ type TemplateGetByIDRes interface {
 
 type TemplateListRes interface {
 	templateListRes()
+}
+
+type TemplateUpdateByIDRes interface {
+	templateUpdateByIDRes()
 }
 
 type UserCreateRes interface {

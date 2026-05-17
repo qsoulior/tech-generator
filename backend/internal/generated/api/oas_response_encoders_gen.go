@@ -129,6 +129,30 @@ func encodeProjectListResponse(response ProjectListRes, w http.ResponseWriter) e
 	}
 }
 
+func encodeProjectUpdateByIDResponse(response ProjectUpdateByIDRes, w http.ResponseWriter) error {
+	switch response := response.(type) {
+	case *ProjectUpdateByIDNoContent:
+		w.WriteHeader(204)
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeTaskCreateResponse(response TaskCreateRes, w http.ResponseWriter) error {
 	switch response := response.(type) {
 	case *TaskCreateCreated:
@@ -337,6 +361,30 @@ func encodeTemplateListResponse(response TemplateListRes, w http.ResponseWriter)
 		if _, err := e.WriteTo(w); err != nil {
 			return errors.Wrap(err, "write")
 		}
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeTemplateUpdateByIDResponse(response TemplateUpdateByIDRes, w http.ResponseWriter) error {
+	switch response := response.(type) {
+	case *TemplateUpdateByIDNoContent:
+		w.WriteHeader(204)
 
 		return nil
 
