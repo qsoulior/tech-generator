@@ -67,13 +67,23 @@ const router = createRouter({
   ],
 })
 
+// On initial navigation, a guard redirect sometimes doesn't reach history.replaceState,
+// so the address bar keeps showing the originally requested URL. Reconcile it after every nav.
+router.afterEach((to) => {
+  const current = window.location.pathname + window.location.search + window.location.hash
+  if (current !== to.fullPath) {
+    window.history.replaceState(window.history.state, "", to.fullPath)
+  }
+})
+
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
 
   if (to.name === "auth") {
     try {
       await authStore.ensureLoaded()
-      return { name: "projectList" }
+      const redirect = to.query.redirect
+      return typeof redirect === "string" && redirect.startsWith("/") ? redirect : { name: "projectList" }
     } catch {
       return true
     }
@@ -85,7 +95,7 @@ router.beforeEach(async (to) => {
     await authStore.ensureLoaded()
     return true
   } catch {
-    return { name: "auth" }
+    return { name: "auth", query: { redirect: to.fullPath } }
   }
 })
 

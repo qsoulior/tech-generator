@@ -2,12 +2,13 @@
 import { useMessage, NForm, NFormItem, NInput, NButton } from "naive-ui"
 import type { FormInst, FormRules, FormItemRule } from "naive-ui"
 import { ref } from "vue"
-import { useRouter } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import { userCreate, userTokenCreate } from "@/api/user"
 import { useApiCall } from "@/composables/useApiCall"
 import { useAuthStore } from "@/stores/auth"
 
 const router = useRouter()
+const route = useRoute()
 const message = useMessage()
 const apiCall = useApiCall()
 const authStore = useAuthStore()
@@ -82,7 +83,9 @@ async function signUp(model: Model) {
     if (!signedIn.ok) return
 
     authStore.clear()
-    router.push({ name: "projectList" })
+    const redirect = route.query.redirect
+    const target = typeof redirect === "string" && redirect.startsWith("/") ? redirect : "/projects"
+    router.replace(target)
     message.success("Вы успешно зарегистрировались")
   } finally {
     loading.value = false
