@@ -24,6 +24,7 @@ type Handler interface {
 	UserCreateHandler
 	UserGetByIDHandler
 	UserTokenCreateHandler
+	UserTokenDeleteHandler
 	VersionCreateHandler
 	VersionCreateFromHandler
 	VersionListHandler
@@ -219,6 +220,18 @@ type UserTokenCreateHandler interface {
 	//
 	// POST /user/token/create
 	UserTokenCreate(ctx context.Context, req *UserTokenCreateRequest) (UserTokenCreateRes, error)
+}
+
+// UserTokenDeleteHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: UserTokenDelete
+type UserTokenDeleteHandler interface {
+	// UserTokenDelete implements userTokenDelete operation.
+	//
+	// Удалить токен пользователя (logout).
+	//
+	// DELETE /user/token/delete
+	UserTokenDelete(ctx context.Context) (*UserTokenDeleteNoContent, error)
 }
 
 // VersionCreateHandler handles operations described by OpenAPI v3 specification.

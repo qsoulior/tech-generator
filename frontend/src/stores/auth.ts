@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { ref } from "vue"
-import { userGet, type UserGetResult } from "@/api/user"
+import { userGet, userTokenDelete, type UserGetResult } from "@/api/user"
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<UserGetResult | null>(null)
@@ -16,5 +16,10 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = null
   }
 
-  return { user, ensureLoaded, clear }
+  async function signOut() {
+    await userTokenDelete()
+    user.value = null
+  }
+
+  return { user, ensureLoaded, clear, signOut }
 })

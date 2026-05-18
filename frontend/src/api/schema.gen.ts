@@ -276,6 +276,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/user/token/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Удалить токен пользователя (logout) */
+        delete: operations["userTokenDelete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/version/create_from": {
         parameters: {
             query?: never;
@@ -632,6 +649,8 @@ export interface components {
              * @description Пароль пользователя
              */
             password: string;
+            /** @description При true cookie сохраняется между сессиями браузера; при false выставляется session-cookie */
+            remember: boolean;
         };
         VersionCreateFromRequest: {
             /**
@@ -1316,6 +1335,25 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Error"];
                 };
+            };
+        };
+    };
+    userTokenDelete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    "Set-Cookie": string;
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

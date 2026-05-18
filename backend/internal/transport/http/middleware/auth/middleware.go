@@ -16,6 +16,7 @@ const headerUserID = "X-User-Id"
 
 var nonAuth = map[string]struct{}{
 	"userTokenCreate": {},
+	"userTokenDelete": {},
 	"userCreate":      {},
 }
 

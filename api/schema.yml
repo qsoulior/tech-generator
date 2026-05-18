@@ -35,6 +35,8 @@ paths:
     $ref: "./paths/user_get_by_id.yml#/paths/userGetByID"
   /user/token/create:
     $ref: "./paths/user_token_create.yml#/paths/userTokenCreate"
+  /user/token/delete:
+    $ref: "./paths/user_token_delete.yml#/paths/userTokenDelete"
   /version/create_from:
     $ref: "./paths/version_create_from.yml#/paths/versionCreateFrom"
   /version/create:

@@ -1,0 +1,14 @@
+paths:
+  userTokenDelete:
+    x-ogen-operation-group: UserTokenDelete
+    delete:
+      operationId: userTokenDelete
+      summary: Удалить токен пользователя (logout)
+      responses:
+        204:
+          description: No content
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: string

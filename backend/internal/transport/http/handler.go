@@ -17,6 +17,7 @@ import (
 	user_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_create"
 	user_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_get_by_id"
 	user_token_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_token_create"
+	user_token_delete_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_token_delete"
 	version_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/version_create"
 	version_create_from_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/version_create_from"
 	version_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/version_list"
@@ -39,6 +40,7 @@ type Handler struct {
 	*UserCreateHandler
 	*UserGetByIDHandler
 	*UserTokenCreateHandler
+	*UserTokenDeleteHandler
 	*VersionCreateHandler
 	*VersionCreateFromHandler
 	*VersionListHandler
@@ -61,6 +63,7 @@ type (
 	UserCreateHandler        = user_create_handler.Handler
 	UserGetByIDHandler       = user_get_by_id_handler.Handler
 	UserTokenCreateHandler   = user_token_create_handler.Handler
+	UserTokenDeleteHandler   = user_token_delete_handler.Handler
 	VersionCreateHandler     = version_create_handler.Handler
 	VersionCreateFromHandler = version_create_from_handler.Handler
 	VersionListHandler       = version_list_handler.Handler

@@ -76,7 +76,9 @@ async function signUp(model: Model) {
     )
     if (!created.ok) return
 
-    const signedIn = await apiCall(() => userTokenCreate({ name: model.name, password: model.password }))
+    const signedIn = await apiCall(() =>
+      userTokenCreate({ name: model.name, password: model.password, remember: true }),
+    )
     if (!signedIn.ok) return
 
     authStore.clear()

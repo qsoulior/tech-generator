@@ -49,7 +49,9 @@ func (h *Handler) UserTokenCreate(ctx context.Context, req *api.UserTokenCreateR
 		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Expires:  out.ExpiresAt,
+	}
+	if req.Remember {
+		cookie.Expires = out.ExpiresAt
 	}
 
 	resp := api.UserTokenCreateCreated{

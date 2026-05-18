@@ -517,24 +517,58 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 
-				case 't': // Prefix: "token/create"
+				case 't': // Prefix: "token/"
 
-					if l := len("token/create"); len(elem) >= l && elem[0:l] == "token/create" {
+					if l := len("token/"); len(elem) >= l && elem[0:l] == "token/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						// Leaf node.
-						switch r.Method {
-						case "POST":
-							s.handleUserTokenCreateRequest([0]string{}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "POST")
+						break
+					}
+					switch elem[0] {
+					case 'c': // Prefix: "create"
+
+						if l := len("create"); len(elem) >= l && elem[0:l] == "create" {
+							elem = elem[l:]
+						} else {
+							break
 						}
 
-						return
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleUserTokenCreateRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+
+					case 'd': // Prefix: "delete"
+
+						if l := len("delete"); len(elem) >= l && elem[0:l] == "delete" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "DELETE":
+								s.handleUserTokenDeleteRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "DELETE")
+							}
+
+							return
+						}
+
 					}
 
 				}
@@ -1240,29 +1274,68 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 					}
 
-				case 't': // Prefix: "token/create"
+				case 't': // Prefix: "token/"
 
-					if l := len("token/create"); len(elem) >= l && elem[0:l] == "token/create" {
+					if l := len("token/"); len(elem) >= l && elem[0:l] == "token/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						// Leaf node.
-						switch method {
-						case "POST":
-							r.name = UserTokenCreateOperation
-							r.summary = "Создать токен пользователя"
-							r.operationID = "userTokenCreate"
-							r.operationGroup = "UserTokenCreate"
-							r.pathPattern = "/user/token/create"
-							r.args = args
-							r.count = 0
-							return r, true
-						default:
-							return
+						break
+					}
+					switch elem[0] {
+					case 'c': // Prefix: "create"
+
+						if l := len("create"); len(elem) >= l && elem[0:l] == "create" {
+							elem = elem[l:]
+						} else {
+							break
 						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = UserTokenCreateOperation
+								r.summary = "Создать токен пользователя"
+								r.operationID = "userTokenCreate"
+								r.operationGroup = "UserTokenCreate"
+								r.pathPattern = "/user/token/create"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+					case 'd': // Prefix: "delete"
+
+						if l := len("delete"); len(elem) >= l && elem[0:l] == "delete" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "DELETE":
+								r.name = UserTokenDeleteOperation
+								r.summary = "Удалить токен пользователя (logout)"
+								r.operationID = "userTokenDelete"
+								r.operationGroup = "UserTokenDelete"
+								r.pathPattern = "/user/token/delete"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
 					}
 
 				}

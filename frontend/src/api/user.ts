@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from "./client"
+import { apiDelete, apiGet, apiPost } from "./client"
 import type { components } from "./schema.gen"
 
 export type UserCreateInput = components["schemas"]["UserCreateRequest"]
@@ -11,6 +11,10 @@ export function userCreate(input: UserCreateInput): Promise<void> {
 
 export function userTokenCreate(input: UserTokenCreateInput): Promise<void> {
   return apiPost<void>(`/user/token/create`, input)
+}
+
+export function userTokenDelete(): Promise<void> {
+  return apiDelete(`/user/token/delete`)
 }
 
 export function userGet(): Promise<UserGetResult> {

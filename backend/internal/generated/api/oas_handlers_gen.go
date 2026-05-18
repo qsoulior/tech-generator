@@ -1531,6 +1531,71 @@ func (s *Server) handleUserTokenCreateRequest(args [0]string, argsEscaped bool, 
 	}
 }
 
+// handleUserTokenDeleteRequest handles userTokenDelete operation.
+//
+// Удалить токен пользователя (logout).
+//
+// DELETE /user/token/delete
+func (s *Server) handleUserTokenDeleteRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	ctx := r.Context()
+
+	var (
+		err error
+	)
+
+	var rawBody []byte
+
+	var response *UserTokenDeleteNoContent
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    UserTokenDeleteOperation,
+			OperationSummary: "Удалить токен пользователя (logout)",
+			OperationID:      "userTokenDelete",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = struct{}
+			Response = *UserTokenDeleteNoContent
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.UserTokenDelete(ctx)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.UserTokenDelete(ctx)
+	}
+	if err != nil {
+		defer recordError("Internal", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	if err := encodeUserTokenDeleteResponse(response, w); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleVersionCreateRequest handles versionCreate operation.
 //
 // Создать версию шаблона.

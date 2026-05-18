@@ -22,6 +22,7 @@ const (
 	UserCreateOperation         OperationName = "UserCreate"
 	UserGetByIDOperation        OperationName = "UserGetByID"
 	UserTokenCreateOperation    OperationName = "UserTokenCreate"
+	UserTokenDeleteOperation    OperationName = "UserTokenDelete"
 	VersionCreateOperation      OperationName = "VersionCreate"
 	VersionCreateFromOperation  OperationName = "VersionCreateFrom"
 	VersionListOperation        OperationName = "VersionList"

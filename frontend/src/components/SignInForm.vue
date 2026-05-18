@@ -50,7 +50,9 @@ function handleValidateClick(e: MouseEvent) {
 async function signIn(model: Model) {
   loading.value = true
   try {
-    const r = await apiCall(() => userTokenCreate({ name: model.name, password: model.password }))
+    const r = await apiCall(() =>
+      userTokenCreate({ name: model.name, password: model.password, remember: model.remember }),
+    )
     if (!r.ok) return
 
     authStore.clear()

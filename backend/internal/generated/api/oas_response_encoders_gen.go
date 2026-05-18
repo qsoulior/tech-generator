@@ -500,6 +500,28 @@ func encodeUserTokenCreateResponse(response UserTokenCreateRes, w http.ResponseW
 	}
 }
 
+func encodeUserTokenDeleteResponse(response *UserTokenDeleteNoContent, w http.ResponseWriter) error {
+	// Encoding response headers.
+	{
+		h := uri.NewHeaderEncoder(w.Header())
+		// Encode "Set-Cookie" header.
+		{
+			cfg := uri.HeaderParameterEncodingConfig{
+				Name:    "Set-Cookie",
+				Explode: false,
+			}
+			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+				return e.EncodeValue(conv.StringToString(response.SetCookie))
+			}); err != nil {
+				return errors.Wrap(err, "encode Set-Cookie header")
+			}
+		}
+	}
+	w.WriteHeader(204)
+
+	return nil
+}
+
 func encodeVersionCreateResponse(response VersionCreateRes, w http.ResponseWriter) error {
 	switch response := response.(type) {
 	case *VersionCreateResponse:

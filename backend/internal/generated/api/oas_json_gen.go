@@ -3578,11 +3578,16 @@ func (s *UserTokenCreateRequest) encodeFields(e *jx.Encoder) {
 		e.FieldStart("password")
 		e.Str(s.Password)
 	}
+	{
+		e.FieldStart("remember")
+		e.Bool(s.Remember)
+	}
 }
 
-var jsonFieldsNameOfUserTokenCreateRequest = [2]string{
+var jsonFieldsNameOfUserTokenCreateRequest = [3]string{
 	0: "name",
 	1: "password",
+	2: "remember",
 }
 
 // Decode decodes UserTokenCreateRequest from json.
@@ -3618,6 +3623,18 @@ func (s *UserTokenCreateRequest) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"password\"")
 			}
+		case "remember":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Bool()
+				s.Remember = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"remember\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -3628,7 +3645,7 @@ func (s *UserTokenCreateRequest) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

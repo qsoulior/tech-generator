@@ -1580,6 +1580,9 @@ type UserTokenCreateRequest struct {
 	Name string `json:"name"`
 	// Пароль пользователя.
 	Password string `json:"password"`
+	// При true cookie сохраняется между сессиями браузера; при
+	// false выставляется session-cookie.
+	Remember bool `json:"remember"`
 }
 
 // GetName returns the value of Name.
@@ -1592,6 +1595,11 @@ func (s *UserTokenCreateRequest) GetPassword() string {
 	return s.Password
 }
 
+// GetRemember returns the value of Remember.
+func (s *UserTokenCreateRequest) GetRemember() bool {
+	return s.Remember
+}
+
 // SetName sets the value of Name.
 func (s *UserTokenCreateRequest) SetName(val string) {
 	s.Name = val
@@ -1600,6 +1608,26 @@ func (s *UserTokenCreateRequest) SetName(val string) {
 // SetPassword sets the value of Password.
 func (s *UserTokenCreateRequest) SetPassword(val string) {
 	s.Password = val
+}
+
+// SetRemember sets the value of Remember.
+func (s *UserTokenCreateRequest) SetRemember(val bool) {
+	s.Remember = val
+}
+
+// UserTokenDeleteNoContent is response for UserTokenDelete operation.
+type UserTokenDeleteNoContent struct {
+	SetCookie string
+}
+
+// GetSetCookie returns the value of SetCookie.
+func (s *UserTokenDeleteNoContent) GetSetCookie() string {
+	return s.SetCookie
+}
+
+// SetSetCookie sets the value of SetCookie.
+func (s *UserTokenDeleteNoContent) SetSetCookie(val string) {
+	s.SetCookie = val
 }
 
 // VersionCreateFromCreated is response for VersionCreateFrom operation.
