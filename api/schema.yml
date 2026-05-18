@@ -21,6 +21,10 @@ paths:
     $ref: "./paths/task_list.yml#/paths/taskList"
   /template/create:
     $ref: "./paths/template_create.yml#/paths/templateCreate"
+  /template/create_from_default:
+    $ref: "./paths/template_create_from_default.yml#/paths/templateCreateFromDefault"
+  /template/default/list:
+    $ref: "./paths/template_default_list.yml#/paths/templateDefaultList"
   /template/delete/{templateID}:
     $ref: "./paths/template_delete_by_id.yml#/paths/templateDeleteByID"
   /template/get/{templateID}:

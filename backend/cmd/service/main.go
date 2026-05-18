@@ -27,6 +27,8 @@ import (
 	task_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_get_by_id"
 	task_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_list"
 	template_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_create"
+	template_create_from_default_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_create_from_default"
+	template_default_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_default_list"
 	template_delete_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_delete"
 	template_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_get_by_id"
 	template_get_meta_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_get_meta_by_id"
@@ -50,11 +52,13 @@ import (
 	task_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_get_by_id"
 	task_list_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_list"
 	template_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_create"
+	template_create_from_default_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_create_from_default"
 	template_delete_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_delete"
 	template_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_by_id"
 	template_get_meta_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_get_meta_by_id"
 	template_import_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_import"
 	template_list_by_user_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_list_by_user"
+	template_list_default_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_list_default"
 	template_update_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_update"
 	user_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_create"
 	user_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_get_by_id"
@@ -155,6 +159,8 @@ func run() (code int) {
 	taskGetByIDUsecase := task_get_by_id_usecase.New(db)
 	taskListUsecase := task_list_usecase.New(db)
 	templateCreateUsecase := template_create_usecase.New(db)
+	templateCreateFromDefaultUsecase := template_create_from_default_usecase.New(db)
+	templateDefaultListUsecase := template_list_default_usecase.New(db)
 	templateDeleteUsecase := template_delete_usecase.New(db)
 	templateGetByIDUsecase := template_get_by_id_usecase.New(db)
 	templateGetMetaByIDUsecase := template_get_meta_by_id_usecase.New(db)
@@ -170,28 +176,30 @@ func run() (code int) {
 	versionListUsecase := version_list_usecase.New(db)
 
 	apiHandler := &http.Handler{
-		ProjectCreateHandler:       project_create_handler.New(projectCreateUsecase),
-		ProjectDeleteHandler:       project_delete_handler.New(projectDeleteUsecase),
-		ProjectGetByIDHandler:      project_get_by_id_handler.New(projectGetByIDUsecase),
-		ProjectListHandler:         project_list_handler.New(projectListUsecase),
-		ProjectUpdateHandler:       project_update_handler.New(projectUpdateUsecase),
-		TaskCreateHandler:          task_create_handler.New(taskCreateUsecase),
-		TaskGetByIDHandler:         task_get_by_id_handler.New(taskGetByIDUsecase),
-		TaskListHandler:            task_list_handler.New(taskListUsecase),
-		TemplateCreateHandler:      template_create_handler.New(templateCreateUsecase),
-		TemplateDeleteHandler:      template_delete_handler.New(templateDeleteUsecase),
-		TemplateGetByIDHandler:     template_get_by_id_handler.New(templateGetByIDUsecase),
-		TemplateGetMetaByIDHandler: template_get_meta_by_id_handler.New(templateGetMetaByIDUsecase),
-		TemplateImportHandler:      template_import_handler.New(templateImportUsecase),
-		TemplateListHandler:        template_list_handler.New(templateListUsecase),
-		TemplateUpdateHandler:      template_update_handler.New(templateUpdateUsecase),
-		UserCreateHandler:          user_create_handler.New(userCreateUsecase),
-		UserGetByIDHandler:         user_get_by_id_handler.New(userGetByIDUsecase),
-		UserTokenCreateHandler:     user_token_create_handler.New(userTokenCreateUsecase),
-		UserTokenDeleteHandler:     user_token_delete_handler.New(),
-		VersionCreateHandler:       version_create_handler.New(versionCreateUsecase),
-		VersionCreateFromHandler:   version_create_from_handler.New(versionCreateFromUsecase),
-		VersionListHandler:         version_list_handler.New(versionListUsecase),
+		ProjectCreateHandler:             project_create_handler.New(projectCreateUsecase),
+		ProjectDeleteHandler:             project_delete_handler.New(projectDeleteUsecase),
+		ProjectGetByIDHandler:            project_get_by_id_handler.New(projectGetByIDUsecase),
+		ProjectListHandler:               project_list_handler.New(projectListUsecase),
+		ProjectUpdateHandler:             project_update_handler.New(projectUpdateUsecase),
+		TaskCreateHandler:                task_create_handler.New(taskCreateUsecase),
+		TaskGetByIDHandler:               task_get_by_id_handler.New(taskGetByIDUsecase),
+		TaskListHandler:                  task_list_handler.New(taskListUsecase),
+		TemplateCreateHandler:            template_create_handler.New(templateCreateUsecase),
+		TemplateCreateFromDefaultHandler: template_create_from_default_handler.New(templateCreateFromDefaultUsecase),
+		TemplateDefaultListHandler:       template_default_list_handler.New(templateDefaultListUsecase),
+		TemplateDeleteHandler:            template_delete_handler.New(templateDeleteUsecase),
+		TemplateGetByIDHandler:           template_get_by_id_handler.New(templateGetByIDUsecase),
+		TemplateGetMetaByIDHandler:       template_get_meta_by_id_handler.New(templateGetMetaByIDUsecase),
+		TemplateImportHandler:            template_import_handler.New(templateImportUsecase),
+		TemplateListHandler:              template_list_handler.New(templateListUsecase),
+		TemplateUpdateHandler:            template_update_handler.New(templateUpdateUsecase),
+		UserCreateHandler:                user_create_handler.New(userCreateUsecase),
+		UserGetByIDHandler:               user_get_by_id_handler.New(userGetByIDUsecase),
+		UserTokenCreateHandler:           user_token_create_handler.New(userTokenCreateUsecase),
+		UserTokenDeleteHandler:           user_token_delete_handler.New(),
+		VersionCreateHandler:             version_create_handler.New(versionCreateUsecase),
+		VersionCreateFromHandler:         version_create_from_handler.New(versionCreateFromUsecase),
+		VersionListHandler:               version_list_handler.New(versionListUsecase),
 	}
 
 	apiServer, err := api.NewServer(apiHandler,

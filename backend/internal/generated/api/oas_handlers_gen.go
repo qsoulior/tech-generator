@@ -896,6 +896,205 @@ func (s *Server) handleTemplateCreateRequest(args [0]string, argsEscaped bool, w
 	}
 }
 
+// handleTemplateCreateFromDefaultRequest handles templateCreateFromDefault operation.
+//
+// Создать шаблон на базе библиотечного (стандартного).
+//
+// POST /template/create_from_default
+func (s *Server) handleTemplateCreateFromDefaultRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	ctx := r.Context()
+
+	var (
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: TemplateCreateFromDefaultOperation,
+			ID:   "templateCreateFromDefault",
+		}
+	)
+	params, err := decodeTemplateCreateFromDefaultParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeTemplateCreateFromDefaultRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response TemplateCreateFromDefaultRes
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    TemplateCreateFromDefaultOperation,
+			OperationSummary: "Создать шаблон на базе библиотечного (стандартного)",
+			OperationID:      "templateCreateFromDefault",
+			Body:             request,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = *TemplateCreateFromDefaultRequest
+			Params   = TemplateCreateFromDefaultParams
+			Response = TemplateCreateFromDefaultRes
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackTemplateCreateFromDefaultParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.TemplateCreateFromDefault(ctx, request, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.TemplateCreateFromDefault(ctx, request, params)
+	}
+	if err != nil {
+		defer recordError("Internal", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	if err := encodeTemplateCreateFromDefaultResponse(response, w); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleTemplateDefaultListRequest handles templateDefaultList operation.
+//
+// Получить список библиотечных (стандартных) шаблонов.
+//
+// GET /template/default/list
+func (s *Server) handleTemplateDefaultListRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	ctx := r.Context()
+
+	var (
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: TemplateDefaultListOperation,
+			ID:   "templateDefaultList",
+		}
+	)
+	params, err := decodeTemplateDefaultListParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+
+	var response TemplateDefaultListRes
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    TemplateDefaultListOperation,
+			OperationSummary: "Получить список библиотечных (стандартных) шаблонов",
+			OperationID:      "templateDefaultList",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+				{
+					Name: "page",
+					In:   "query",
+				}: params.Page,
+				{
+					Name: "size",
+					In:   "query",
+				}: params.Size,
+				{
+					Name: "sorting",
+					In:   "query",
+				}: params.Sorting,
+				{
+					Name: "templateName",
+					In:   "query",
+				}: params.TemplateName,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = TemplateDefaultListParams
+			Response = TemplateDefaultListRes
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackTemplateDefaultListParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.TemplateDefaultList(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.TemplateDefaultList(ctx, params)
+	}
+	if err != nil {
+		defer recordError("Internal", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	if err := encodeTemplateDefaultListResponse(response, w); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleTemplateDeleteByIDRequest handles templateDeleteByID operation.
 //
 // Удалить шаблон.

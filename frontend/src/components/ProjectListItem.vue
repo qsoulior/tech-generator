@@ -49,7 +49,12 @@ function onUpdateSubmit(name: string) {
           <n-text>Автор: {{ props.authorName }}</n-text>
         </n-flex>
         <n-flex>
-          <n-button secondary aria-label="Редактировать проект" title="Редактировать проект" @click.prevent="onEditClick">
+          <n-button
+            secondary
+            aria-label="Редактировать проект"
+            title="Редактировать проект"
+            @click.prevent="onEditClick"
+          >
             <template #icon>
               <n-icon>
                 <IconEditOutlined />

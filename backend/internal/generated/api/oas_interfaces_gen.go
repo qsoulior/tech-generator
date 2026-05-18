@@ -33,8 +33,16 @@ type TaskListRes interface {
 	taskListRes()
 }
 
+type TemplateCreateFromDefaultRes interface {
+	templateCreateFromDefaultRes()
+}
+
 type TemplateCreateRes interface {
 	templateCreateRes()
+}
+
+type TemplateDefaultListRes interface {
+	templateDefaultListRes()
 }
 
 type TemplateDeleteByIDRes interface {

@@ -17,6 +17,8 @@ type Handler interface {
 	TaskGetByIDHandler
 	TaskListHandler
 	TemplateCreateHandler
+	TemplateCreateFromDefaultHandler
+	TemplateDefaultListHandler
 	TemplateDeleteByIDHandler
 	TemplateGetByIDHandler
 	TemplateGetMetaByIDHandler
@@ -138,6 +140,30 @@ type TemplateCreateHandler interface {
 	//
 	// POST /template/create
 	TemplateCreate(ctx context.Context, req *TemplateCreateRequest, params TemplateCreateParams) (TemplateCreateRes, error)
+}
+
+// TemplateCreateFromDefaultHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: TemplateCreateFromDefault
+type TemplateCreateFromDefaultHandler interface {
+	// TemplateCreateFromDefault implements templateCreateFromDefault operation.
+	//
+	// Создать шаблон на базе библиотечного (стандартного).
+	//
+	// POST /template/create_from_default
+	TemplateCreateFromDefault(ctx context.Context, req *TemplateCreateFromDefaultRequest, params TemplateCreateFromDefaultParams) (TemplateCreateFromDefaultRes, error)
+}
+
+// TemplateDefaultListHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: TemplateDefaultList
+type TemplateDefaultListHandler interface {
+	// TemplateDefaultList implements templateDefaultList operation.
+	//
+	// Получить список библиотечных (стандартных) шаблонов.
+	//
+	// GET /template/default/list
+	TemplateDefaultList(ctx context.Context, params TemplateDefaultListParams) (TemplateDefaultListRes, error)
 }
 
 // TemplateDeleteByIDHandler handles operations described by OpenAPI v3 specification.

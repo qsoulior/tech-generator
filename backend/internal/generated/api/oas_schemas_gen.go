@@ -24,27 +24,29 @@ func (s *Error) SetMessage(val string) {
 	s.Message = val
 }
 
-func (*Error) projectCreateRes()       {}
-func (*Error) projectDeleteByIDRes()   {}
-func (*Error) projectGetByIDRes()      {}
-func (*Error) projectListRes()         {}
-func (*Error) projectUpdateByIDRes()   {}
-func (*Error) taskCreateRes()          {}
-func (*Error) taskGetByIDRes()         {}
-func (*Error) taskListRes()            {}
-func (*Error) templateCreateRes()      {}
-func (*Error) templateDeleteByIDRes()  {}
-func (*Error) templateGetByIDRes()     {}
-func (*Error) templateGetMetaByIDRes() {}
-func (*Error) templateImportRes()      {}
-func (*Error) templateListRes()        {}
-func (*Error) templateUpdateByIDRes()  {}
-func (*Error) userCreateRes()          {}
-func (*Error) userGetByIDRes()         {}
-func (*Error) userTokenCreateRes()     {}
-func (*Error) versionCreateFromRes()   {}
-func (*Error) versionCreateRes()       {}
-func (*Error) versionListRes()         {}
+func (*Error) projectCreateRes()             {}
+func (*Error) projectDeleteByIDRes()         {}
+func (*Error) projectGetByIDRes()            {}
+func (*Error) projectListRes()               {}
+func (*Error) projectUpdateByIDRes()         {}
+func (*Error) taskCreateRes()                {}
+func (*Error) taskGetByIDRes()               {}
+func (*Error) taskListRes()                  {}
+func (*Error) templateCreateFromDefaultRes() {}
+func (*Error) templateCreateRes()            {}
+func (*Error) templateDefaultListRes()       {}
+func (*Error) templateDeleteByIDRes()        {}
+func (*Error) templateGetByIDRes()           {}
+func (*Error) templateGetMetaByIDRes()       {}
+func (*Error) templateImportRes()            {}
+func (*Error) templateListRes()              {}
+func (*Error) templateUpdateByIDRes()        {}
+func (*Error) userCreateRes()                {}
+func (*Error) userGetByIDRes()               {}
+func (*Error) userTokenCreateRes()           {}
+func (*Error) versionCreateFromRes()         {}
+func (*Error) versionCreateRes()             {}
+func (*Error) versionListRes()               {}
 
 // NewOptDateTime returns new OptDateTime with value set to v.
 func NewOptDateTime(v time.Time) OptDateTime {
@@ -1076,6 +1078,64 @@ type TemplateCreateCreated struct{}
 
 func (*TemplateCreateCreated) templateCreateRes() {}
 
+// Ref: #/components/schemas/TemplateCreateFromDefaultRequest
+type TemplateCreateFromDefaultRequest struct {
+	// ID библиотечного шаблона-источника.
+	SourceTemplateID int64 `json:"sourceTemplateID"`
+	// ID проекта, в котором будет создан новый шаблон.
+	ProjectID int64 `json:"projectID"`
+	// Название нового шаблона.
+	Name string `json:"name"`
+}
+
+// GetSourceTemplateID returns the value of SourceTemplateID.
+func (s *TemplateCreateFromDefaultRequest) GetSourceTemplateID() int64 {
+	return s.SourceTemplateID
+}
+
+// GetProjectID returns the value of ProjectID.
+func (s *TemplateCreateFromDefaultRequest) GetProjectID() int64 {
+	return s.ProjectID
+}
+
+// GetName returns the value of Name.
+func (s *TemplateCreateFromDefaultRequest) GetName() string {
+	return s.Name
+}
+
+// SetSourceTemplateID sets the value of SourceTemplateID.
+func (s *TemplateCreateFromDefaultRequest) SetSourceTemplateID(val int64) {
+	s.SourceTemplateID = val
+}
+
+// SetProjectID sets the value of ProjectID.
+func (s *TemplateCreateFromDefaultRequest) SetProjectID(val int64) {
+	s.ProjectID = val
+}
+
+// SetName sets the value of Name.
+func (s *TemplateCreateFromDefaultRequest) SetName(val string) {
+	s.Name = val
+}
+
+// Ref: #/components/schemas/TemplateCreateFromDefaultResponse
+type TemplateCreateFromDefaultResponse struct {
+	// ID созданного шаблона.
+	ID int64 `json:"id"`
+}
+
+// GetID returns the value of ID.
+func (s *TemplateCreateFromDefaultResponse) GetID() int64 {
+	return s.ID
+}
+
+// SetID sets the value of ID.
+func (s *TemplateCreateFromDefaultResponse) SetID(val int64) {
+	s.ID = val
+}
+
+func (*TemplateCreateFromDefaultResponse) templateCreateFromDefaultRes() {}
+
 // Ref: #/components/schemas/TemplateCreateRequest
 type TemplateCreateRequest struct {
 	// Название шаблона.
@@ -1102,6 +1162,100 @@ func (s *TemplateCreateRequest) SetName(val string) {
 // SetProjectID sets the value of ProjectID.
 func (s *TemplateCreateRequest) SetProjectID(val int64) {
 	s.ProjectID = val
+}
+
+// Ref: #/components/schemas/TemplateDefaultListResponse
+type TemplateDefaultListResponse struct {
+	// Список библиотечных шаблонов.
+	Templates []TemplateDefaultListResponseTemplatesItem `json:"templates"`
+	// Общее количество шаблонов.
+	TotalTemplates int64 `json:"totalTemplates"`
+	// Общее количество страниц.
+	TotalPages int64 `json:"totalPages"`
+}
+
+// GetTemplates returns the value of Templates.
+func (s *TemplateDefaultListResponse) GetTemplates() []TemplateDefaultListResponseTemplatesItem {
+	return s.Templates
+}
+
+// GetTotalTemplates returns the value of TotalTemplates.
+func (s *TemplateDefaultListResponse) GetTotalTemplates() int64 {
+	return s.TotalTemplates
+}
+
+// GetTotalPages returns the value of TotalPages.
+func (s *TemplateDefaultListResponse) GetTotalPages() int64 {
+	return s.TotalPages
+}
+
+// SetTemplates sets the value of Templates.
+func (s *TemplateDefaultListResponse) SetTemplates(val []TemplateDefaultListResponseTemplatesItem) {
+	s.Templates = val
+}
+
+// SetTotalTemplates sets the value of TotalTemplates.
+func (s *TemplateDefaultListResponse) SetTotalTemplates(val int64) {
+	s.TotalTemplates = val
+}
+
+// SetTotalPages sets the value of TotalPages.
+func (s *TemplateDefaultListResponse) SetTotalPages(val int64) {
+	s.TotalPages = val
+}
+
+func (*TemplateDefaultListResponse) templateDefaultListRes() {}
+
+// Библиотечный шаблон.
+type TemplateDefaultListResponseTemplatesItem struct {
+	// ID шаблона.
+	ID int64 `json:"id"`
+	// Название шаблона.
+	Name string `json:"name"`
+	// Дата и время создания шаблона.
+	CreatedAt time.Time `json:"createdAt"`
+	// Дата и время обновления шаблона.
+	UpdatedAt OptDateTime `json:"updatedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *TemplateDefaultListResponseTemplatesItem) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *TemplateDefaultListResponseTemplatesItem) GetName() string {
+	return s.Name
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *TemplateDefaultListResponseTemplatesItem) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *TemplateDefaultListResponseTemplatesItem) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *TemplateDefaultListResponseTemplatesItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *TemplateDefaultListResponseTemplatesItem) SetName(val string) {
+	s.Name = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *TemplateDefaultListResponseTemplatesItem) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *TemplateDefaultListResponseTemplatesItem) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
 }
 
 // TemplateDeleteByIDNoContent is response for TemplateDeleteByID operation.

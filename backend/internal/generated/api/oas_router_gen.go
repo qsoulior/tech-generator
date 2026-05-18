@@ -326,7 +326,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						}
 
 						if len(elem) == 0 {
-							// Leaf node.
 							switch r.Method {
 							case "POST":
 								s.handleTemplateCreateRequest([0]string{}, elemIsEscaped, w, r)
@@ -336,36 +335,92 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 							return
 						}
+						switch elem[0] {
+						case '_': // Prefix: "_from_default"
 
-					case 'd': // Prefix: "delete/"
+							if l := len("_from_default"); len(elem) >= l && elem[0:l] == "_from_default" {
+								elem = elem[l:]
+							} else {
+								break
+							}
 
-						if l := len("delete/"); len(elem) >= l && elem[0:l] == "delete/" {
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleTemplateCreateFromDefaultRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						}
+
+					case 'd': // Prefix: "de"
+
+						if l := len("de"); len(elem) >= l && elem[0:l] == "de" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "templateID"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
+						if len(elem) == 0 {
 							break
 						}
-						args[0] = elem
-						elem = ""
+						switch elem[0] {
+						case 'f': // Prefix: "fault/list"
 
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "DELETE":
-								s.handleTemplateDeleteByIDRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "DELETE")
+							if l := len("fault/list"); len(elem) >= l && elem[0:l] == "fault/list" {
+								elem = elem[l:]
+							} else {
+								break
 							}
 
-							return
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleTemplateDefaultListRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
+						case 'l': // Prefix: "lete/"
+
+							if l := len("lete/"); len(elem) >= l && elem[0:l] == "lete/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "templateID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "DELETE":
+									s.handleTemplateDeleteByIDRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "DELETE")
+								}
+
+								return
+							}
+
 						}
 
 					case 'g': // Prefix: "get"
@@ -1121,7 +1176,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 
 						if len(elem) == 0 {
-							// Leaf node.
 							switch method {
 							case "POST":
 								r.name = TemplateCreateOperation
@@ -1136,39 +1190,105 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								return
 							}
 						}
+						switch elem[0] {
+						case '_': // Prefix: "_from_default"
 
-					case 'd': // Prefix: "delete/"
+							if l := len("_from_default"); len(elem) >= l && elem[0:l] == "_from_default" {
+								elem = elem[l:]
+							} else {
+								break
+							}
 
-						if l := len("delete/"); len(elem) >= l && elem[0:l] == "delete/" {
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = TemplateCreateFromDefaultOperation
+									r.summary = "Создать шаблон на базе библиотечного (стандартного)"
+									r.operationID = "templateCreateFromDefault"
+									r.operationGroup = "TemplateCreateFromDefault"
+									r.pathPattern = "/template/create_from_default"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					case 'd': // Prefix: "de"
+
+						if l := len("de"); len(elem) >= l && elem[0:l] == "de" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "templateID"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
+						if len(elem) == 0 {
 							break
 						}
-						args[0] = elem
-						elem = ""
+						switch elem[0] {
+						case 'f': // Prefix: "fault/list"
 
-						if len(elem) == 0 {
-							// Leaf node.
-							switch method {
-							case "DELETE":
-								r.name = TemplateDeleteByIDOperation
-								r.summary = "Удалить шаблон"
-								r.operationID = "templateDeleteByID"
-								r.operationGroup = "TemplateDeleteByID"
-								r.pathPattern = "/template/delete/{templateID}"
-								r.args = args
-								r.count = 1
-								return r, true
-							default:
-								return
+							if l := len("fault/list"); len(elem) >= l && elem[0:l] == "fault/list" {
+								elem = elem[l:]
+							} else {
+								break
 							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = TemplateDefaultListOperation
+									r.summary = "Получить список библиотечных (стандартных) шаблонов"
+									r.operationID = "templateDefaultList"
+									r.operationGroup = "TemplateDefaultList"
+									r.pathPattern = "/template/default/list"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case 'l': // Prefix: "lete/"
+
+							if l := len("lete/"); len(elem) >= l && elem[0:l] == "lete/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "templateID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "DELETE":
+									r.name = TemplateDeleteByIDOperation
+									r.summary = "Удалить шаблон"
+									r.operationID = "templateDeleteByID"
+									r.operationGroup = "TemplateDeleteByID"
+									r.pathPattern = "/template/delete/{templateID}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
 						}
 
 					case 'g': // Prefix: "get"

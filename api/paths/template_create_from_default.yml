@@ -1,0 +1,57 @@
+paths:
+  templateCreateFromDefault:
+    x-ogen-operation-group: TemplateCreateFromDefault
+    post:
+      operationId: templateCreateFromDefault
+      summary: Создать шаблон на базе библиотечного (стандартного)
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TemplateCreateFromDefaultRequest"
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TemplateCreateFromDefaultResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    TemplateCreateFromDefaultRequest:
+      type: object
+      required:
+        - sourceTemplateID
+        - projectID
+        - name
+      properties:
+        sourceTemplateID:
+          type: integer
+          format: int64
+          description: ID библиотечного шаблона-источника
+        projectID:
+          type: integer
+          format: int64
+          description: ID проекта, в котором будет создан новый шаблон
+        name:
+          type: string
+          description: Название нового шаблона
+    TemplateCreateFromDefaultResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID созданного шаблона

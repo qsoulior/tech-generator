@@ -62,7 +62,6 @@ async function onUpdatePage() {
 async function onUpdatePageSize() {
   await taskList()
 }
-
 </script>
 
 <template>

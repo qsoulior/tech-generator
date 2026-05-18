@@ -1179,6 +1179,318 @@ func decodeTemplateCreateParams(args [0]string, argsEscaped bool, r *http.Reques
 	return params, nil
 }
 
+// TemplateCreateFromDefaultParams is parameters of templateCreateFromDefault operation.
+type TemplateCreateFromDefaultParams struct {
+	// ID пользователя.
+	XUserID int64
+}
+
+func unpackTemplateCreateFromDefaultParams(packed middleware.Parameters) (params TemplateCreateFromDefaultParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeTemplateCreateFromDefaultParams(args [0]string, argsEscaped bool, r *http.Request) (params TemplateCreateFromDefaultParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// TemplateDefaultListParams is parameters of templateDefaultList operation.
+type TemplateDefaultListParams struct {
+	// ID пользователя.
+	XUserID int64
+	// Номер страницы.
+	Page int64
+	// Количество записей на странице.
+	Size int64
+	// Сортировка списка.
+	Sorting OptSorting `json:",omitempty,omitzero"`
+	// Название шаблона.
+	TemplateName OptString `json:",omitempty,omitzero"`
+}
+
+func unpackTemplateDefaultListParams(packed middleware.Parameters) (params TemplateDefaultListParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		params.Page = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "size",
+			In:   "query",
+		}
+		params.Size = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sorting",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Sorting = v.(OptSorting)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "templateName",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.TemplateName = v.(OptString)
+		}
+	}
+	return params
+}
+
+func decodeTemplateDefaultListParams(args [0]string, argsEscaped bool, r *http.Request) (params TemplateDefaultListParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.Page = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.Size = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sorting.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sorting",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+			Fields:  []uri.QueryParameterObjectField{{Name: "attribute", Required: true}, {Name: "direction", Required: true}},
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortingVal Sorting
+				if err := func() error {
+					return paramsDotSortingVal.DecodeURI(d)
+				}(); err != nil {
+					return err
+				}
+				params.Sorting.SetTo(paramsDotSortingVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Sorting.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sorting",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: templateName.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "templateName",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotTemplateNameVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotTemplateNameVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.TemplateName.SetTo(paramsDotTemplateNameVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "templateName",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // TemplateDeleteByIDParams is parameters of templateDeleteByID operation.
 type TemplateDeleteByIDParams struct {
 	// ID пользователя.

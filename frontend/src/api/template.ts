@@ -16,6 +16,10 @@ export type TemplateImportVersion = components["schemas"]["TemplateImportVersion
 export type TemplateImportVariable = TemplateImportVersion["variables"][number]
 export type TemplateImportConstraint = TemplateImportVariable["constraints"][number]
 export type TemplateImportResult = components["schemas"]["TemplateImportResponse"]
+export type TemplateDefaultListResult = components["schemas"]["TemplateDefaultListResponse"]
+export type TemplateDefaultListItem = TemplateDefaultListResult["templates"][number]
+export type TemplateCreateFromDefaultInput = components["schemas"]["TemplateCreateFromDefaultRequest"]
+export type TemplateCreateFromDefaultResult = components["schemas"]["TemplateCreateFromDefaultResponse"]
 
 export interface TemplateListParams {
   projectID: number
@@ -57,4 +61,27 @@ export function templateDelete(templateID: number): Promise<void> {
 
 export function templateImport(input: TemplateImportInput): Promise<TemplateImportResult> {
   return apiPost<TemplateImportResult>(`/template/import`, input)
+}
+
+export interface TemplateDefaultListParams {
+  page: number
+  size: number
+  templateName?: string
+}
+
+export function templateDefaultList(params: TemplateDefaultListParams): Promise<TemplateDefaultListResult> {
+  const search = new URLSearchParams({
+    page: params.page.toString(),
+    size: params.size.toString(),
+  })
+  if (params.templateName) {
+    search.append("templateName", params.templateName)
+  }
+  return apiGet<TemplateDefaultListResult>(`/template/default/list?${search}`)
+}
+
+export function templateCreateFromDefault(
+  input: TemplateCreateFromDefaultInput,
+): Promise<TemplateCreateFromDefaultResult> {
+  return apiPost<TemplateCreateFromDefaultResult>(`/template/create_from_default`, input)
 }

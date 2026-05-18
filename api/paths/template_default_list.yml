@@ -1,0 +1,78 @@
+paths:
+  templateDefaultList:
+    x-ogen-operation-group: TemplateDefaultList
+    get:
+      operationId: templateDefaultList
+      summary: Получить список библиотечных (стандартных) шаблонов
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
+        - $ref: "../common.yml#/components/parameters/Page"
+        - $ref: "../common.yml#/components/parameters/Size"
+        - $ref: "../common.yml#/components/parameters/Sorting"
+        - $ref: "#/components/parameters/TemplateName"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TemplateDefaultListResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    TemplateName:
+      name: templateName
+      description: Название шаблона
+      in: query
+      required: false
+      schema:
+        type: string
+
+  schemas:
+    TemplateDefaultListResponse:
+      type: object
+      required:
+        - templates
+        - totalTemplates
+        - totalPages
+      properties:
+        templates:
+          type: array
+          description: Список библиотечных шаблонов
+          items:
+            type: object
+            description: Библиотечный шаблон
+            required:
+              - id
+              - name
+              - createdAt
+            properties:
+              id:
+                type: integer
+                format: int64
+                description: ID шаблона
+              name:
+                type: string
+                description: Название шаблона
+              createdAt:
+                type: string
+                format: date-time
+                description: Дата и время создания шаблона
+              updatedAt:
+                type: string
+                format: date-time
+                description: Дата и время обновления шаблона
+        totalTemplates:
+          type: integer
+          format: int64
+          description: Общее количество шаблонов
+        totalPages:
+          type: integer
+          format: int64
+          description: Общее количество страниц

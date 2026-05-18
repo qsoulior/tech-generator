@@ -72,9 +72,7 @@ function handleValidateClick(e: MouseEvent) {
 async function signUp(model: Model) {
   loading.value = true
   try {
-    const created = await apiCall(() =>
-      userCreate({ name: model.name, email: model.email, password: model.password }),
-    )
+    const created = await apiCall(() => userCreate({ name: model.name, email: model.email, password: model.password }))
     if (!created.ok) return
 
     const signedIn = await apiCall(() =>

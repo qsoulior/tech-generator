@@ -1,11 +1,6 @@
 import { defineStore } from "pinia"
 import { ref } from "vue"
-import {
-  templateGet,
-  templateGetMeta,
-  type TemplateGetMetaResult,
-  type TemplateGetResult,
-} from "@/api/template"
+import { templateGet, templateGetMeta, type TemplateGetMetaResult, type TemplateGetResult } from "@/api/template"
 
 export const useTemplateStore = defineStore("template", () => {
   const cache = ref(new Map<number, TemplateGetResult>())
