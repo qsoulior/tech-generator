@@ -1,0 +1,119 @@
+paths:
+  templateImport:
+    x-ogen-operation-group: TemplateImport
+    post:
+      operationId: templateImport
+      summary: Импортировать шаблон из JSON
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TemplateImportRequest"
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TemplateImportResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  schemas:
+    TemplateImportRequest:
+      type: object
+      required:
+        - projectID
+        - template
+      properties:
+        projectID:
+          type: integer
+          format: int64
+          description: ID проекта
+        template:
+          $ref: "#/components/schemas/TemplateImportPayload"
+    TemplateImportPayload:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Название шаблона
+        version:
+          $ref: "#/components/schemas/TemplateImportVersion"
+    TemplateImportVersion:
+      type: object
+      required:
+        - data
+        - variables
+      properties:
+        data:
+          type: string
+          format: byte
+          description: Данные шаблона
+        variables:
+          type: array
+          description: Список переменных шаблона
+          items:
+            type: object
+            description: Переменная шаблона
+            required:
+              - name
+              - type
+              - isInput
+              - constraints
+            properties:
+              name:
+                type: string
+                description: Название переменной
+              type:
+                type: string
+                description: Тип переменной
+                enum:
+                  - string
+                  - integer
+                  - float
+              expression:
+                type: string
+                description: Выражение переменной
+              isInput:
+                type: boolean
+                description: Является ли переменная входной
+              constraints:
+                type: array
+                description: Список ограничений переменной
+                items:
+                  type: object
+                  description: Ограничение переменной
+                  required:
+                    - name
+                    - expression
+                    - isActive
+                  properties:
+                    name:
+                      type: string
+                      description: Название ограничения
+                    expression:
+                      type: string
+                      description: Выражение ограничения
+                    isActive:
+                      type: boolean
+                      description: Активно ли ограничение
+    TemplateImportResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID созданного шаблона

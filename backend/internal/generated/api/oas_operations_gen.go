@@ -18,6 +18,7 @@ const (
 	TemplateDeleteByIDOperation  OperationName = "TemplateDeleteByID"
 	TemplateGetByIDOperation     OperationName = "TemplateGetByID"
 	TemplateGetMetaByIDOperation OperationName = "TemplateGetMetaByID"
+	TemplateImportOperation      OperationName = "TemplateImport"
 	TemplateListOperation        OperationName = "TemplateList"
 	TemplateUpdateByIDOperation  OperationName = "TemplateUpdateByID"
 	UserCreateOperation          OperationName = "UserCreate"

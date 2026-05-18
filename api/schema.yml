@@ -25,6 +25,8 @@ paths:
     $ref: "./paths/template_delete_by_id.yml#/paths/templateDeleteByID"
   /template/get/{templateID}:
     $ref: "./paths/template_get_by_id.yml#/paths/templateGetByID"
+  /template/import:
+    $ref: "./paths/template_import.yml#/paths/templateImport"
   /template/get_meta/{templateID}:
     $ref: "./paths/template_get_meta_by_id.yml#/paths/templateGetMetaByID"
   /template/list/{projectID}:

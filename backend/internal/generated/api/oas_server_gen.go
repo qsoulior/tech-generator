@@ -20,6 +20,7 @@ type Handler interface {
 	TemplateDeleteByIDHandler
 	TemplateGetByIDHandler
 	TemplateGetMetaByIDHandler
+	TemplateImportHandler
 	TemplateListHandler
 	TemplateUpdateByIDHandler
 	UserCreateHandler
@@ -173,6 +174,18 @@ type TemplateGetMetaByIDHandler interface {
 	//
 	// GET /template/get_meta/{templateID}
 	TemplateGetMetaByID(ctx context.Context, params TemplateGetMetaByIDParams) (TemplateGetMetaByIDRes, error)
+}
+
+// TemplateImportHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: TemplateImport
+type TemplateImportHandler interface {
+	// TemplateImport implements templateImport operation.
+	//
+	// Импортировать шаблон из JSON.
+	//
+	// POST /template/import
+	TemplateImport(ctx context.Context, req *TemplateImportRequest, params TemplateImportParams) (TemplateImportRes, error)
 }
 
 // TemplateListHandler handles operations described by OpenAPI v3 specification.

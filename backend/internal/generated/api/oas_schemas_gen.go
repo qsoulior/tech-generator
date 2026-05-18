@@ -36,6 +36,7 @@ func (*Error) templateCreateRes()      {}
 func (*Error) templateDeleteByIDRes()  {}
 func (*Error) templateGetByIDRes()     {}
 func (*Error) templateGetMetaByIDRes() {}
+func (*Error) templateImportRes()      {}
 func (*Error) templateListRes()        {}
 func (*Error) templateUpdateByIDRes()  {}
 func (*Error) userCreateRes()          {}
@@ -315,6 +316,52 @@ func (o OptTemplateGetByIDVersion) Get() (v TemplateGetByIDVersion, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptTemplateGetByIDVersion) Or(d TemplateGetByIDVersion) TemplateGetByIDVersion {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTemplateImportVersion returns new OptTemplateImportVersion with value set to v.
+func NewOptTemplateImportVersion(v TemplateImportVersion) OptTemplateImportVersion {
+	return OptTemplateImportVersion{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTemplateImportVersion is optional TemplateImportVersion.
+type OptTemplateImportVersion struct {
+	Value TemplateImportVersion
+	Set   bool
+}
+
+// IsSet returns true if OptTemplateImportVersion was set.
+func (o OptTemplateImportVersion) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTemplateImportVersion) Reset() {
+	var v TemplateImportVersion
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTemplateImportVersion) SetTo(v TemplateImportVersion) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTemplateImportVersion) Get() (v TemplateImportVersion, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTemplateImportVersion) Or(d TemplateImportVersion) TemplateImportVersion {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -1349,6 +1396,259 @@ func (s *TemplateGetMetaByIDResponse) SetName(val string) {
 }
 
 func (*TemplateGetMetaByIDResponse) templateGetMetaByIDRes() {}
+
+// Ref: #/components/schemas/TemplateImportPayload
+type TemplateImportPayload struct {
+	// Название шаблона.
+	Name    string                   `json:"name"`
+	Version OptTemplateImportVersion `json:"version"`
+}
+
+// GetName returns the value of Name.
+func (s *TemplateImportPayload) GetName() string {
+	return s.Name
+}
+
+// GetVersion returns the value of Version.
+func (s *TemplateImportPayload) GetVersion() OptTemplateImportVersion {
+	return s.Version
+}
+
+// SetName sets the value of Name.
+func (s *TemplateImportPayload) SetName(val string) {
+	s.Name = val
+}
+
+// SetVersion sets the value of Version.
+func (s *TemplateImportPayload) SetVersion(val OptTemplateImportVersion) {
+	s.Version = val
+}
+
+// Ref: #/components/schemas/TemplateImportRequest
+type TemplateImportRequest struct {
+	// ID проекта.
+	ProjectID int64                 `json:"projectID"`
+	Template  TemplateImportPayload `json:"template"`
+}
+
+// GetProjectID returns the value of ProjectID.
+func (s *TemplateImportRequest) GetProjectID() int64 {
+	return s.ProjectID
+}
+
+// GetTemplate returns the value of Template.
+func (s *TemplateImportRequest) GetTemplate() TemplateImportPayload {
+	return s.Template
+}
+
+// SetProjectID sets the value of ProjectID.
+func (s *TemplateImportRequest) SetProjectID(val int64) {
+	s.ProjectID = val
+}
+
+// SetTemplate sets the value of Template.
+func (s *TemplateImportRequest) SetTemplate(val TemplateImportPayload) {
+	s.Template = val
+}
+
+// Ref: #/components/schemas/TemplateImportResponse
+type TemplateImportResponse struct {
+	// ID созданного шаблона.
+	ID int64 `json:"id"`
+}
+
+// GetID returns the value of ID.
+func (s *TemplateImportResponse) GetID() int64 {
+	return s.ID
+}
+
+// SetID sets the value of ID.
+func (s *TemplateImportResponse) SetID(val int64) {
+	s.ID = val
+}
+
+func (*TemplateImportResponse) templateImportRes() {}
+
+// Ref: #/components/schemas/TemplateImportVersion
+type TemplateImportVersion struct {
+	// Данные шаблона.
+	Data []byte `json:"data"`
+	// Список переменных шаблона.
+	Variables []TemplateImportVersionVariablesItem `json:"variables"`
+}
+
+// GetData returns the value of Data.
+func (s *TemplateImportVersion) GetData() []byte {
+	return s.Data
+}
+
+// GetVariables returns the value of Variables.
+func (s *TemplateImportVersion) GetVariables() []TemplateImportVersionVariablesItem {
+	return s.Variables
+}
+
+// SetData sets the value of Data.
+func (s *TemplateImportVersion) SetData(val []byte) {
+	s.Data = val
+}
+
+// SetVariables sets the value of Variables.
+func (s *TemplateImportVersion) SetVariables(val []TemplateImportVersionVariablesItem) {
+	s.Variables = val
+}
+
+// Переменная шаблона.
+type TemplateImportVersionVariablesItem struct {
+	// Название переменной.
+	Name string `json:"name"`
+	// Тип переменной.
+	Type TemplateImportVersionVariablesItemType `json:"type"`
+	// Выражение переменной.
+	Expression OptString `json:"expression"`
+	// Является ли переменная входной.
+	IsInput bool `json:"isInput"`
+	// Список ограничений переменной.
+	Constraints []TemplateImportVersionVariablesItemConstraintsItem `json:"constraints"`
+}
+
+// GetName returns the value of Name.
+func (s *TemplateImportVersionVariablesItem) GetName() string {
+	return s.Name
+}
+
+// GetType returns the value of Type.
+func (s *TemplateImportVersionVariablesItem) GetType() TemplateImportVersionVariablesItemType {
+	return s.Type
+}
+
+// GetExpression returns the value of Expression.
+func (s *TemplateImportVersionVariablesItem) GetExpression() OptString {
+	return s.Expression
+}
+
+// GetIsInput returns the value of IsInput.
+func (s *TemplateImportVersionVariablesItem) GetIsInput() bool {
+	return s.IsInput
+}
+
+// GetConstraints returns the value of Constraints.
+func (s *TemplateImportVersionVariablesItem) GetConstraints() []TemplateImportVersionVariablesItemConstraintsItem {
+	return s.Constraints
+}
+
+// SetName sets the value of Name.
+func (s *TemplateImportVersionVariablesItem) SetName(val string) {
+	s.Name = val
+}
+
+// SetType sets the value of Type.
+func (s *TemplateImportVersionVariablesItem) SetType(val TemplateImportVersionVariablesItemType) {
+	s.Type = val
+}
+
+// SetExpression sets the value of Expression.
+func (s *TemplateImportVersionVariablesItem) SetExpression(val OptString) {
+	s.Expression = val
+}
+
+// SetIsInput sets the value of IsInput.
+func (s *TemplateImportVersionVariablesItem) SetIsInput(val bool) {
+	s.IsInput = val
+}
+
+// SetConstraints sets the value of Constraints.
+func (s *TemplateImportVersionVariablesItem) SetConstraints(val []TemplateImportVersionVariablesItemConstraintsItem) {
+	s.Constraints = val
+}
+
+// Ограничение переменной.
+type TemplateImportVersionVariablesItemConstraintsItem struct {
+	// Название ограничения.
+	Name string `json:"name"`
+	// Выражение ограничения.
+	Expression string `json:"expression"`
+	// Активно ли ограничение.
+	IsActive bool `json:"isActive"`
+}
+
+// GetName returns the value of Name.
+func (s *TemplateImportVersionVariablesItemConstraintsItem) GetName() string {
+	return s.Name
+}
+
+// GetExpression returns the value of Expression.
+func (s *TemplateImportVersionVariablesItemConstraintsItem) GetExpression() string {
+	return s.Expression
+}
+
+// GetIsActive returns the value of IsActive.
+func (s *TemplateImportVersionVariablesItemConstraintsItem) GetIsActive() bool {
+	return s.IsActive
+}
+
+// SetName sets the value of Name.
+func (s *TemplateImportVersionVariablesItemConstraintsItem) SetName(val string) {
+	s.Name = val
+}
+
+// SetExpression sets the value of Expression.
+func (s *TemplateImportVersionVariablesItemConstraintsItem) SetExpression(val string) {
+	s.Expression = val
+}
+
+// SetIsActive sets the value of IsActive.
+func (s *TemplateImportVersionVariablesItemConstraintsItem) SetIsActive(val bool) {
+	s.IsActive = val
+}
+
+// Тип переменной.
+type TemplateImportVersionVariablesItemType string
+
+const (
+	TemplateImportVersionVariablesItemTypeString  TemplateImportVersionVariablesItemType = "string"
+	TemplateImportVersionVariablesItemTypeInteger TemplateImportVersionVariablesItemType = "integer"
+	TemplateImportVersionVariablesItemTypeFloat   TemplateImportVersionVariablesItemType = "float"
+)
+
+// AllValues returns all TemplateImportVersionVariablesItemType values.
+func (TemplateImportVersionVariablesItemType) AllValues() []TemplateImportVersionVariablesItemType {
+	return []TemplateImportVersionVariablesItemType{
+		TemplateImportVersionVariablesItemTypeString,
+		TemplateImportVersionVariablesItemTypeInteger,
+		TemplateImportVersionVariablesItemTypeFloat,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s TemplateImportVersionVariablesItemType) MarshalText() ([]byte, error) {
+	switch s {
+	case TemplateImportVersionVariablesItemTypeString:
+		return []byte(s), nil
+	case TemplateImportVersionVariablesItemTypeInteger:
+		return []byte(s), nil
+	case TemplateImportVersionVariablesItemTypeFloat:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *TemplateImportVersionVariablesItemType) UnmarshalText(data []byte) error {
+	switch TemplateImportVersionVariablesItemType(data) {
+	case TemplateImportVersionVariablesItemTypeString:
+		*s = TemplateImportVersionVariablesItemTypeString
+		return nil
+	case TemplateImportVersionVariablesItemTypeInteger:
+		*s = TemplateImportVersionVariablesItemTypeInteger
+		return nil
+	case TemplateImportVersionVariablesItemTypeFloat:
+		*s = TemplateImportVersionVariablesItemTypeFloat
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
 
 // Ref: #/components/schemas/TemplateListResponse
 type TemplateListResponse struct {

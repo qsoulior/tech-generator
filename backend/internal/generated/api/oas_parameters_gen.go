@@ -1509,6 +1509,62 @@ func decodeTemplateGetMetaByIDParams(args [1]string, argsEscaped bool, r *http.R
 	return params, nil
 }
 
+// TemplateImportParams is parameters of templateImport operation.
+type TemplateImportParams struct {
+	// ID пользователя.
+	XUserID int64
+}
+
+func unpackTemplateImportParams(packed middleware.Parameters) (params TemplateImportParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeTemplateImportParams(args [0]string, argsEscaped bool, r *http.Request) (params TemplateImportParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // TemplateListParams is parameters of templateList operation.
 type TemplateListParams struct {
 	// ID пользователя.

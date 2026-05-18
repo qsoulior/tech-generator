@@ -191,6 +191,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/template/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Импортировать шаблон из JSON */
+        post: operations["templateImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/template/get_meta/{templateID}": {
         parameters: {
             query?: never;
@@ -589,6 +606,56 @@ export interface components {
             /** @description Название шаблона */
             name: string;
             version?: components["schemas"]["TemplateGetByIDVersion"];
+        };
+        TemplateImportVersion: {
+            /**
+             * Format: byte
+             * @description Данные шаблона
+             */
+            data: string;
+            /** @description Список переменных шаблона */
+            variables: {
+                /** @description Название переменной */
+                name: string;
+                /**
+                 * @description Тип переменной
+                 * @enum {string}
+                 */
+                type: "string" | "integer" | "float";
+                /** @description Выражение переменной */
+                expression?: string;
+                /** @description Является ли переменная входной */
+                isInput: boolean;
+                /** @description Список ограничений переменной */
+                constraints: {
+                    /** @description Название ограничения */
+                    name: string;
+                    /** @description Выражение ограничения */
+                    expression: string;
+                    /** @description Активно ли ограничение */
+                    isActive: boolean;
+                }[];
+            }[];
+        };
+        TemplateImportPayload: {
+            /** @description Название шаблона */
+            name: string;
+            version?: components["schemas"]["TemplateImportVersion"];
+        };
+        TemplateImportRequest: {
+            /**
+             * Format: int64
+             * @description ID проекта
+             */
+            projectID: number;
+            template: components["schemas"]["TemplateImportPayload"];
+        };
+        TemplateImportResponse: {
+            /**
+             * Format: int64
+             * @description ID созданного шаблона
+             */
+            id: number;
         };
         TemplateGetMetaByIDResponse: {
             /** @description Название шаблона */
@@ -1170,6 +1237,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TemplateGetByIDResponse"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    templateImport: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description ID пользователя */
+                "X-User-Id": components["parameters"]["UserID"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemplateImportRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateImportResponse"];
                 };
             };
             /** @description Bad request */

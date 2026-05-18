@@ -1160,6 +1160,105 @@ func (s *Server) handleTemplateGetMetaByIDRequest(args [1]string, argsEscaped bo
 	}
 }
 
+// handleTemplateImportRequest handles templateImport operation.
+//
+// Импортировать шаблон из JSON.
+//
+// POST /template/import
+func (s *Server) handleTemplateImportRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	ctx := r.Context()
+
+	var (
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: TemplateImportOperation,
+			ID:   "templateImport",
+		}
+	)
+	params, err := decodeTemplateImportParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeTemplateImportRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response TemplateImportRes
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    TemplateImportOperation,
+			OperationSummary: "Импортировать шаблон из JSON",
+			OperationID:      "templateImport",
+			Body:             request,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = *TemplateImportRequest
+			Params   = TemplateImportParams
+			Response = TemplateImportRes
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackTemplateImportParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.TemplateImport(ctx, request, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.TemplateImport(ctx, request, params)
+	}
+	if err != nil {
+		defer recordError("Internal", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	if err := encodeTemplateImportResponse(response, w); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleTemplateListRequest handles templateList operation.
 //
 // Получить список шаблонов в проекте.

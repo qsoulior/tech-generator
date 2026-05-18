@@ -25,10 +25,12 @@ import IconEditOutlined from "@/components/icons/IconEditOutlined.vue"
 import IconSaveOutlined from "@/components/icons/IconSaveOutlined.vue"
 import IconPlayCircleOutlined from "@/components/icons/IconPlayCircleOutlined.vue"
 import IconUnorderedListOutlined from "@/components/icons/IconUnorderedListOutlined.vue"
+import IconDownloadOutlined from "@/components/icons/IconDownloadOutlined.vue"
 import TaskCreateModal from "@/components/TaskCreateModal.vue"
 import TemplateUpdateModal from "@/components/TemplateUpdateModal.vue"
 import AppHeader from "@/components/AppHeader.vue"
 import { versionCreate, type VersionCreateVariable } from "@/api/version"
+import type { TemplateImportPayload, TemplateImportVariable } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
 import { useTemplateStore } from "@/stores/template"
 import { fromBase64, toBase64 } from "@/utils/base64"
@@ -169,6 +171,36 @@ function onTemplateRename(newName: string) {
   templateStore.setMeta(props.templateID, { name: newName })
 }
 
+function handleExport() {
+  const payload: TemplateImportPayload = {
+    name: name.value,
+    version: {
+      data: toBase64(data.value),
+      variables: variables.value.map<TemplateImportVariable>((variable) => ({
+        name: variable.name,
+        type: variable.type as TemplateImportVariable["type"],
+        expression: variable.expression || undefined,
+        isInput: variable.inputType == "input",
+        constraints: variable.constraints.map((constraint) => ({
+          name: constraint.name,
+          expression: constraint.expression,
+          isActive: constraint.isActive,
+        })),
+      })),
+    },
+  }
+
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = `${name.value || "template"}.json`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
 async function saveVersion() {
   const r = await apiCall(() =>
     versionCreate({
@@ -299,6 +331,14 @@ const toolbars: ToolbarNames[] = [
             </template>
             Сохраните шаблон, чтобы выполнить
           </n-tooltip>
+          <n-button size="small" secondary @click="handleExport">
+            <template #icon>
+              <n-icon>
+                <IconDownloadOutlined />
+              </n-icon>
+            </template>
+            Экспорт
+          </n-button>
           <n-button size="small" secondary @click="goToResults">
             <template #icon>
               <n-icon>

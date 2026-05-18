@@ -10,6 +10,12 @@ export type TemplateGetVariable = TemplateGetVersion["variables"][number]
 export type TemplateGetConstraint = TemplateGetVariable["constraints"][number]
 export type TemplateCreateInput = components["schemas"]["TemplateCreateRequest"]
 export type TemplateUpdateInput = components["schemas"]["TemplateUpdateRequest"]
+export type TemplateImportInput = components["schemas"]["TemplateImportRequest"]
+export type TemplateImportPayload = components["schemas"]["TemplateImportPayload"]
+export type TemplateImportVersion = components["schemas"]["TemplateImportVersion"]
+export type TemplateImportVariable = TemplateImportVersion["variables"][number]
+export type TemplateImportConstraint = TemplateImportVariable["constraints"][number]
+export type TemplateImportResult = components["schemas"]["TemplateImportResponse"]
 
 export interface TemplateListParams {
   projectID: number
@@ -47,4 +53,8 @@ export function templateUpdate(templateID: number, input: TemplateUpdateInput): 
 
 export function templateDelete(templateID: number): Promise<void> {
   return apiDelete<void>(`/template/delete/${templateID}`)
+}
+
+export function templateImport(input: TemplateImportInput): Promise<TemplateImportResult> {
+  return apiPost<TemplateImportResult>(`/template/import`, input)
 }
