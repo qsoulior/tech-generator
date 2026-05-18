@@ -44,8 +44,11 @@ export const useTemplateStore = defineStore("template", () => {
 
   function invalidate(templateID: number) {
     cache.value.delete(templateID)
-    metaCache.value.delete(templateID)
   }
 
-  return { get, getMeta, ensureLoaded, ensureMetaLoaded, invalidate }
+  function setMeta(templateID: number, meta: TemplateGetMetaResult) {
+    metaCache.value.set(templateID, meta)
+  }
+
+  return { get, getMeta, ensureLoaded, ensureMetaLoaded, invalidate, setMeta }
 })

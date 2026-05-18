@@ -166,6 +166,7 @@ async function loadTemplate() {
 function onTemplateRename(newName: string) {
   name.value = newName
   templateStore.invalidate(props.templateID)
+  templateStore.setMeta(props.templateID, { name: newName })
 }
 
 async function saveVersion() {
@@ -263,14 +264,21 @@ const toolbars: ToolbarNames[] = [
             </template>
             Редактировать
           </n-button>
-          <n-button size="small" secondary @click="saveVersion">
-            <template #icon>
-              <n-icon>
-                <IconSaveOutlined />
-              </n-icon>
+          <n-tooltip :disabled="isDirty">
+            <template #trigger>
+              <span>
+                <n-button size="small" secondary :disabled="!isDirty" @click="saveVersion">
+                  <template #icon>
+                    <n-icon>
+                      <IconSaveOutlined />
+                    </n-icon>
+                  </template>
+                  Сохранить
+                </n-button>
+              </span>
             </template>
-            Сохранить
-          </n-button>
+            Нет изменений для сохранения
+          </n-tooltip>
           <n-tooltip :disabled="!isDirty">
             <template #trigger>
               <span>

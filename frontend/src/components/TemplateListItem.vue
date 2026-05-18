@@ -43,6 +43,7 @@ function onEditClick() {
 
 function onUpdateSubmit(name: string) {
   templateStore.invalidate(props.templateId)
+  templateStore.setMeta(props.templateId, { name })
   emit("update", props.templateId, name)
 }
 </script>
