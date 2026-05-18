@@ -94,6 +94,14 @@ interface Variable {
 const variables = ref<Variable[]>([])
 const variableUpdating = ref<Variable>()
 const variableUpdatingIndex = ref<number>()
+const variableSearch = ref("")
+
+const filteredVariables = computed(() => {
+  const query = variableSearch.value.trim().toLowerCase()
+  const indexed = variables.value.map((variable, index) => ({ variable, index }))
+  if (query === "") return indexed
+  return indexed.filter(({ variable }) => variable.name.toLowerCase().includes(query))
+})
 
 const savedSnapshot = ref({ data: "", variables: "[]" })
 
@@ -367,7 +375,7 @@ const toolbars: ToolbarNames[] = [
         <n-flex vertical class="sider">
           <n-flex vertical class="sider-section">
             <n-text>Переменные</n-text>
-            <VariableListSearch />
+            <VariableListSearch v-model:value="variableSearch" />
             <n-button secondary class="full-width" @click="showCreateModal = true">Добавить переменную</n-button>
             <VariableCreateModal
               :template-id="templateID"
@@ -384,7 +392,12 @@ const toolbars: ToolbarNames[] = [
           <n-divider class="flush-divider" />
           <n-scrollbar class="variables" content-style="padding: 1rem">
             <n-flex vertical size="large">
-              <n-flex v-for="(variable, index) in variables" :key="index" align="center" justify="space-between">
+              <n-flex
+                v-for="{ variable, index } in filteredVariables"
+                :key="index"
+                align="center"
+                justify="space-between"
+              >
                 <n-flex vertical class="variable-row" :size="0" @click="variableUpdate(variable, index)">
                   <n-text>
                     {{ variable.name }}
