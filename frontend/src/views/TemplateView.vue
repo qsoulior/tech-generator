@@ -10,9 +10,10 @@ import {
   NIcon,
   NText,
   NDivider,
+  NTooltip,
   useMessage,
 } from "naive-ui"
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
 import RU from "@vavt/cm-extension/dist/locale/ru"
 import "md-editor-v3/lib/style.css"
@@ -86,6 +87,19 @@ const variables = ref<Variable[]>([])
 const variableUpdating = ref<Variable>()
 const variableUpdatingIndex = ref<number>()
 
+const savedSnapshot = ref({ data: "", variables: "[]" })
+
+const isDirty = computed(
+  () => savedSnapshot.value.data !== data.value || savedSnapshot.value.variables !== JSON.stringify(variables.value),
+)
+
+function saveSnapshot() {
+  savedSnapshot.value = {
+    data: data.value,
+    variables: JSON.stringify(variables.value),
+  }
+}
+
 function variableCreate(variable: Variable) {
   variables.value.push(variable)
 }
@@ -122,24 +136,24 @@ async function loadTemplate() {
 
   name.value = r.value.name
 
-  if (r.value.version == undefined) {
-    return
+  if (r.value.version != undefined) {
+    versionID.value = r.value.version.id
+    versionNumber.value = r.value.version.number
+    data.value = fromBase64(r.value.version.data)
+    variables.value = r.value.version.variables.map((variable) => ({
+      name: variable.name,
+      type: variable.type,
+      expression: variable.expression ?? "",
+      inputType: variable.isInput ? "input" : "computed",
+      constraints: variable.constraints.map((constraint) => ({
+        name: constraint.name,
+        expression: constraint.expression,
+        isActive: constraint.isActive,
+      })),
+    }))
   }
 
-  versionID.value = r.value.version.id
-  versionNumber.value = r.value.version.number
-  data.value = fromBase64(r.value.version.data)
-  variables.value = r.value.version.variables.map((variable) => ({
-    name: variable.name,
-    type: variable.type,
-    expression: variable.expression ?? "",
-    inputType: variable.isInput ? "input" : "computed",
-    constraints: variable.constraints.map((constraint) => ({
-      name: constraint.name,
-      expression: constraint.expression,
-      isActive: constraint.isActive,
-    })),
-  }))
+  saveSnapshot()
 }
 
 function onTemplateRename(newName: string) {
@@ -166,6 +180,7 @@ async function saveVersion() {
   versionID.value = r.value.id
   versionNumber.value++
   templateStore.invalidate(props.templateID)
+  saveSnapshot()
   message.success("Шаблон сохранен")
 }
 
@@ -238,14 +253,26 @@ const toolbars: ToolbarNames[] = [
             </template>
             Сохранить
           </n-button>
-          <n-button size="small" secondary :disabled="versionID == undefined" @click="showTaskCreateModal = true">
-            <template #icon>
-              <n-icon>
-                <IconPlayCircleOutlined />
-              </n-icon>
+          <n-tooltip :disabled="!isDirty">
+            <template #trigger>
+              <span>
+                <n-button
+                  size="small"
+                  secondary
+                  :disabled="versionID == undefined || isDirty"
+                  @click="showTaskCreateModal = true"
+                >
+                  <template #icon>
+                    <n-icon>
+                      <IconPlayCircleOutlined />
+                    </n-icon>
+                  </template>
+                  Выполнить
+                </n-button>
+              </span>
             </template>
-            Выполнить
-          </n-button>
+            Сохраните шаблон, чтобы выполнить
+          </n-tooltip>
           <n-button size="small" secondary @click="goToResults">
             <template #icon>
               <n-icon>
