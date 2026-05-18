@@ -19,6 +19,7 @@ type Handler interface {
 	TemplateCreateHandler
 	TemplateDeleteByIDHandler
 	TemplateGetByIDHandler
+	TemplateGetMetaByIDHandler
 	TemplateListHandler
 	TemplateUpdateByIDHandler
 	UserCreateHandler
@@ -160,6 +161,18 @@ type TemplateGetByIDHandler interface {
 	//
 	// GET /template/get/{templateID}
 	TemplateGetByID(ctx context.Context, params TemplateGetByIDParams) (TemplateGetByIDRes, error)
+}
+
+// TemplateGetMetaByIDHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: TemplateGetMetaByID
+type TemplateGetMetaByIDHandler interface {
+	// TemplateGetMetaByID implements templateGetMetaByID operation.
+	//
+	// Получить метаданные шаблона по ID.
+	//
+	// GET /template/get_meta/{templateID}
+	TemplateGetMetaByID(ctx context.Context, params TemplateGetMetaByIDParams) (TemplateGetMetaByIDRes, error)
 }
 
 // TemplateListHandler handles operations described by OpenAPI v3 specification.

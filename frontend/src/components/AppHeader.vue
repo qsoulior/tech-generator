@@ -45,7 +45,7 @@ const projectName = computed(() =>
   projectID.value != undefined ? (projectStore.get(projectID.value)?.name ?? "") : "",
 )
 const templateName = computed(() =>
-  templateID.value != undefined ? (templateStore.get(templateID.value)?.name ?? "") : "",
+  templateID.value != undefined ? (templateStore.getMeta(templateID.value)?.name ?? "") : "",
 )
 
 watch(
@@ -61,7 +61,7 @@ watch(
   templateID,
   async (id) => {
     if (id == undefined) return
-    await apiCall(() => templateStore.ensureLoaded(id))
+    await apiCall(() => templateStore.ensureMetaLoaded(id))
   },
   { immediate: true },
 )

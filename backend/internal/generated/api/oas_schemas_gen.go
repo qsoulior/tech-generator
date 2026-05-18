@@ -24,25 +24,26 @@ func (s *Error) SetMessage(val string) {
 	s.Message = val
 }
 
-func (*Error) projectCreateRes()      {}
-func (*Error) projectDeleteByIDRes()  {}
-func (*Error) projectGetByIDRes()     {}
-func (*Error) projectListRes()        {}
-func (*Error) projectUpdateByIDRes()  {}
-func (*Error) taskCreateRes()         {}
-func (*Error) taskGetByIDRes()        {}
-func (*Error) taskListRes()           {}
-func (*Error) templateCreateRes()     {}
-func (*Error) templateDeleteByIDRes() {}
-func (*Error) templateGetByIDRes()    {}
-func (*Error) templateListRes()       {}
-func (*Error) templateUpdateByIDRes() {}
-func (*Error) userCreateRes()         {}
-func (*Error) userGetByIDRes()        {}
-func (*Error) userTokenCreateRes()    {}
-func (*Error) versionCreateFromRes()  {}
-func (*Error) versionCreateRes()      {}
-func (*Error) versionListRes()        {}
+func (*Error) projectCreateRes()       {}
+func (*Error) projectDeleteByIDRes()   {}
+func (*Error) projectGetByIDRes()      {}
+func (*Error) projectListRes()         {}
+func (*Error) projectUpdateByIDRes()   {}
+func (*Error) taskCreateRes()          {}
+func (*Error) taskGetByIDRes()         {}
+func (*Error) taskListRes()            {}
+func (*Error) templateCreateRes()      {}
+func (*Error) templateDeleteByIDRes()  {}
+func (*Error) templateGetByIDRes()     {}
+func (*Error) templateGetMetaByIDRes() {}
+func (*Error) templateListRes()        {}
+func (*Error) templateUpdateByIDRes()  {}
+func (*Error) userCreateRes()          {}
+func (*Error) userGetByIDRes()         {}
+func (*Error) userTokenCreateRes()     {}
+func (*Error) versionCreateFromRes()   {}
+func (*Error) versionCreateRes()       {}
+func (*Error) versionListRes()         {}
 
 // NewOptDateTime returns new OptDateTime with value set to v.
 func NewOptDateTime(v time.Time) OptDateTime {
@@ -1330,6 +1331,24 @@ func (s *TemplateGetByIDVersionVariablesItemType) UnmarshalText(data []byte) err
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+// Ref: #/components/schemas/TemplateGetMetaByIDResponse
+type TemplateGetMetaByIDResponse struct {
+	// Название шаблона.
+	Name string `json:"name"`
+}
+
+// GetName returns the value of Name.
+func (s *TemplateGetMetaByIDResponse) GetName() string {
+	return s.Name
+}
+
+// SetName sets the value of Name.
+func (s *TemplateGetMetaByIDResponse) SetName(val string) {
+	s.Name = val
+}
+
+func (*TemplateGetMetaByIDResponse) templateGetMetaByIDRes() {}
 
 // Ref: #/components/schemas/TemplateListResponse
 type TemplateListResponse struct {

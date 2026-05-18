@@ -4,6 +4,7 @@ import type { components } from "./schema.gen"
 export type TemplateListResult = components["schemas"]["TemplateListResponse"]
 export type TemplateListItem = TemplateListResult["templates"][number]
 export type TemplateGetResult = components["schemas"]["TemplateGetByIDResponse"]
+export type TemplateGetMetaResult = components["schemas"]["TemplateGetMetaByIDResponse"]
 export type TemplateGetVersion = components["schemas"]["TemplateGetByIDVersion"]
 export type TemplateGetVariable = TemplateGetVersion["variables"][number]
 export type TemplateGetConstraint = TemplateGetVariable["constraints"][number]
@@ -30,6 +31,10 @@ export function templateList(params: TemplateListParams): Promise<TemplateListRe
 
 export function templateGet(templateID: number): Promise<TemplateGetResult> {
   return apiGet<TemplateGetResult>(`/template/get/${templateID}`)
+}
+
+export function templateGetMeta(templateID: number): Promise<TemplateGetMetaResult> {
+  return apiGet<TemplateGetMetaResult>(`/template/get_meta/${templateID}`)
 }
 
 export function templateCreate(input: TemplateCreateInput): Promise<void> {

@@ -45,6 +45,10 @@ type TemplateGetByIDRes interface {
 	templateGetByIDRes()
 }
 
+type TemplateGetMetaByIDRes interface {
+	templateGetMetaByIDRes()
+}
+
 type TemplateListRes interface {
 	templateListRes()
 }

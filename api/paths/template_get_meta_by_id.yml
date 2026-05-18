@@ -1,0 +1,43 @@
+paths:
+  templateGetMetaByID:
+    x-ogen-operation-group: TemplateGetMetaByID
+    get:
+      operationId: templateGetMetaByID
+      summary: Получить метаданные шаблона по ID
+      parameters:
+        - $ref: "../common.yml#/components/parameters/UserID"
+        - $ref: "#/components/parameters/TemplateID"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TemplateGetMetaByIDResponse"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "../common.yml#/components/schemas/Error"
+
+components:
+  parameters:
+    TemplateID:
+      name: templateID
+      description: ID шаблона
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+  schemas:
+    TemplateGetMetaByIDResponse:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Название шаблона

@@ -368,35 +368,80 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							return
 						}
 
-					case 'g': // Prefix: "get/"
+					case 'g': // Prefix: "get"
 
-						if l := len("get/"); len(elem) >= l && elem[0:l] == "get/" {
+						if l := len("get"); len(elem) >= l && elem[0:l] == "get" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "templateID"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
+						if len(elem) == 0 {
 							break
 						}
-						args[0] = elem
-						elem = ""
+						switch elem[0] {
+						case '/': // Prefix: "/"
 
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "GET":
-								s.handleTemplateGetByIDRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "GET")
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
 							}
 
-							return
+							// Param: "templateID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleTemplateGetByIDRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
+						case '_': // Prefix: "_meta/"
+
+							if l := len("_meta/"); len(elem) >= l && elem[0:l] == "_meta/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "templateID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleTemplateGetMetaByIDRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
 						}
 
 					case 'l': // Prefix: "list/"
@@ -1106,38 +1151,86 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							}
 						}
 
-					case 'g': // Prefix: "get/"
+					case 'g': // Prefix: "get"
 
-						if l := len("get/"); len(elem) >= l && elem[0:l] == "get/" {
+						if l := len("get"); len(elem) >= l && elem[0:l] == "get" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "templateID"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
+						if len(elem) == 0 {
 							break
 						}
-						args[0] = elem
-						elem = ""
+						switch elem[0] {
+						case '/': // Prefix: "/"
 
-						if len(elem) == 0 {
-							// Leaf node.
-							switch method {
-							case "GET":
-								r.name = TemplateGetByIDOperation
-								r.summary = "Получить шаблон по ID"
-								r.operationID = "templateGetByID"
-								r.operationGroup = "TemplateGetByID"
-								r.pathPattern = "/template/get/{templateID}"
-								r.args = args
-								r.count = 1
-								return r, true
-							default:
-								return
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
 							}
+
+							// Param: "templateID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = TemplateGetByIDOperation
+									r.summary = "Получить шаблон по ID"
+									r.operationID = "templateGetByID"
+									r.operationGroup = "TemplateGetByID"
+									r.pathPattern = "/template/get/{templateID}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case '_': // Prefix: "_meta/"
+
+							if l := len("_meta/"); len(elem) >= l && elem[0:l] == "_meta/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "templateID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = TemplateGetMetaByIDOperation
+									r.summary = "Получить метаданные шаблона по ID"
+									r.operationID = "templateGetMetaByID"
+									r.operationGroup = "TemplateGetMetaByID"
+									r.pathPattern = "/template/get_meta/{templateID}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
 						}
 
 					case 'l': // Prefix: "list/"

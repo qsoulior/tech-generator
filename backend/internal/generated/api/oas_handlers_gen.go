@@ -1072,6 +1072,94 @@ func (s *Server) handleTemplateGetByIDRequest(args [1]string, argsEscaped bool, 
 	}
 }
 
+// handleTemplateGetMetaByIDRequest handles templateGetMetaByID operation.
+//
+// Получить метаданные шаблона по ID.
+//
+// GET /template/get_meta/{templateID}
+func (s *Server) handleTemplateGetMetaByIDRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	ctx := r.Context()
+
+	var (
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: TemplateGetMetaByIDOperation,
+			ID:   "templateGetMetaByID",
+		}
+	)
+	params, err := decodeTemplateGetMetaByIDParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var rawBody []byte
+
+	var response TemplateGetMetaByIDRes
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    TemplateGetMetaByIDOperation,
+			OperationSummary: "Получить метаданные шаблона по ID",
+			OperationID:      "templateGetMetaByID",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params: middleware.Parameters{
+				{
+					Name: "X-User-Id",
+					In:   "header",
+				}: params.XUserID,
+				{
+					Name: "templateID",
+					In:   "path",
+				}: params.TemplateID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = TemplateGetMetaByIDParams
+			Response = TemplateGetMetaByIDRes
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackTemplateGetMetaByIDParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.TemplateGetMetaByID(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.TemplateGetMetaByID(ctx, params)
+	}
+	if err != nil {
+		defer recordError("Internal", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	if err := encodeTemplateGetMetaByIDResponse(response, w); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleTemplateListRequest handles templateList operation.
 //
 // Получить список шаблонов в проекте.

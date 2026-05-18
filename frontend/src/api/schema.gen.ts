@@ -191,6 +191,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/template/get_meta/{templateID}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Получить метаданные шаблона по ID */
+        get: operations["templateGetMetaByID"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/template/list/{projectID}": {
         parameters: {
             query?: never;
@@ -572,6 +589,10 @@ export interface components {
             /** @description Название шаблона */
             name: string;
             version?: components["schemas"]["TemplateGetByIDVersion"];
+        };
+        TemplateGetMetaByIDResponse: {
+            /** @description Название шаблона */
+            name: string;
         };
         TemplateListResponse: {
             /** @description Список шаблонов */
@@ -1149,6 +1170,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TemplateGetByIDResponse"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    templateGetMetaByID: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description ID пользователя */
+                "X-User-Id": components["parameters"]["UserID"];
+            };
+            path: {
+                /** @description ID шаблона */
+                templateID: components["parameters"]["TemplateID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateGetMetaByIDResponse"];
                 };
             };
             /** @description Bad request */

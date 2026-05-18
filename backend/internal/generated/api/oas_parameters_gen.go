@@ -1399,6 +1399,116 @@ func decodeTemplateGetByIDParams(args [1]string, argsEscaped bool, r *http.Reque
 	return params, nil
 }
 
+// TemplateGetMetaByIDParams is parameters of templateGetMetaByID operation.
+type TemplateGetMetaByIDParams struct {
+	// ID пользователя.
+	XUserID int64
+	// ID шаблона.
+	TemplateID int64
+}
+
+func unpackTemplateGetMetaByIDParams(packed middleware.Parameters) (params TemplateGetMetaByIDParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "X-User-Id",
+			In:   "header",
+		}
+		params.XUserID = packed[key].(int64)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "templateID",
+			In:   "path",
+		}
+		params.TemplateID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeTemplateGetMetaByIDParams(args [1]string, argsEscaped bool, r *http.Request) (params TemplateGetMetaByIDParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: X-User-Id.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "X-User-Id",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.XUserID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "X-User-Id",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	// Decode path: templateID.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "templateID",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.TemplateID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "templateID",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // TemplateListParams is parameters of templateList operation.
 type TemplateListParams struct {
 	// ID пользователя.

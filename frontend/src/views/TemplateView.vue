@@ -32,6 +32,7 @@ import { versionCreate, type VersionCreateVariable } from "@/api/version"
 import { useApiCall } from "@/composables/useApiCall"
 import { useTemplateStore } from "@/stores/template"
 import { fromBase64, toBase64 } from "@/utils/base64"
+import { formatRelativeTime } from "@/utils/relativeTime"
 import { useRouter } from "vue-router"
 
 const message = useMessage()
@@ -67,7 +68,12 @@ const typeToString = new Map([
 const name = ref("")
 const versionNumber = ref(0)
 const versionID = ref<number>()
+const versionCreatedAt = ref<Date>()
 const data = ref("")
+
+const versionCreatedRelative = computed(() =>
+  versionCreatedAt.value != undefined ? formatRelativeTime(versionCreatedAt.value) : "",
+)
 
 interface Constraint {
   name: string
@@ -139,6 +145,7 @@ async function loadTemplate() {
   if (r.value.version != undefined) {
     versionID.value = r.value.version.id
     versionNumber.value = r.value.version.number
+    versionCreatedAt.value = new Date(r.value.version.createdAt)
     data.value = fromBase64(r.value.version.data)
     variables.value = r.value.version.variables.map((variable) => ({
       name: variable.name,
@@ -179,6 +186,7 @@ async function saveVersion() {
 
   versionID.value = r.value.id
   versionNumber.value++
+  versionCreatedAt.value = new Date()
   templateStore.invalidate(props.templateID)
   saveSnapshot()
   message.success("Шаблон сохранен")
@@ -233,8 +241,18 @@ const toolbars: ToolbarNames[] = [
     <n-layout-header bordered class="toolbar">
       <n-flex align="center" justify="space-between" :wrap="false">
         <n-flex align="baseline" :size="8" :wrap="false">
-          <n-text strong>{{ name }}</n-text>
-          <n-text depth="3">v{{ versionNumber }}</n-text>
+          <n-text>
+            Версия {{ versionNumber }}
+            <template v-if="versionCreatedAt != undefined">
+              ·
+              <n-tooltip trigger="hover">
+                <template #trigger>
+                  <span class="time">{{ versionCreatedRelative }}</span>
+                </template>
+                {{ versionCreatedAt.toLocaleString() }}
+              </n-tooltip>
+            </template>
+          </n-text>
         </n-flex>
         <n-flex align="center" :size="8" :wrap="false">
           <n-button size="small" secondary @click="showTemplateUpdateModal = true">
@@ -393,6 +411,11 @@ const toolbars: ToolbarNames[] = [
 
 .editor {
   height: 100%;
+}
+
+.time {
+  border-bottom: 1px dashed currentColor;
+  cursor: help;
 }
 
 :deep(.layout-content) {
