@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { NLayout, NLayoutHeader, NLayoutContent, NFlex, NText, NButton, NCard, NTable } from "naive-ui"
-import { computed, onMounted, ref } from "vue"
+import { NLayout, NLayoutHeader, NLayoutContent, NFlex, NIcon, NText, NButton, NCard, NTable } from "naive-ui"
+import { onMounted, ref } from "vue"
 import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
 import RU from "@vavt/cm-extension/dist/locale/ru"
-import "md-editor-v3/lib/preview.css"
-import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
-import AppBrand from "@/components/AppBrand.vue"
+import "md-editor-v3/lib/style.css"
+import AppHeader from "@/components/AppHeader.vue"
+import IconDownloadOutlined from "@/components/icons/IconDownloadOutlined.vue"
 import { taskGet, type TaskGetError } from "@/api/task"
 import { useApiCall } from "@/composables/useApiCall"
 import { useTemplateStore } from "@/stores/template"
@@ -73,43 +73,28 @@ config({
 })
 
 const toolbars: ToolbarNames[] = ["preview", "previewOnly"]
-
-const menuItemsCenter = computed<HeaderMenuItem[]>(() => [
-  {
-    key: "template",
-    label: templateName.value,
-    to: { name: "template", params: { projectID: props.projectID, templateID: props.templateID } },
-  },
-])
-
-const menuItemsRight: HeaderMenuItem[] = [
-  { key: "projectList", label: "Проекты", to: { name: "projectList" } },
-  { key: "project", label: "Шаблоны", to: { name: "project", params: { projectID: props.projectID } } },
-  {
-    key: "taskList",
-    label: "Результаты",
-    to: { name: "taskList", params: { projectID: props.projectID, templateID: props.templateID } },
-  },
-]
 </script>
 
 <template>
-  <n-layout>
-    <n-layout-header bordered style="padding: 0.5rem 1rem">
-      <n-flex align="center" justify="space-between">
-        <AppBrand />
-        <n-flex align="center">
-          <n-flex>
-            <HeaderMenu :items="menuItemsCenter" />
-          </n-flex>
-          <n-button v-if="data != null" secondary @click="download()">Скачать</n-button>
+  <div class="page">
+    <AppHeader />
+    <n-layout-header bordered class="toolbar">
+      <n-flex align="center" justify="space-between" :wrap="false">
+        <n-flex align="baseline" :size="8" :wrap="false">
+          <n-text strong>{{ templateName }}</n-text>
+          <n-text depth="3">Результат #{{ taskID }}</n-text>
         </n-flex>
-        <n-flex>
-          <HeaderMenu :items="menuItemsRight" />
-        </n-flex>
+        <n-button v-if="data != null" size="small" secondary @click="download()">
+          <template #icon>
+            <n-icon>
+              <IconDownloadOutlined />
+            </n-icon>
+          </template>
+          Скачать
+        </n-button>
       </n-flex>
     </n-layout-header>
-    <n-layout content-style="height: calc(100vh - 59px)">
+    <n-layout class="page-body">
       <n-layout-content content-class="layout-content" embedded style="height: 100%">
         <MdEditor
           v-if="data != null"
@@ -153,10 +138,26 @@ const menuItemsRight: HeaderMenuItem[] = [
         </n-flex>
       </n-layout-content>
     </n-layout>
-  </n-layout>
+  </div>
 </template>
 
 <style scoped>
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.toolbar {
+  padding: 0.5rem 1rem;
+  flex-shrink: 0;
+}
+
 :deep(.layout-content) {
   padding: 1.5rem;
 }

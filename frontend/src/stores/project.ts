@@ -9,6 +9,10 @@ export const useProjectStore = defineStore("project", () => {
     cache.value.set(projectID, project)
   }
 
+  function get(projectID: number): ProjectGetResult | undefined {
+    return cache.value.get(projectID)
+  }
+
   async function ensureLoaded(projectID: number): Promise<ProjectGetResult> {
     const existing = cache.value.get(projectID)
     if (existing != null) return existing
@@ -22,5 +26,5 @@ export const useProjectStore = defineStore("project", () => {
     cache.value.delete(projectID)
   }
 
-  return { put, ensureLoaded, invalidate }
+  return { put, get, ensureLoaded, invalidate }
 })

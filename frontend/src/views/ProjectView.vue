@@ -1,24 +1,19 @@
 <script setup lang="ts">
-import { NLayout, NText, NLayoutContent, NLayoutHeader, NFlex, NPagination, NButton } from "naive-ui"
+import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NText } from "naive-ui"
 import { onMounted, ref } from "vue"
 import TemplateListItem from "@/components/TemplateListItem.vue"
 import TemplateListSearch from "@/components/TemplateListSearch.vue"
-import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
-import AppBrand from "@/components/AppBrand.vue"
+import AppHeader from "@/components/AppHeader.vue"
 import TemplateCreateModal from "@/components/TemplateCreateModal.vue"
 import { templateList as fetchTemplates } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
 import { usePagination } from "@/composables/usePagination"
-import { useProjectStore } from "@/stores/project"
 
 const props = defineProps<{
   projectID: number
 }>()
 
 const apiCall = useApiCall()
-const projectStore = useProjectStore()
-
-const projectName = ref("")
 
 const { page, pageSize, totalPages, pageSizes } = usePagination("шаблонов")
 const totalTemplates = ref(0)
@@ -32,6 +27,7 @@ interface Template {
   name: string
   authorName: string
   createdAt: Date
+  updatedAt: Date
 }
 
 const templates = ref<Template[]>([])
@@ -55,17 +51,11 @@ async function templateList() {
     name: template.name,
     authorName: template.authorName,
     createdAt: new Date(template.createdAt),
+    updatedAt: new Date(template.updatedAt ?? template.createdAt),
   }))
 }
 
-async function loadProject() {
-  const r = await apiCall(() => projectStore.ensureLoaded(props.projectID))
-  if (!r.ok) return
-  projectName.value = r.value.name
-}
-
 onMounted(async () => {
-  await loadProject()
   await templateList()
 })
 
@@ -93,21 +83,11 @@ function onUpdateTemplate(id: number, name: string) {
   const template = templates.value.find((t) => t.id === id)
   if (template) template.name = name
 }
-
-const menuItems: HeaderMenuItem[] = [{ key: "projectList", label: "Проекты", to: { name: "projectList" } }]
 </script>
 
 <template>
   <n-layout>
-    <n-layout-header bordered style="padding: 0.5rem 1rem">
-      <n-flex align="center" justify="space-between">
-        <AppBrand />
-        <n-text v-if="projectName">{{ projectName }}</n-text>
-        <n-flex>
-          <HeaderMenu :items="menuItems" />
-        </n-flex>
-      </n-flex>
-    </n-layout-header>
+    <AppHeader />
     <n-layout content-style="height: calc(100vh - 59px)">
       <n-layout-content content-class="layout-content" embedded style="height: 100%">
         <n-flex vertical align="center" style="max-width: 50rem; margin: auto">
@@ -123,6 +103,7 @@ const menuItems: HeaderMenuItem[] = [{ key: "projectList", label: "Проект�
             :name="template.name"
             :author-name="template.authorName"
             :created-at="template.createdAt"
+            :updated-at="template.updatedAt"
             @delete="onDeleteTemplate"
             @update="onUpdateTemplate"
           >

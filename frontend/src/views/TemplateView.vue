@@ -21,18 +21,26 @@ import VariableCreateModal from "@/components/VariableCreateModal.vue"
 import VariableUpdateModal from "@/components/VariableUpdateModal.vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
 import IconEditOutlined from "@/components/icons/IconEditOutlined.vue"
+import IconSaveOutlined from "@/components/icons/IconSaveOutlined.vue"
+import IconPlayCircleOutlined from "@/components/icons/IconPlayCircleOutlined.vue"
+import IconUnorderedListOutlined from "@/components/icons/IconUnorderedListOutlined.vue"
 import TaskCreateModal from "@/components/TaskCreateModal.vue"
 import TemplateUpdateModal from "@/components/TemplateUpdateModal.vue"
-import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
-import AppBrand from "@/components/AppBrand.vue"
+import AppHeader from "@/components/AppHeader.vue"
 import { versionCreate, type VersionCreateVariable } from "@/api/version"
 import { useApiCall } from "@/composables/useApiCall"
 import { useTemplateStore } from "@/stores/template"
 import { fromBase64, toBase64 } from "@/utils/base64"
+import { useRouter } from "vue-router"
 
 const message = useMessage()
 const apiCall = useApiCall()
 const templateStore = useTemplateStore()
+const router = useRouter()
+
+function goToResults() {
+  router.push({ name: "taskList", params: { projectID: props.projectID, templateID: props.templateID } })
+}
 
 const props = defineProps<{
   templateID: number
@@ -202,61 +210,66 @@ const toolbars: ToolbarNames[] = [
   "preview",
   "previewOnly",
 ]
-
-const menuItems: HeaderMenuItem[] = [
-  { key: "projectList", label: "Проекты", to: { name: "projectList" } },
-  { key: "project", label: "Шаблоны", to: { name: "project", params: { projectID: props.projectID } } },
-  {
-    key: "taskList",
-    label: "Результаты",
-    to: { name: "taskList", params: { projectID: props.projectID, templateID: props.templateID } },
-  },
-]
 </script>
 
 <template>
-  <n-layout>
-    <n-layout-header bordered class="header">
-      <n-flex align="center" justify="space-between">
-        <AppBrand />
-        <n-flex align="center" :wrap="false">
-          <n-text>{{ name }}</n-text>
-          <n-button
-            secondary
-            aria-label="Редактировать шаблон"
-            title="Редактировать шаблон"
-            @click="showTemplateUpdateModal = true"
-          >
+  <div class="page">
+    <AppHeader />
+    <n-layout-header bordered class="toolbar">
+      <n-flex align="center" justify="space-between" :wrap="false">
+        <n-flex align="baseline" :size="8" :wrap="false">
+          <n-text strong>{{ name }}</n-text>
+          <n-text depth="3">v{{ versionNumber }}</n-text>
+        </n-flex>
+        <n-flex align="center" :size="8" :wrap="false">
+          <n-button size="small" secondary @click="showTemplateUpdateModal = true">
             <template #icon>
               <n-icon>
                 <IconEditOutlined />
               </n-icon>
             </template>
+            Редактировать
           </n-button>
-          <TemplateUpdateModal
-            v-model:show-modal="showTemplateUpdateModal"
-            :template-id="templateID"
-            :initial-name="name"
-            @submit="onTemplateRename"
-          />
-          <n-text>v{{ versionNumber }}</n-text>
-          <n-button secondary @click="saveVersion">Сохранить</n-button>
-          <n-button secondary :disabled="versionID == undefined" @click="showTaskCreateModal = true">
+          <n-button size="small" secondary @click="saveVersion">
+            <template #icon>
+              <n-icon>
+                <IconSaveOutlined />
+              </n-icon>
+            </template>
+            Сохранить
+          </n-button>
+          <n-button size="small" secondary :disabled="versionID == undefined" @click="showTaskCreateModal = true">
+            <template #icon>
+              <n-icon>
+                <IconPlayCircleOutlined />
+              </n-icon>
+            </template>
             Выполнить
           </n-button>
-          <TaskCreateModal
-            v-if="versionID != undefined"
-            v-model:show-modal="showTaskCreateModal"
-            :version-id="versionID"
-            :variables="variables.filter((v) => v.inputType == 'input')"
-          />
-        </n-flex>
-        <n-flex>
-          <HeaderMenu :items="menuItems" />
+          <n-button size="small" secondary @click="goToResults">
+            <template #icon>
+              <n-icon>
+                <IconUnorderedListOutlined />
+              </n-icon>
+            </template>
+            Результаты
+          </n-button>
         </n-flex>
       </n-flex>
     </n-layout-header>
-    <n-layout has-sider content-style="height: calc(100vh - 59px)">
+    <TemplateUpdateModal
+      v-model:show-modal="showTemplateUpdateModal"
+      :template-id="templateID"
+      :initial-name="name"
+      @submit="onTemplateRename"
+    />
+    <TaskCreateModal
+      v-if="versionID != undefined"
+      v-model:show-modal="showTaskCreateModal"
+      :version-id="versionID"
+      :variables="variables.filter((v) => v.inputType == 'input')"
+    />
+    <n-layout has-sider class="page-body">
       <n-layout-sider collapse-mode="width" width="25%" :collapsed-width="0" show-trigger="bar" bordered>
         <n-flex vertical class="sider">
           <n-flex vertical class="sider-section">
@@ -306,12 +319,24 @@ const menuItems: HeaderMenuItem[] = [
         <MdEditor v-model="data" language="ru" :toolbars="toolbars" class="editor" />
       </n-layout-content>
     </n-layout>
-  </n-layout>
+  </div>
 </template>
 
 <style scoped>
-.header {
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.toolbar {
   padding: 0.5rem 1rem;
+  flex-shrink: 0;
 }
 
 .sider {

@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { NFlex, NCard, NText, NButton, NIcon, NPopconfirm } from "naive-ui"
-import { ref } from "vue"
+import { NFlex, NCard, NText, NButton, NIcon, NPopconfirm, NTooltip } from "naive-ui"
+import { computed, ref } from "vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
 import IconEditOutlined from "@/components/icons/IconEditOutlined.vue"
 import TemplateUpdateModal from "@/components/TemplateUpdateModal.vue"
 import { templateDelete } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
 import { useTemplateStore } from "@/stores/template"
+import { formatRelativeTime } from "@/utils/relativeTime"
 
 const apiCall = useApiCall()
 const templateStore = useTemplateStore()
@@ -17,7 +18,11 @@ const props = defineProps<{
   name: string
   authorName: string
   createdAt: Date
+  updatedAt: Date
 }>()
+
+const createdRelative = computed(() => formatRelativeTime(props.createdAt))
+const updatedRelative = computed(() => formatRelativeTime(props.updatedAt))
 
 const emit = defineEmits<{
   delete: []
@@ -52,7 +57,22 @@ function onUpdateSubmit(name: string) {
         <n-flex vertical size="small">
           <n-text strong>{{ props.name }}</n-text>
           <n-text>Автор: {{ props.authorName }}</n-text>
-          <n-text>Создан: {{ props.createdAt.toLocaleString() }}</n-text>
+          <n-text>
+            Создан:
+            <n-tooltip trigger="hover">
+              <template #trigger>
+                <span class="time">{{ createdRelative }}</span>
+              </template>
+              {{ props.createdAt.toLocaleString() }}
+            </n-tooltip>
+            · Обновлён:
+            <n-tooltip trigger="hover">
+              <template #trigger>
+                <span class="time">{{ updatedRelative }}</span>
+              </template>
+              {{ props.updatedAt.toLocaleString() }}
+            </n-tooltip>
+          </n-text>
         </n-flex>
         <n-flex>
           <n-button
@@ -90,3 +110,10 @@ function onUpdateSubmit(name: string) {
     />
   </router-link>
 </template>
+
+<style scoped>
+.time {
+  border-bottom: 1px dashed currentColor;
+  cursor: help;
+}
+</style>

@@ -5,6 +5,10 @@ import { templateGet, type TemplateGetResult } from "@/api/template"
 export const useTemplateStore = defineStore("template", () => {
   const cache = ref(new Map<number, TemplateGetResult>())
 
+  function get(templateID: number): TemplateGetResult | undefined {
+    return cache.value.get(templateID)
+  }
+
   async function ensureLoaded(templateID: number): Promise<TemplateGetResult> {
     const existing = cache.value.get(templateID)
     if (existing != null) return existing
@@ -18,5 +22,5 @@ export const useTemplateStore = defineStore("template", () => {
     cache.value.delete(templateID)
   }
 
-  return { ensureLoaded, invalidate }
+  return { get, ensureLoaded, invalidate }
 })

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NLayoutHeader, NText } from "naive-ui"
+import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NText } from "naive-ui"
 import { onMounted, ref } from "vue"
 import ProjectListItem from "@/components/ProjectListItem.vue"
 import ProjectListSearch from "@/components/ProjectListSearch.vue"
 import ProjectCreateModal from "@/components/ProjectCreateModal.vue"
-import AppBrand from "@/components/AppBrand.vue"
+import AppHeader from "@/components/AppHeader.vue"
 import { projectList as fetchProjects, type ProjectListItem as Project } from "@/api/project"
 import { useApiCall } from "@/composables/useApiCall"
 import { usePagination } from "@/composables/usePagination"
@@ -57,11 +57,7 @@ function onUpdateProject(id: number, name: string) {
 
 <template>
   <n-layout>
-    <n-layout-header bordered class="header">
-      <n-flex align="center" justify="start" class="header-inner">
-        <AppBrand />
-      </n-flex>
-    </n-layout-header>
+    <AppHeader />
     <n-layout content-style="height: calc(100vh - 59px)">
       <n-layout-content content-class="layout-content" embedded class="content">
         <n-flex vertical align="center" class="content-inner">
@@ -95,14 +91,6 @@ function onUpdateProject(id: number, name: string) {
 </template>
 
 <style scoped>
-.header {
-  padding: 0.5rem 1rem;
-}
-
-.header-inner {
-  padding: 10px 0;
-}
-
 .content {
   height: 100%;
 }

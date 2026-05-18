@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { NFlex, NCard, NText, NTag } from "naive-ui"
+import { NFlex, NCard, NText, NTag, NIcon, NTooltip } from "naive-ui"
+import { computed, type Component } from "vue"
+import IconClockCircleOutlined from "@/components/icons/IconClockCircleOutlined.vue"
+import IconSyncOutlined from "@/components/icons/IconSyncOutlined.vue"
+import IconCheckCircleOutlined from "@/components/icons/IconCheckCircleOutlined.vue"
+import IconCloseCircleOutlined from "@/components/icons/IconCloseCircleOutlined.vue"
+import { formatRelativeTime } from "@/utils/relativeTime"
 
 const props = defineProps<{
   projectId: number
@@ -27,6 +33,16 @@ const statusToType = new Map<string, TagType>([
   ["succeed", "success"],
   ["failed", "error"],
 ])
+
+const statusToIcon = new Map<string, Component>([
+  ["created", IconClockCircleOutlined],
+  ["in_progress", IconSyncOutlined],
+  ["succeed", IconCheckCircleOutlined],
+  ["failed", IconCloseCircleOutlined],
+])
+
+const createdRelative = computed(() => formatRelativeTime(props.createdAt))
+const updatedRelative = computed(() => formatRelativeTime(props.updatedAt))
 </script>
 
 <template>
@@ -37,14 +53,44 @@ const statusToType = new Map<string, TagType>([
     <n-card>
       <n-flex vertical size="small">
         <n-flex align="center" justify="space-between">
-          <n-text strong>v{{ props.versionNumber }}</n-text>
-          <n-tag :type="statusToType.get(props.status)">{{ statusToString.get(props.status) }}</n-tag>
+          <n-flex align="baseline" :size="8" :wrap="false">
+            <n-text strong>Результат #{{ props.taskId }}</n-text>
+            <n-text depth="3">· v{{ props.versionNumber }}</n-text>
+          </n-flex>
+          <n-tag :type="statusToType.get(props.status)">
+            <template #icon>
+              <n-icon>
+                <component :is="statusToIcon.get(props.status)" />
+              </n-icon>
+            </template>
+            {{ statusToString.get(props.status) }}
+          </n-tag>
         </n-flex>
         <n-text>Автор: {{ props.creatorName }}</n-text>
         <n-text>
-          Создан: {{ props.createdAt.toLocaleString() }} · Обновлен: {{ props.updatedAt.toLocaleString() }}
+          Создан:
+          <n-tooltip trigger="hover">
+            <template #trigger>
+              <span class="time">{{ createdRelative }}</span>
+            </template>
+            {{ props.createdAt.toLocaleString() }}
+          </n-tooltip>
+          · Обновлён:
+          <n-tooltip trigger="hover">
+            <template #trigger>
+              <span class="time">{{ updatedRelative }}</span>
+            </template>
+            {{ props.updatedAt.toLocaleString() }}
+          </n-tooltip>
         </n-text>
       </n-flex>
     </n-card>
   </router-link>
 </template>
+
+<style scoped>
+.time {
+  border-bottom: 1px dashed currentColor;
+  cursor: help;
+}
+</style>

@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import TaskListItem from "@/components/TaskListItem.vue"
-import HeaderMenu, { type HeaderMenuItem } from "@/components/HeaderMenu.vue"
-import AppBrand from "@/components/AppBrand.vue"
-import { NLayout, NLayoutHeader, NLayoutContent, NFlex, NPagination, NText } from "naive-ui"
-import { computed, onMounted, ref } from "vue"
+import AppHeader from "@/components/AppHeader.vue"
+import { NLayout, NLayoutContent, NFlex, NPagination, NText } from "naive-ui"
+import { onMounted, ref } from "vue"
 import { taskList as fetchTasks, type TaskStatus } from "@/api/task"
 import { useApiCall } from "@/composables/useApiCall"
 import { usePagination } from "@/composables/usePagination"
-import { useTemplateStore } from "@/stores/template"
 
 const props = defineProps<{
   templateID: number
@@ -15,7 +13,6 @@ const props = defineProps<{
 }>()
 
 const apiCall = useApiCall()
-const templateStore = useTemplateStore()
 
 const { page, pageSize, totalPages, pageSizes } = usePagination("результатов")
 const totalTasks = ref(0)
@@ -29,7 +26,6 @@ interface Task {
   updatedAt: Date
 }
 
-const templateName = ref("")
 const tasks = ref<Task[]>([])
 
 async function taskList() {
@@ -55,14 +51,7 @@ async function taskList() {
   }))
 }
 
-async function loadTemplate() {
-  const r = await apiCall(() => templateStore.ensureLoaded(props.templateID))
-  if (!r.ok) return
-  templateName.value = r.value.name
-}
-
 onMounted(async () => {
-  await loadTemplate()
   await taskList()
 })
 
@@ -74,33 +63,11 @@ async function onUpdatePageSize() {
   await taskList()
 }
 
-const menuItemsCenter = computed<HeaderMenuItem[]>(() => [
-  {
-    key: "template",
-    label: templateName.value,
-    to: { name: "template", params: { projectID: props.projectID, templateID: props.templateID } },
-  },
-])
-
-const menuItemsRight: HeaderMenuItem[] = [
-  { key: "projectList", label: "Проекты", to: { name: "projectList" } },
-  { key: "project", label: "Шаблоны", to: { name: "project", params: { projectID: props.projectID } } },
-]
 </script>
 
 <template>
   <n-layout>
-    <n-layout-header bordered style="padding: 0.5rem 1rem">
-      <n-flex align="center" justify="space-between">
-        <AppBrand />
-        <n-flex>
-          <HeaderMenu :items="menuItemsCenter" />
-        </n-flex>
-        <n-flex>
-          <HeaderMenu :items="menuItemsRight" />
-        </n-flex>
-      </n-flex>
-    </n-layout-header>
+    <AppHeader />
     <n-layout content-style="height: calc(100vh - 59px)">
       <n-layout-content content-class="layout-content" embedded style="height: 100%">
         <n-flex vertical align="center" style="max-width: 50rem; margin: auto">
