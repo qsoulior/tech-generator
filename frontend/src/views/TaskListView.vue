@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TaskListItem from "@/components/TaskListItem.vue"
 import AppHeader from "@/components/AppHeader.vue"
-import { NLayout, NLayoutContent, NFlex, NPagination, NText } from "naive-ui"
+import { NLayout, NLayoutContent, NFlex, NPagination, NText, NEmpty, NSpin } from "naive-ui"
 import { onMounted, ref } from "vue"
 import { taskList as fetchTasks, type TaskStatus } from "@/api/task"
 import { useApiCall } from "@/composables/useApiCall"
@@ -16,6 +16,7 @@ const apiCall = useApiCall()
 
 const { page, pageSize, totalPages, pageSizes } = usePagination("результатов")
 const totalTasks = ref(0)
+const loading = ref(true)
 
 interface Task {
   id: number
@@ -29,6 +30,7 @@ interface Task {
 const tasks = ref<Task[]>([])
 
 async function taskList() {
+  loading.value = true
   const r = await apiCall(() =>
     fetchTasks({
       templateID: props.templateID,
@@ -36,6 +38,7 @@ async function taskList() {
       size: pageSize.value,
     }),
   )
+  loading.value = false
   if (!r.ok) return
 
   totalTasks.value = r.value.totalTasks
@@ -69,7 +72,13 @@ async function onUpdatePageSize() {
     <AppHeader />
     <n-layout content-style="height: calc(100vh - 59px)">
       <n-layout-content content-class="layout-content" embedded style="height: 100%">
-        <n-flex vertical align="center" style="max-width: 50rem; margin: auto">
+        <n-flex v-if="loading" justify="center" align="center" style="height: 100%">
+          <n-spin size="large" />
+        </n-flex>
+        <n-flex v-else-if="totalTasks === 0" justify="center" align="center" style="height: 100%">
+          <n-empty description="Результатов генерации пока нет" />
+        </n-flex>
+        <n-flex v-else vertical align="center" style="max-width: 50rem; margin: auto">
           <n-text depth="3" style="width: 100%">Всего: {{ totalTasks }}</n-text>
           <TaskListItem
             v-for="task in tasks"

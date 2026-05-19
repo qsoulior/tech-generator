@@ -28,8 +28,8 @@ const statusToString = new Map([
 type TagType = "default" | "primary" | "success" | "info" | "warning" | "error"
 
 const statusToType = new Map<string, TagType>([
-  ["created", "primary"],
-  ["in_progress", "primary"],
+  ["created", "default"],
+  ["in_progress", "default"],
   ["succeed", "success"],
   ["failed", "error"],
 ])
