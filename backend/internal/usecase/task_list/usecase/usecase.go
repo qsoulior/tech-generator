@@ -11,14 +11,14 @@ import (
 )
 
 type Usecase struct {
-	versionRepo versionRepository
-	taskRepo    taskRepository
+	templateRepo templateRepository
+	taskRepo     taskRepository
 }
 
-func New(versionRepo versionRepository, taskRepo taskRepository) *Usecase {
+func New(templateRepo templateRepository, taskRepo taskRepository) *Usecase {
 	return &Usecase{
-		versionRepo: versionRepo,
-		taskRepo:    taskRepo,
+		templateRepo: templateRepo,
+		taskRepo:     taskRepo,
 	}
 }
 
@@ -27,8 +27,8 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TaskListIn) (*domain.Tas
 		return nil, err
 	}
 
-	// check version
-	err := u.handleVersion(ctx, in)
+	// check template access
+	err := u.handleTemplate(ctx, in)
 	if err != nil {
 		return nil, err
 	}
@@ -54,24 +54,24 @@ func (u *Usecase) Handle(ctx context.Context, in domain.TaskListIn) (*domain.Tas
 	return &out, nil
 }
 
-func (u *Usecase) handleVersion(ctx context.Context, in domain.TaskListIn) error {
-	// get version
-	version, err := u.versionRepo.GetByID(ctx, in.Filter.TemplateID)
+func (u *Usecase) handleTemplate(ctx context.Context, in domain.TaskListIn) error {
+	// get template
+	template, err := u.templateRepo.GetByID(ctx, in.Filter.TemplateID)
 	if err != nil {
-		return fmt.Errorf("version repo - get by id: %w", err)
+		return fmt.Errorf("template repo - get by id: %w", err)
 	}
 
-	if version == nil {
-		return domain.ErrVersionNotFound
+	if template == nil {
+		return domain.ErrTemplateNotFound
 	}
 
 	// check permission
-	isWriter := lo.SomeBy(version.TemplateUsers, func(user domain.TemplateUser) bool {
+	isWriter := lo.SomeBy(template.TemplateUsers, func(user domain.TemplateUser) bool {
 		return user.ID == in.Filter.UserID && (user.Role == user_domain.RoleRead || user.Role == user_domain.RoleWrite)
 	})
 
-	if version.ProjectAuthorID != in.Filter.UserID && version.TemplateAuthorID != in.Filter.UserID && !isWriter {
-		return domain.ErrVersionInvalid
+	if template.ProjectAuthorID != in.Filter.UserID && template.TemplateAuthorID != in.Filter.UserID && !isWriter {
+		return domain.ErrTemplateInvalid
 	}
 
 	return nil

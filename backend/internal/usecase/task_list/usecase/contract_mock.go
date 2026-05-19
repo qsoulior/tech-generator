@@ -17,43 +17,43 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockversionRepository is a mock of versionRepository interface.
-type MockversionRepository struct {
+// MocktemplateRepository is a mock of templateRepository interface.
+type MocktemplateRepository struct {
 	ctrl     *gomock.Controller
-	recorder *MockversionRepositoryMockRecorder
+	recorder *MocktemplateRepositoryMockRecorder
 	isgomock struct{}
 }
 
-// MockversionRepositoryMockRecorder is the mock recorder for MockversionRepository.
-type MockversionRepositoryMockRecorder struct {
-	mock *MockversionRepository
+// MocktemplateRepositoryMockRecorder is the mock recorder for MocktemplateRepository.
+type MocktemplateRepositoryMockRecorder struct {
+	mock *MocktemplateRepository
 }
 
-// NewMockversionRepository creates a new mock instance.
-func NewMockversionRepository(ctrl *gomock.Controller) *MockversionRepository {
-	mock := &MockversionRepository{ctrl: ctrl}
-	mock.recorder = &MockversionRepositoryMockRecorder{mock}
+// NewMocktemplateRepository creates a new mock instance.
+func NewMocktemplateRepository(ctrl *gomock.Controller) *MocktemplateRepository {
+	mock := &MocktemplateRepository{ctrl: ctrl}
+	mock.recorder = &MocktemplateRepositoryMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockversionRepository) EXPECT() *MockversionRepositoryMockRecorder {
+func (m *MocktemplateRepository) EXPECT() *MocktemplateRepositoryMockRecorder {
 	return m.recorder
 }
 
 // GetByID mocks base method.
-func (m *MockversionRepository) GetByID(ctx context.Context, id int64) (*domain.Version, error) {
+func (m *MocktemplateRepository) GetByID(ctx context.Context, id int64) (*domain.Template, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(*domain.Version)
+	ret0, _ := ret[0].(*domain.Template)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByID indicates an expected call of GetByID.
-func (mr *MockversionRepositoryMockRecorder) GetByID(ctx, id any) *gomock.Call {
+func (mr *MocktemplateRepositoryMockRecorder) GetByID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockversionRepository)(nil).GetByID), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MocktemplateRepository)(nil).GetByID), ctx, id)
 }
 
 // MocktaskRepository is a mock of taskRepository interface.

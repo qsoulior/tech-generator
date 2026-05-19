@@ -104,8 +104,8 @@ func TestHandler_TaskList_BaseError(t *testing.T) {
 		name string
 		err  error
 	}{
-		{name: "VersionNotFound", err: domain.ErrVersionNotFound},
-		{name: "VersionInvalid", err: domain.ErrVersionInvalid},
+		{name: "TemplateNotFound", err: domain.ErrTemplateNotFound},
+		{name: "TemplateInvalid", err: domain.ErrTemplateInvalid},
 		{name: "WrappedBaseError", err: error_domain.NewBaseError("custom")},
 	}
 

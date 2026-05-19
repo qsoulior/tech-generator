@@ -6,11 +6,11 @@ import (
 )
 
 var (
-	ErrVersionNotFound = error_domain.NewBaseError("version not found")
-	ErrVersionInvalid  = error_domain.NewBaseError("version is invalid")
+	ErrTemplateNotFound = error_domain.NewBaseError("template not found")
+	ErrTemplateInvalid  = error_domain.NewBaseError("template is invalid")
 )
 
-type Version struct {
+type Template struct {
 	ProjectAuthorID  int64
 	TemplateAuthorID int64
 	TemplateUsers    []TemplateUser

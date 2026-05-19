@@ -8,8 +8,8 @@ import (
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/task_list/domain"
 )
 
-type versionRepository interface {
-	GetByID(ctx context.Context, id int64) (*domain.Version, error)
+type templateRepository interface {
+	GetByID(ctx context.Context, id int64) (*domain.Template, error)
 }
 
 type taskRepository interface {

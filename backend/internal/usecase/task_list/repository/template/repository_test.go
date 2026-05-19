@@ -1,4 +1,4 @@
-package version_repository
+package template_repository
 
 import (
 	"context"
@@ -60,17 +60,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 			require.NoError(t, test_db.DeleteEntitiesByColumn(s.C(), "template_user", "template_id", []int64{templateID}))
 		}()
 
-		// version
-		version := test_db.GenerateEntity(func(v *test_db.Version) {
-			v.TemplateID = templateID
-			v.AuthorID = &userIDs[2]
-			v.Number = 1
-		})
-		versionID, err := test_db.InsertEntityWithID[int64](s.C(), "template_version", version)
-		require.NoError(s.T(), err)
-		defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "template_version", versionID)) }()
-
-		want := domain.Version{
+		want := domain.Template{
 			TemplateAuthorID: *template.AuthorID,
 			ProjectAuthorID:  project.AuthorID,
 			TemplateUsers: []domain.TemplateUser{
@@ -80,7 +70,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		}
 		slices.SortFunc(want.TemplateUsers, func(a, b domain.TemplateUser) int { return int(a.ID - b.ID) })
 
-		got, err := repo.GetByID(ctx, versionID)
+		got, err := repo.GetByID(ctx, templateID)
 		require.NoError(t, err)
 
 		slices.SortFunc(got.TemplateUsers, func(a, b domain.TemplateUser) int { return int(a.ID - b.ID) })
@@ -98,17 +88,7 @@ func (s *repositorySuite) TestRepository_GetByID() {
 		require.NoError(t, err)
 		defer func() { require.NoError(t, test_db.DeleteEntityByID(s.C(), "template", templateID)) }()
 
-		// version
-		version := test_db.GenerateEntity(func(v *test_db.Version) {
-			v.TemplateID = templateID
-			v.AuthorID = nil
-			v.Number = 1
-		})
-		versionID, err := test_db.InsertEntityWithID[int64](s.C(), "template_version", version)
-		require.NoError(s.T(), err)
-		defer func() { require.NoError(s.T(), test_db.DeleteEntityByID(s.C(), "template_version", versionID)) }()
-
-		got, err := repo.GetByID(ctx, versionID)
+		got, err := repo.GetByID(ctx, templateID)
 		require.NoError(t, err)
 		require.Nil(t, got)
 	})

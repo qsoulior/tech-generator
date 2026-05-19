@@ -1,4 +1,4 @@
-package version_repository
+package template_repository
 
 import (
 	"context"
@@ -20,8 +20,8 @@ func New(db *sqlx.DB) *Repository {
 	}
 }
 
-func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Version, error) {
-	op := "version - get by id"
+func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Template, error) {
+	op := "template - get by id"
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar).
 		Select(
@@ -30,11 +30,10 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Version, er
 			"tu.user_id as template_user_id",
 			"tu.role as template_user_role",
 		).
-		From("template_version v").
-		Join("template t ON v.template_id = t.id").
+		From("template t").
 		Join("project p ON t.project_id = p.id").
 		LeftJoin("template_user tu ON t.id = tu.template_id").
-		Where(sq.Eq{"v.id": id, "t.is_default": false})
+		Where(sq.Eq{"t.id": id, "t.is_default": false})
 
 	query, args, err := builder.ToSql()
 	if err != nil {
@@ -43,7 +42,7 @@ func (r *Repository) GetByID(ctx context.Context, id int64) (*domain.Version, er
 
 	query = fmt.Sprintf("-- %s\n%s", op, query)
 
-	var dtos versions
+	var dtos templates
 	err = r.db.SelectContext(ctx, &dtos, query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("exec query %q: %w", op, err)
