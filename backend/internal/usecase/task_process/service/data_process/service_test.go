@@ -31,6 +31,58 @@ func TestService_Handle_Success(t *testing.T) {
 	require.Equal(t, want, string(got))
 }
 
+func TestService_Handle_Sprig(t *testing.T) {
+	ctx := context.Background()
+	service := New()
+
+	tests := []struct {
+		name string
+		in   domain.DataProcessIn
+		want string
+	}{
+		{
+			name: "printf_decimals",
+			in: domain.DataProcessIn{
+				Values: map[string]any{"price": 1234.5678},
+				Data:   []byte(`{{ printf "%.2f" .price }}`),
+			},
+			want: "1234.57",
+		},
+		{
+			name: "default_fallback",
+			in: domain.DataProcessIn{
+				Values: map[string]any{},
+				Data:   []byte(`{{ default "n/a" .missing }}`),
+			},
+			want: "n/a",
+		},
+		{
+			name: "upper_replace",
+			in: domain.DataProcessIn{
+				Values: map[string]any{"name": "foo bar"},
+				Data:   []byte(`{{ .name | replace " " "_" | upper }}`),
+			},
+			want: "FOO_BAR",
+		},
+		{
+			name: "range_list",
+			in: domain.DataProcessIn{
+				Values: map[string]any{"items": []string{"a", "b", "c"}},
+				Data:   []byte(`{{- range .items }}{{ . }}{{ end -}}`),
+			},
+			want: "abc",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := service.Handle(ctx, tt.in)
+			require.NoError(t, err)
+			require.Equal(t, tt.want, string(got))
+		})
+	}
+}
+
 func TestService_Handle_Error(t *testing.T) {
 	ctx := context.Background()
 	service := New()
@@ -45,6 +97,22 @@ func TestService_Handle_Error(t *testing.T) {
 			in: domain.DataProcessIn{
 				Values: map[string]any{},
 				Data:   []byte("abc {{abc}}"),
+			},
+			want: task_domain.ProcessError{Message: task_domain.MessageTemplateParse},
+		},
+		{
+			name: "EnvBlocked",
+			in: domain.DataProcessIn{
+				Values: map[string]any{},
+				Data:   []byte(`{{ env "PATH" }}`),
+			},
+			want: task_domain.ProcessError{Message: task_domain.MessageTemplateParse},
+		},
+		{
+			name: "ExpandEnvBlocked",
+			in: domain.DataProcessIn{
+				Values: map[string]any{},
+				Data:   []byte(`{{ expandenv "$PATH" }}`),
 			},
 			want: task_domain.ProcessError{Message: task_domain.MessageTemplateParse},
 		},

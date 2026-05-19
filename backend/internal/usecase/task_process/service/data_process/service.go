@@ -5,9 +5,21 @@ import (
 	"context"
 	"text/template"
 
+	"github.com/Masterminds/sprig/v3"
+
 	task_domain "github.com/qsoulior/tech-generator/backend/internal/domain/task"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/task_process/domain"
 )
+
+// templateFuncs is the sprig text/template helper set with process-environment
+// accessors removed so a template cannot exfiltrate the worker's secrets.
+var templateFuncs = func() template.FuncMap {
+	funcs := sprig.TxtFuncMap()
+	delete(funcs, "env")
+	delete(funcs, "expandenv")
+	delete(funcs, "getHostByName")
+	return funcs
+}()
 
 type Service struct{}
 
@@ -16,7 +28,7 @@ func New() *Service {
 }
 
 func (s *Service) Handle(ctx context.Context, in domain.DataProcessIn) ([]byte, error) {
-	tmpl, err := template.New("").Parse(string(in.Data))
+	tmpl, err := template.New("").Funcs(templateFuncs).Parse(string(in.Data))
 	if err != nil {
 		return nil, &task_domain.ProcessError{Message: task_domain.MessageTemplateParse}
 	}

@@ -1,0 +1,206 @@
+{
+  "name": "Демо: проверка новых функций",
+  "version": {
+    "data": "IyDQotC10YXQvdC40YfQtdGB0LrQuNC5INC/0LDRgdC/0L7RgNGCIMKre3sgLnByb2R1Y3RfbmFtZSB9fcK7Cgo+INCU0L7QutGD0LzQtdC90YIg0YHRhNC+0YDQvNC40YDQvtCy0LDQvSB7eyBkYXRlICIwMi4wMS4yMDA2IiBub3cgfX0uCj4g0JjQtNC10L3RgtC40YTQuNC60LDRgtC+0YAg0LTQu9GPINC60LDRgtCw0LvQvtCz0LA6IGB7eyAucHJvZHVjdF9zbHVnIH19YCDii4Ug0LPQvtC0INCy0YvQv9GD0YHQutCwOiB7eyAucHJvZHVjdGlvbl95ZWFyIH19LgoKIyMgMS4g0JPQtdC+0LzQtdGC0YDQuNGPCgp8INCf0LDRgNCw0LzQtdGC0YAgfCDQl9C90LDRh9C10L3QuNC1IHwKfCAtLS0gfCAtLS0gfAp8INCU0LvQuNC90LAgw5cg0KjQuNGA0LjQvdCwIMOXINCS0YvRgdC+0YLQsCB8IHt7IHByaW50ZiAiJS4wZiDDlyAlLjBmIMOXICUuMGYiIC5sZW5ndGhfbW0gLndpZHRoX21tIC5oZWlnaHRfbW0gfX0g0LzQvCB8Cnwg0JLRi9GB0L7RgtCwINC/0YDQuCDQvdCw0LrQu9C+0L3QtSAzMMKwIHwge3sgLnRpbHRlZF9oZWlnaHRfbW0gfX0g0LzQvCB8Cnwg0JTQuNCw0LPQvtC90LDQu9GMINC60L7RgNC/0YPRgdCwIHwge3sgLmRpYWdvbmFsX21tIH19INC80LwgfAp8INCf0LvQvtGJ0LDQtNGMINC/0L7QstC10YDRhdC90L7RgdGC0LggfCB7eyAuc3VyZmFjZV9tMiB9fSDQvMKyIHwKfCDQntCx0YrRkdC8IHwge3sgLnZvbHVtZV9tMyB9fSDQvMKzICh7eyAudm9sdW1lX3NjaSB9fSkgfAoKIyMgMi4g0JzQsNGB0YHQsCDQuCDRgdC40LvQsCDRgtGP0LbQtdGB0YLQuAoKLSDQktCy0LXQtNGR0L3QvdCw0Y8g0LzQsNGB0YHQsDogKip7eyBwcmludGYgIiUuNGYiIC5tYXNzX3Jhd19rZyB9fSDQutCzKioKLSDQntC60YDRg9Cz0LvQtdC90L4g0LTQviA1MCDQszogKip7eyAubWFzc19kaXNwbGF5IH19INC60LMqKgotINCS0LXRgSAobSDCtyBnLCBnID0gOS44MDY2NSDQvC/RgcKyKTogKip7eyBwcmludGYgIiUuMmYiIC53ZWlnaHRfTiB9fSDQnSoqCgojIyAzLiDQrdGE0YTQtdC60YLQuNCy0L3QvtGB0YLRjAoKLSDQmtC+0Y3RhNGE0LjRhtC40LXQvdGCOiAqKnt7IHByaW50ZiAiJS4zZiIgLmVmZmljaWVuY3lfcmF0aW8gfX0qKgotINCSINC/0YDQvtGG0LXQvdGC0LDRhTogKip7eyAuZWZmaWNpZW5jeV9wY3QgfX0qKgotINCa0LvQsNGB0YEg0LjQt9C00LXQu9C40Y86ICoqe3sgdGVybmFyeSAi0LLRi9GB0L7QutC40LkiICLQvtCx0YvRh9C90YvQuSIgKGd0IC5jbGFtcGVkX2VmZiAwLjgpIH19KioKCiMjIDQuINCU0LXQvNC+0L3RgdGC0YDQsNGG0LjRjyDQv9GA0L7Rh9C40YUg0YTRg9C90LrRhtC40LkKCi0g0JvQuNC90LXQudC90LDRjyDQuNC90YLQtdGA0L/QvtC70Y/RhtC40Y8gKNCa0J/QlCDCtyAxMDAg0LIg0LTQuNCw0L/QsNC30L7QvSAwLi4xKTogKip7eyAudGVtcF9ub3JtIH19KioKLSDQl9Cw0LPQvtC70L7QstC+0Log0LIg0LLQtdGA0YXQvdC10Lwg0YDQtdCz0LjRgdGC0YDQtTogKip7eyB1cHBlciAucHJvZHVjdF9uYW1lIH19KioKLSDQkNGA0YLQuNC60YPQuyDQtNC70Y8g0YHQuNGB0YLQtdC80Ysg0YPRh9GR0YLQsDogYHt7IGtlYmFiY2FzZSAucHJvZHVjdF9uYW1lIH19YAotINCa0L7QvNC80LXQvdGC0LDRgNC40Lkg0LjQtyDRiNCw0LHQu9C+0L3QuNC30LDRgtC+0YDQsCB7ey8qINGN0YLQsCDRh9Cw0YHRgtGMINC90LUg0L/QvtC/0LDQtNGR0YIg0LIg0YDQtdC30YPQu9GM0YLQsNGCICovfX0KCi0tLQoKKirQl9Cw0LzQtdGC0LrQuDoqKiB7eyBkZWZhdWx0ICLigJQiIC5ub3RlcyB9fQo=",
+    "variables": [
+      {
+        "name": "product_name",
+        "title": "Название изделия",
+        "type": "string",
+        "isInput": true,
+        "constraints": []
+      },
+      {
+        "name": "length_mm",
+        "title": "Длина (мм)",
+        "type": "float",
+        "isInput": true,
+        "constraints": [
+          {
+            "name": "положительная_длина",
+            "expression": "length_mm > 0",
+            "isActive": true
+          },
+          {
+            "name": "разумный_предел",
+            "expression": "length_mm < 10000",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "name": "width_mm",
+        "title": "Ширина (мм)",
+        "type": "float",
+        "isInput": true,
+        "constraints": [
+          {
+            "name": "положительная_ширина",
+            "expression": "width_mm > 0",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "name": "height_mm",
+        "title": "Высота (мм)",
+        "type": "float",
+        "isInput": true,
+        "constraints": [
+          {
+            "name": "положительная_высота",
+            "expression": "height_mm > 0",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "name": "mass_raw_kg",
+        "title": "Масса сырая (кг)",
+        "type": "float",
+        "isInput": true,
+        "constraints": [
+          {
+            "name": "не_ноль",
+            "expression": "mass_raw_kg > 0",
+            "isActive": true
+          },
+          {
+            "name": "до_тонны",
+            "expression": "mass_raw_kg < 1000",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "name": "efficiency_ratio",
+        "title": "Коэффициент эффективности (0..1)",
+        "type": "float",
+        "isInput": true,
+        "constraints": [
+          {
+            "name": "в_диапазоне_0_1",
+            "expression": "clamp(efficiency_ratio, 0, 1) == efficiency_ratio",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "name": "production_year",
+        "title": "Год выпуска",
+        "type": "integer",
+        "isInput": true,
+        "constraints": [
+          {
+            "name": "разумный_год",
+            "expression": "production_year >= 1900 && production_year <= 2100",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "name": "notes",
+        "title": "Заметки (необязательно)",
+        "type": "string",
+        "isInput": true,
+        "constraints": []
+      },
+      {
+        "name": "mass_kg",
+        "title": "Масса, округлённая до 50 г",
+        "type": "float",
+        "isInput": false,
+        "expression": "roundStep(mass_raw_kg, 0.05)",
+        "constraints": []
+      },
+      {
+        "name": "weight_N",
+        "title": "Вес, Н (m · g)",
+        "type": "float",
+        "isInput": false,
+        "expression": "round(mass_kg * g, 2)",
+        "constraints": []
+      },
+      {
+        "name": "volume_m3",
+        "title": "Объём, м³",
+        "type": "float",
+        "isInput": false,
+        "expression": "round(length_mm * width_mm * height_mm / 1000000000, 4)",
+        "constraints": []
+      },
+      {
+        "name": "volume_sci",
+        "title": "Объём в научной нотации",
+        "type": "string",
+        "isInput": false,
+        "expression": "scientific(volume_m3, 2)",
+        "constraints": []
+      },
+      {
+        "name": "diagonal_mm",
+        "title": "Диагональ корпуса, мм",
+        "type": "float",
+        "isInput": false,
+        "expression": "round(sqrt(pow(length_mm, 2) + pow(width_mm, 2) + pow(height_mm, 2)), 1)",
+        "constraints": []
+      },
+      {
+        "name": "surface_m2",
+        "title": "Площадь поверхности, м²",
+        "type": "float",
+        "isInput": false,
+        "expression": "round(2 * (length_mm * width_mm + length_mm * height_mm + width_mm * height_mm) / 1000000, 3)",
+        "constraints": []
+      },
+      {
+        "name": "tilted_height_mm",
+        "title": "Высота при наклоне 30°, мм",
+        "type": "float",
+        "isInput": false,
+        "expression": "round(height_mm * cos(pi / 6), 1)",
+        "constraints": []
+      },
+      {
+        "name": "efficiency_pct",
+        "title": "Эффективность в процентах",
+        "type": "string",
+        "isInput": false,
+        "expression": "percent(efficiency_ratio, 1)",
+        "constraints": []
+      },
+      {
+        "name": "clamped_eff",
+        "title": "КПД, ограниченный [0; 1]",
+        "type": "float",
+        "isInput": false,
+        "expression": "clamp(efficiency_ratio, 0, 1)",
+        "constraints": []
+      },
+      {
+        "name": "temp_norm",
+        "title": "Линейная нормализация КПД·100 в [0; 1]",
+        "type": "float",
+        "isInput": false,
+        "expression": "interpolate(efficiency_ratio * 100, 0, 100, 0, 1)",
+        "constraints": []
+      },
+      {
+        "name": "mass_display",
+        "title": "Масса с разделителями (для текста)",
+        "type": "string",
+        "isInput": false,
+        "expression": "formatNumber(mass_kg, 3)",
+        "constraints": []
+      },
+      {
+        "name": "product_slug",
+        "title": "Идентификатор для каталога",
+        "type": "string",
+        "isInput": false,
+        "expression": "lower(replace(product_name, \" \", \"_\"))",
+        "constraints": []
+      }
+    ]
+  }
+}

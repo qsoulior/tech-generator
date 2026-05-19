@@ -30,9 +30,11 @@ import IconSaveOutlined from "@/components/icons/IconSaveOutlined.vue"
 import IconPlayCircleOutlined from "@/components/icons/IconPlayCircleOutlined.vue"
 import IconUnorderedListOutlined from "@/components/icons/IconUnorderedListOutlined.vue"
 import IconDownloadOutlined from "@/components/icons/IconDownloadOutlined.vue"
+import IconBookOutlined from "@/components/icons/IconBookOutlined.vue"
 import TaskCreateModal from "@/components/TaskCreateModal.vue"
 import TemplateUpdateModal from "@/components/TemplateUpdateModal.vue"
 import AppHeader from "@/components/AppHeader.vue"
+import ExprCheatsheet from "@/components/ExprCheatsheet.vue"
 import { versionCreate, type VersionCreateVariable } from "@/api/version"
 import type { TemplateImportPayload, TemplateImportVariable } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
@@ -59,6 +61,7 @@ const showCreateModal = ref(false)
 const showUpdateModal = ref(false)
 const showTaskCreateModal = ref(false)
 const showTemplateUpdateModal = ref(false)
+const showCheatsheet = ref(false)
 
 const inputTypeToString = new Map([
   ["input", "Входная"],
@@ -405,9 +408,27 @@ const toolbars: ToolbarNames[] = [
             </template>
             Результаты
           </n-button>
+          <n-tooltip>
+            <template #trigger>
+              <n-button
+                size="small"
+                secondary
+                aria-label="Справка по функциям"
+                @click="showCheatsheet = true"
+              >
+                <template #icon>
+                  <n-icon>
+                    <IconBookOutlined />
+                  </n-icon>
+                </template>
+              </n-button>
+            </template>
+            Справка по функциям
+          </n-tooltip>
         </n-flex>
       </n-flex>
     </n-layout-header>
+    <ExprCheatsheet v-model:show="showCheatsheet" />
     <TemplateUpdateModal
       v-model:show-modal="showTemplateUpdateModal"
       :template-id="templateID"

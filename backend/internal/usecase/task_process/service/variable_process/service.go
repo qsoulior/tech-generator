@@ -3,6 +3,7 @@ package variable_process_service
 import (
 	"context"
 	"fmt"
+	"maps"
 	"regexp"
 	"strconv"
 
@@ -31,7 +32,8 @@ func (s *Service) Handle(ctx context.Context, in domain.VariableProcessIn) (map[
 	}
 
 	var variableErrors []task_domain.VariableError
-	variableValues := make(map[string]any)
+	variableValues := make(map[string]any, len(mathConstants)+len(in.Payload)+len(variableNames))
+	maps.Copy(variableValues, mathConstants)
 
 	for name, value := range in.Payload {
 		variableValue, variableError := parseVariable(name, value, variablesByName)
@@ -55,6 +57,10 @@ func (s *Service) Handle(ctx context.Context, in domain.VariableProcessIn) (map[
 
 	if len(variableErrors) != 0 {
 		return nil, &task_domain.ProcessError{VariableErrors: variableErrors}
+	}
+
+	for name := range mathConstants {
+		delete(variableValues, name)
 	}
 
 	return variableValues, nil
@@ -172,7 +178,8 @@ func processVariableValue(variable domain.Variable, values map[string]any) (any,
 		return values[variable.Name], nil
 	}
 
-	program, err := expr.Compile(lo.FromPtr(variable.Expression), expr.Env(values))
+	opts := append([]expr.Option{expr.Env(values)}, builtinOptions...)
+	program, err := expr.Compile(lo.FromPtr(variable.Expression), opts...)
 	if err != nil {
 		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Title: variable.Title, Message: task_domain.MessageVariableCompile}
 	}
@@ -203,9 +210,12 @@ func processConstraints(name string, value any, constraints []domain.Constraint)
 }
 
 func processConstraint(name string, value any, constraint domain.Constraint) *task_domain.ConstraintError {
-	env := map[string]any{name: value}
+	env := make(map[string]any, len(mathConstants)+1)
+	maps.Copy(env, mathConstants)
+	env[name] = value
 
-	program, err := expr.Compile(constraint.Expression, expr.Env(env), expr.AsBool())
+	opts := append([]expr.Option{expr.Env(env), expr.AsBool()}, builtinOptions...)
+	program, err := expr.Compile(constraint.Expression, opts...)
 	if err != nil {
 		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Expression: constraint.Expression, Message: task_domain.MessageConstraintCompile}
 	}
