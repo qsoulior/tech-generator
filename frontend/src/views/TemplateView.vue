@@ -11,6 +11,10 @@ import {
   NText,
   NDivider,
   NTooltip,
+  NCard,
+  NTag,
+  NEmpty,
+  NPopconfirm,
   useMessage,
 } from "naive-ui"
 import { computed, onMounted, ref } from "vue"
@@ -420,7 +424,6 @@ const toolbars: ToolbarNames[] = [
       <n-layout-sider collapse-mode="width" width="25%" :collapsed-width="0" show-trigger="bar" bordered>
         <n-flex vertical class="sider">
           <n-flex vertical class="sider-section">
-            <n-text>Переменные</n-text>
             <VariableListSearch v-model:value="variableSearch" />
             <n-button secondary class="full-width" @click="showCreateModal = true">Добавить переменную</n-button>
             <VariableCreateModal
@@ -437,34 +440,62 @@ const toolbars: ToolbarNames[] = [
           </n-flex>
           <n-divider class="flush-divider" />
           <n-scrollbar class="variables" content-style="padding: 1rem">
-            <n-flex vertical size="large">
-              <n-flex
+            <n-empty v-if="variables.length === 0" description="Переменных пока нет" style="margin: 2rem 0" />
+            <n-empty
+              v-else-if="filteredVariables.length === 0"
+              description="Ничего не найдено"
+              style="margin: 2rem 0"
+            />
+            <n-flex v-else vertical :size="8">
+              <n-card
                 v-for="{ variable, index } in filteredVariables"
                 :key="index"
-                align="center"
-                justify="space-between"
+                size="small"
+                class="variable-card"
+                @click="variableUpdate(variable, index)"
               >
-                <n-flex vertical class="variable-row" :size="0" @click="variableUpdate(variable, index)">
-                  <n-text>
-                    {{ variable.title }}
-                  </n-text>
-                  <n-text depth="3" code style="font-size: 0.75rem">
-                    {{ variable.name }}
-                  </n-text>
-                  <n-text depth="3">
-                    Тип: {{ inputTypeToString.get(variable.inputType) }} · Значение:
-                    {{ typeToString.get(variable.type) }} · Ограничений:
-                    {{ variable.constraints.length }}
-                  </n-text>
+                <n-flex justify="space-between" align="flex-start" :wrap="false" :size="8">
+                  <n-flex vertical align="start" :size="8" class="variable-info">
+                    <n-text strong>{{ variable.title }}</n-text>
+                    <n-text code depth="3" style="font-size: 0.8rem">
+                      {{ variable.name }}
+                    </n-text>
+                    <n-flex :size="4">
+                      <n-tag size="small" :bordered="false" type="info">
+                        {{ inputTypeToString.get(variable.inputType) }}
+                      </n-tag>
+                      <n-tag size="small" :bordered="false">
+                        {{ typeToString.get(variable.type) }}
+                      </n-tag>
+                      <n-tag size="small" :bordered="false">
+                        Ограничений: {{ variable.constraints.length }}
+                      </n-tag>
+                    </n-flex>
+                  </n-flex>
+                  <n-popconfirm
+                    positive-text="Да"
+                    negative-text="Нет"
+                    @positive-click="variableDelete(index)"
+                  >
+                    <template #trigger>
+                      <n-button
+                        secondary
+                        size="small"
+                        aria-label="Удалить переменную"
+                        title="Удалить переменную"
+                        @click.stop
+                      >
+                        <template #icon>
+                          <n-icon>
+                            <IconDeleteOutlined />
+                          </n-icon>
+                        </template>
+                      </n-button>
+                    </template>
+                    <template #default>Вы точно хотите удалить переменную?</template>
+                  </n-popconfirm>
                 </n-flex>
-                <n-button secondary @click="variableDelete(index)">
-                  <template #icon>
-                    <n-icon>
-                      <IconDeleteOutlined />
-                    </n-icon>
-                  </template>
-                </n-button>
-              </n-flex>
+              </n-card>
             </n-flex>
           </n-scrollbar>
         </n-flex>
@@ -513,9 +544,14 @@ const toolbars: ToolbarNames[] = [
   max-height: 100%;
 }
 
-.variable-row {
-  flex-grow: 1;
+.variable-card {
   cursor: pointer;
+  --n-color: transparent;
+}
+
+.variable-info {
+  min-width: 0;
+  flex: 1;
 }
 
 .editor {
