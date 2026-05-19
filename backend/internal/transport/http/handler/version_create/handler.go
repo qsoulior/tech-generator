@@ -55,6 +55,7 @@ func convertVariablesToIn(variables []api.VersionCreateRequestVariablesItem) []v
 	return lo.Map(variables, func(v api.VersionCreateRequestVariablesItem, _ int) version_create_domain.Variable {
 		variable := version_create_domain.Variable{
 			Name:        v.Name,
+			Title:       v.Title,
 			Type:        variable_domain.Type(v.Type),
 			IsInput:     v.IsInput,
 			Constraints: convertConstraintsToIn(v.Constraints),

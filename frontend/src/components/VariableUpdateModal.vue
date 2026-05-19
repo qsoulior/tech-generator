@@ -6,12 +6,17 @@ const showModal = defineModel("showModal", { default: false })
 const variable = defineModel<Variable>("variable", {
   default: {
     name: "",
+    title: "",
     type: "string",
     expression: "",
     inputType: "input",
     constraints: [],
   },
 })
+
+const props = defineProps<{
+  occupiedSlugs: string[]
+}>()
 
 const emit = defineEmits<{
   submit: [variable: Variable]
@@ -25,6 +30,7 @@ interface Constraint {
 
 interface Variable {
   name: string
+  title: string
   type: string
   expression: string
   inputType: string
@@ -41,7 +47,12 @@ function handleSubmit() {
   <n-modal v-model:show="showModal" preset="card" style="width: 50rem">
     <template #header>Изменение переменной</template>
     <template #default>
-      <VariableForm submit-text="Сохранить изменения" v-model:model="variable" @submit="handleSubmit" />
+      <VariableForm
+        submit-text="Сохранить изменения"
+        :occupied-slugs="props.occupiedSlugs"
+        v-model:model="variable"
+        @submit="handleSubmit"
+      />
     </template>
   </n-modal>
 </template>

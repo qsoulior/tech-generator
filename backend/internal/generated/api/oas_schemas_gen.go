@@ -800,8 +800,10 @@ func (s *TaskGetByIDResponseTaskError) SetVariableErrors(val []TaskGetByIDRespon
 type TaskGetByIDResponseTaskErrorVariableErrorsItem struct {
 	// ID переменной.
 	ID int64 `json:"id"`
-	// Название переменной.
+	// Слаг переменной.
 	Name string `json:"name"`
+	// Человекочитаемое название переменной.
+	Title string `json:"title"`
 	// Сообщение ошибки.
 	Message          OptString                                                            `json:"message"`
 	ConstraintErrors []TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem `json:"constraintErrors"`
@@ -815,6 +817,11 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) GetID() int64 {
 // GetName returns the value of Name.
 func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) GetName() string {
 	return s.Name
+}
+
+// GetTitle returns the value of Title.
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) GetTitle() string {
+	return s.Title
 }
 
 // GetMessage returns the value of Message.
@@ -835,6 +842,11 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) SetID(val int64) {
 // SetName sets the value of Name.
 func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) SetName(val string) {
 	s.Name = val
+}
+
+// SetTitle sets the value of Title.
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) SetTitle(val string) {
+	s.Title = val
 }
 
 // SetMessage sets the value of Message.
@@ -1360,8 +1372,10 @@ func (s *TemplateGetByIDVersion) SetVariables(val []TemplateGetByIDVersionVariab
 type TemplateGetByIDVersionVariablesItem struct {
 	// ID переменной.
 	ID int64 `json:"id"`
-	// Название переменной.
+	// Слаг переменной (идентификатор).
 	Name string `json:"name"`
+	// Человекочитаемое название переменной.
+	Title string `json:"title"`
 	// Тип переменной.
 	Type TemplateGetByIDVersionVariablesItemType `json:"type"`
 	// Выражение переменной.
@@ -1380,6 +1394,11 @@ func (s *TemplateGetByIDVersionVariablesItem) GetID() int64 {
 // GetName returns the value of Name.
 func (s *TemplateGetByIDVersionVariablesItem) GetName() string {
 	return s.Name
+}
+
+// GetTitle returns the value of Title.
+func (s *TemplateGetByIDVersionVariablesItem) GetTitle() string {
+	return s.Title
 }
 
 // GetType returns the value of Type.
@@ -1410,6 +1429,11 @@ func (s *TemplateGetByIDVersionVariablesItem) SetID(val int64) {
 // SetName sets the value of Name.
 func (s *TemplateGetByIDVersionVariablesItem) SetName(val string) {
 	s.Name = val
+}
+
+// SetTitle sets the value of Title.
+func (s *TemplateGetByIDVersionVariablesItem) SetTitle(val string) {
+	s.Title = val
 }
 
 // SetType sets the value of Type.
@@ -1653,8 +1677,10 @@ func (s *TemplateImportVersion) SetVariables(val []TemplateImportVersionVariable
 
 // Переменная шаблона.
 type TemplateImportVersionVariablesItem struct {
-	// Название переменной.
+	// Слаг переменной (идентификатор).
 	Name string `json:"name"`
+	// Человекочитаемое название переменной.
+	Title string `json:"title"`
 	// Тип переменной.
 	Type TemplateImportVersionVariablesItemType `json:"type"`
 	// Выражение переменной.
@@ -1668,6 +1694,11 @@ type TemplateImportVersionVariablesItem struct {
 // GetName returns the value of Name.
 func (s *TemplateImportVersionVariablesItem) GetName() string {
 	return s.Name
+}
+
+// GetTitle returns the value of Title.
+func (s *TemplateImportVersionVariablesItem) GetTitle() string {
+	return s.Title
 }
 
 // GetType returns the value of Type.
@@ -1693,6 +1724,11 @@ func (s *TemplateImportVersionVariablesItem) GetConstraints() []TemplateImportVe
 // SetName sets the value of Name.
 func (s *TemplateImportVersionVariablesItem) SetName(val string) {
 	s.Name = val
+}
+
+// SetTitle sets the value of Title.
+func (s *TemplateImportVersionVariablesItem) SetTitle(val string) {
+	s.Title = val
 }
 
 // SetType sets the value of Type.
@@ -2178,8 +2214,10 @@ func (s *VersionCreateRequest) SetVariables(val []VersionCreateRequestVariablesI
 
 // Переменная шаблона.
 type VersionCreateRequestVariablesItem struct {
-	// Название переменной.
+	// Слаг переменной (идентификатор).
 	Name string `json:"name"`
+	// Человекочитаемое название переменной.
+	Title string `json:"title"`
 	// Тип переменной.
 	Type VersionCreateRequestVariablesItemType `json:"type"`
 	// Выражение переменной.
@@ -2193,6 +2231,11 @@ type VersionCreateRequestVariablesItem struct {
 // GetName returns the value of Name.
 func (s *VersionCreateRequestVariablesItem) GetName() string {
 	return s.Name
+}
+
+// GetTitle returns the value of Title.
+func (s *VersionCreateRequestVariablesItem) GetTitle() string {
+	return s.Title
 }
 
 // GetType returns the value of Type.
@@ -2218,6 +2261,11 @@ func (s *VersionCreateRequestVariablesItem) GetConstraints() []VersionCreateRequ
 // SetName sets the value of Name.
 func (s *VersionCreateRequestVariablesItem) SetName(val string) {
 	s.Name = val
+}
+
+// SetTitle sets the value of Title.
+func (s *VersionCreateRequestVariablesItem) SetTitle(val string) {
+	s.Title = val
 }
 
 // SetType sets the value of Type.

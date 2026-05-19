@@ -16,7 +16,10 @@ const hasMessage = computed(() => props.variableError.message != null && props.v
     <n-collapse :trigger-areas="['main', 'arrow', 'extra']">
       <n-collapse-item :name="String(variableError.id)">
         <template #header>
-          <n-text strong>{{ variableError.name }}</n-text>
+          <n-flex align="baseline" :size="6">
+            <n-text strong>{{ variableError.title }}</n-text>
+            <n-text depth="3" code style="font-size: 0.75rem">{{ variableError.name }}</n-text>
+          </n-flex>
         </template>
         <template v-if="constraintErrorsCount > 0" #header-extra>
           <n-tag size="small" type="error">Ограничений: {{ constraintErrorsCount }}</n-tag>

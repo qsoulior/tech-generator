@@ -8,6 +8,7 @@ import (
 type variable struct {
 	ID         int64   `db:"id"`
 	Name       string  `db:"name"`
+	Title      string  `db:"title"`
 	Type       string  `db:"type"`
 	Expression *string `db:"expression"`
 	IsInput    bool    `db:"is_input"`
@@ -17,6 +18,7 @@ func (v *variable) toDomain() domain.Variable {
 	return domain.Variable{
 		ID:         v.ID,
 		Name:       v.Name,
+		Title:      v.Title,
 		Type:       variable_domain.Type(v.Type),
 		Expression: v.Expression,
 		IsInput:    v.IsInput,

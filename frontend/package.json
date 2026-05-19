@@ -17,6 +17,7 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "@sindresorhus/slugify": "^3.0.0",
     "@vavt/cm-extension": "^1.11.2",
     "md-editor-v3": "^6.2.1",
     "pinia": "^3.0.4",

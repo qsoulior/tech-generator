@@ -28,6 +28,7 @@ func (r *Repository) ListByVersionID(ctx context.Context, versionID int64) ([]do
 		Select(
 			"id",
 			"name",
+			"title",
 			"type",
 			"expression",
 			"is_input",

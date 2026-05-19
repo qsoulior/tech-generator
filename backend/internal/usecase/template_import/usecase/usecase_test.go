@@ -62,6 +62,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 				Variables: []domain.Variable{
 					{
 						Name:       "x",
+						Title:      "Variable X",
 						Type:       variable_domain.TypeInteger,
 						Expression: &expr,
 						IsInput:    false,
@@ -97,6 +98,7 @@ func TestUsecase_Handle_Success(t *testing.T) {
 			Variables: []version_create_domain.Variable{
 				{
 					Name:       "x",
+					Title:      "Variable X",
 					Type:       variable_domain.TypeInteger,
 					Expression: &expr,
 					IsInput:    false,
@@ -185,7 +187,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 				Version: &domain.Version{
 					Data: []byte("body"),
 					Variables: []domain.Variable{
-						{Name: "x", Type: variable_domain.TypeString, IsInput: true},
+						{Name: "x", Title: "Variable X", Type: variable_domain.TypeString, IsInput: true},
 					},
 				},
 			},

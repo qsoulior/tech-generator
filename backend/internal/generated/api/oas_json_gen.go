@@ -1450,6 +1450,10 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) encodeFields(e *jx.Enco
 		e.Str(s.Name)
 	}
 	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
 		if s.Message.Set {
 			e.FieldStart("message")
 			s.Message.Encode(e)
@@ -1467,11 +1471,12 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) encodeFields(e *jx.Enco
 	}
 }
 
-var jsonFieldsNameOfTaskGetByIDResponseTaskErrorVariableErrorsItem = [4]string{
+var jsonFieldsNameOfTaskGetByIDResponseTaskErrorVariableErrorsItem = [5]string{
 	0: "id",
 	1: "name",
-	2: "message",
-	3: "constraintErrors",
+	2: "title",
+	3: "message",
+	4: "constraintErrors",
 }
 
 // Decode decodes TaskGetByIDResponseTaskErrorVariableErrorsItem from json.
@@ -1506,6 +1511,18 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) Decode(d *jx.Decoder) e
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "title":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
 			}
 		case "message":
 			if err := func() error {
@@ -1544,7 +1561,7 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) Decode(d *jx.Decoder) e
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -3070,6 +3087,10 @@ func (s *TemplateGetByIDVersionVariablesItem) encodeFields(e *jx.Encoder) {
 		e.Str(s.Name)
 	}
 	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
 		e.FieldStart("type")
 		s.Type.Encode(e)
 	}
@@ -3093,13 +3114,14 @@ func (s *TemplateGetByIDVersionVariablesItem) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfTemplateGetByIDVersionVariablesItem = [6]string{
+var jsonFieldsNameOfTemplateGetByIDVersionVariablesItem = [7]string{
 	0: "id",
 	1: "name",
-	2: "type",
-	3: "expression",
-	4: "isInput",
-	5: "constraints",
+	2: "title",
+	3: "type",
+	4: "expression",
+	5: "isInput",
+	6: "constraints",
 }
 
 // Decode decodes TemplateGetByIDVersionVariablesItem from json.
@@ -3135,8 +3157,20 @@ func (s *TemplateGetByIDVersionVariablesItem) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
-		case "type":
+		case "title":
 			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "type":
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
 				if err := s.Type.Decode(d); err != nil {
 					return err
@@ -3156,7 +3190,7 @@ func (s *TemplateGetByIDVersionVariablesItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"expression\"")
 			}
 		case "isInput":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := d.Bool()
 				s.IsInput = bool(v)
@@ -3168,7 +3202,7 @@ func (s *TemplateGetByIDVersionVariablesItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"isInput\"")
 			}
 		case "constraints":
-			requiredBitSet[0] |= 1 << 5
+			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
 				s.Constraints = make([]TemplateGetByIDVersionVariablesItemConstraintsItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -3195,7 +3229,7 @@ func (s *TemplateGetByIDVersionVariablesItem) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00110111,
+		0b01101111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -3983,6 +4017,10 @@ func (s *TemplateImportVersionVariablesItem) encodeFields(e *jx.Encoder) {
 		e.Str(s.Name)
 	}
 	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
 		e.FieldStart("type")
 		s.Type.Encode(e)
 	}
@@ -4006,12 +4044,13 @@ func (s *TemplateImportVersionVariablesItem) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfTemplateImportVersionVariablesItem = [5]string{
+var jsonFieldsNameOfTemplateImportVersionVariablesItem = [6]string{
 	0: "name",
-	1: "type",
-	2: "expression",
-	3: "isInput",
-	4: "constraints",
+	1: "title",
+	2: "type",
+	3: "expression",
+	4: "isInput",
+	5: "constraints",
 }
 
 // Decode decodes TemplateImportVersionVariablesItem from json.
@@ -4035,8 +4074,20 @@ func (s *TemplateImportVersionVariablesItem) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
-		case "type":
+		case "title":
 			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "type":
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				if err := s.Type.Decode(d); err != nil {
 					return err
@@ -4056,7 +4107,7 @@ func (s *TemplateImportVersionVariablesItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"expression\"")
 			}
 		case "isInput":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				v, err := d.Bool()
 				s.IsInput = bool(v)
@@ -4068,7 +4119,7 @@ func (s *TemplateImportVersionVariablesItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"isInput\"")
 			}
 		case "constraints":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				s.Constraints = make([]TemplateImportVersionVariablesItemConstraintsItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -4095,7 +4146,7 @@ func (s *TemplateImportVersionVariablesItem) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00011011,
+		0b00110111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -5387,6 +5438,10 @@ func (s *VersionCreateRequestVariablesItem) encodeFields(e *jx.Encoder) {
 		e.Str(s.Name)
 	}
 	{
+		e.FieldStart("title")
+		e.Str(s.Title)
+	}
+	{
 		e.FieldStart("type")
 		s.Type.Encode(e)
 	}
@@ -5410,12 +5465,13 @@ func (s *VersionCreateRequestVariablesItem) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfVersionCreateRequestVariablesItem = [5]string{
+var jsonFieldsNameOfVersionCreateRequestVariablesItem = [6]string{
 	0: "name",
-	1: "type",
-	2: "expression",
-	3: "isInput",
-	4: "constraints",
+	1: "title",
+	2: "type",
+	3: "expression",
+	4: "isInput",
+	5: "constraints",
 }
 
 // Decode decodes VersionCreateRequestVariablesItem from json.
@@ -5439,8 +5495,20 @@ func (s *VersionCreateRequestVariablesItem) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
-		case "type":
+		case "title":
 			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Title = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "type":
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				if err := s.Type.Decode(d); err != nil {
 					return err
@@ -5460,7 +5528,7 @@ func (s *VersionCreateRequestVariablesItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"expression\"")
 			}
 		case "isInput":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				v, err := d.Bool()
 				s.IsInput = bool(v)
@@ -5472,7 +5540,7 @@ func (s *VersionCreateRequestVariablesItem) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"isInput\"")
 			}
 		case "constraints":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				s.Constraints = make([]VersionCreateRequestVariablesItemConstraintsItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -5499,7 +5567,7 @@ func (s *VersionCreateRequestVariablesItem) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00011011,
+		0b00110111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

@@ -78,6 +78,7 @@ components:
                     required:
                       - id
                       - name
+                      - title
                     properties:
                       id:
                         type: integer
@@ -85,7 +86,10 @@ components:
                         description: ID переменной
                       name:
                         type: string
-                        description: Название переменной
+                        description: Слаг переменной
+                      title:
+                        type: string
+                        description: Человекочитаемое название переменной
                       message:
                         type: string
                         description: Сообщение ошибки

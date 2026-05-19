@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NModal, NForm, NFormItem, NInput, NInputNumber, NButton, useMessage } from "naive-ui"
+import { NModal, NForm, NFormItem, NInput, NInputNumber, NButton, NFlex, NText, useMessage } from "naive-ui"
 import type { FormInst, FormItemRule } from "naive-ui"
 import { ref, watch } from "vue"
 import { taskCreate } from "@/api/task"
@@ -17,6 +17,7 @@ const props = defineProps<{
 
 interface Variable {
   name: string
+  title: string
   type: string
 }
 
@@ -27,6 +28,7 @@ type VariableValue = string | number | null
 
 interface ModelVariable {
   name: string
+  title: string
   type: string
   value: VariableValue
 }
@@ -41,7 +43,7 @@ const modelRef = ref<Model>({
 
 const valueRule: FormItemRule = {
   required: true,
-  trigger: ["blur", "change"],
+  trigger: "submit",
   validator: (_rule, value: VariableValue) => {
     if (value === null || value === undefined || value === "") {
       return new Error("Значение не может быть пустым")
@@ -95,6 +97,7 @@ watch(showModal, (value) => {
   if (value) {
     modelRef.value.variables = props.variables.map((variable) => ({
       name: variable.name,
+      title: variable.title,
       type: variable.type,
       value: initialValue(variable.type),
     }))
@@ -106,14 +109,19 @@ watch(showModal, (value) => {
   <n-modal v-model:show="showModal" preset="card" style="width: 50rem">
     <template #header>Выполнение генерации</template>
     <template #default>
-      <n-form ref="formRef" :model="modelRef">
+      <n-form ref="formRef" :model="modelRef" :show-require-mark="false">
         <n-form-item
           v-for="(variable, index) in modelRef.variables"
           :key="index"
           :path="`variables[${index}].value`"
-          :label="variable.name"
           :rule="valueRule"
         >
+          <template #label>
+            <n-flex align="baseline" :size="6">
+              <n-text>{{ variable.title }}</n-text>
+              <n-text depth="3" code style="font-size: 0.75rem">{{ variable.name }}</n-text>
+            </n-flex>
+          </template>
           <n-input-number
             v-if="variable.type === 'integer'"
             :value="asNumber(variable.value)"

@@ -2,8 +2,8 @@ package variable_process_service
 
 import (
 	"context"
+	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/expr-lang/expr"
 	"github.com/samber/lo"
@@ -71,9 +71,10 @@ func buildDependencies(variablesByName map[string]domain.Variable) map[string][]
 	return dependents
 }
 
-func extractDependencies(expr string, names []string) []string {
+func extractDependencies(expression string, names []string) []string {
 	return lo.Filter(names, func(name string, _ int) bool {
-		return strings.Contains(expr, name)
+		re := regexp.MustCompile(`\b` + regexp.QuoteMeta(name) + `\b`)
+		return re.MatchString(expression)
 	})
 }
 
@@ -129,17 +130,17 @@ var parsers = map[variable_domain.Type]func(s string) (any, error){
 func parseVariable(name, value string, variablesByName map[string]domain.Variable) (any, *task_domain.VariableError) {
 	variable, ok := variablesByName[name]
 	if !ok {
-		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableNotFound}
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Title: variable.Title, Message: task_domain.MessageVariableNotFound}
 	}
 
 	parser, ok := parsers[variable.Type]
 	if !ok {
-		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableTypeUnknown}
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Title: variable.Title, Message: task_domain.MessageVariableTypeUnknown}
 	}
 
 	parsedValue, err := parser(value)
 	if err != nil {
-		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableParse}
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Title: variable.Title, Message: task_domain.MessageVariableParse}
 	}
 
 	return parsedValue, nil
@@ -153,7 +154,7 @@ func processVariable(variable domain.Variable, values map[string]any) (any, *tas
 
 	constraintErrors := processConstraints(variable.Name, value, variable.Constraints)
 	if len(constraintErrors) != 0 {
-		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, ConstraintErrors: constraintErrors}
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Title: variable.Title, ConstraintErrors: constraintErrors}
 	}
 
 	return value, nil
@@ -166,12 +167,12 @@ func processVariableValue(variable domain.Variable, values map[string]any) (any,
 
 	program, err := expr.Compile(lo.FromPtr(variable.Expression), expr.Env(values))
 	if err != nil {
-		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableCompile}
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Title: variable.Title, Message: task_domain.MessageVariableCompile}
 	}
 
 	value, err := expr.Run(program, values)
 	if err != nil {
-		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Message: task_domain.MessageVariableExec}
+		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Title: variable.Title, Message: task_domain.MessageVariableExec}
 	}
 
 	return value, nil

@@ -68,13 +68,17 @@ components:
             description: Переменная шаблона
             required:
               - name
+              - title
               - type
               - isInput
               - constraints
             properties:
               name:
                 type: string
-                description: Название переменной
+                description: Слаг переменной (идентификатор)
+              title:
+                type: string
+                description: Человекочитаемое название переменной
               type:
                 type: string
                 description: Тип переменной

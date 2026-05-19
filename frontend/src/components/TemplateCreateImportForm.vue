@@ -49,6 +49,7 @@ function normalizePayload(raw: unknown): TemplateImportPayload | null {
       })
       return {
         name: String(v.name ?? ""),
+        title: String(v.title ?? v.name ?? ""),
         type: v.type as TemplateImportVariable["type"],
         expression: typeof v.expression === "string" ? v.expression : undefined,
         isInput: Boolean(v.isInput),

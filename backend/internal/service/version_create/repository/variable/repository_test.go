@@ -55,6 +55,7 @@ func (s *repositorySuite) TestRepository_Create() {
 		return domain.VariableToCreate{
 			VersionID:  templateVersionID,
 			Name:       v.Name,
+			Title:      v.Title,
 			Type:       variable_domain.Type(v.Type),
 			Expression: v.Expression,
 			IsInput:    v.IsInput,

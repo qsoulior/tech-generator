@@ -88,6 +88,7 @@ func convertVariableErrorsToResponse(variableErrors []task_domain.VariableError)
 		item := api.TaskGetByIDResponseTaskErrorVariableErrorsItem{
 			ID:               v.ID,
 			Name:             v.Name,
+			Title:            v.Title,
 			ConstraintErrors: convertConstraintErrorsToResponse(v.ConstraintErrors),
 		}
 

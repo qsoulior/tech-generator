@@ -65,6 +65,7 @@ func convertVariablesToIn(variables []api.TemplateImportVersionVariablesItem) []
 	return lo.Map(variables, func(v api.TemplateImportVersionVariablesItem, _ int) domain.Variable {
 		variable := domain.Variable{
 			Name:        v.Name,
+			Title:       v.Title,
 			Type:        variable_domain.Type(v.Type),
 			IsInput:     v.IsInput,
 			Constraints: convertConstraintsToIn(v.Constraints),

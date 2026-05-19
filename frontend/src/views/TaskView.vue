@@ -89,6 +89,7 @@ const filteredVariableErrors = computed<TaskGetVariableError[]>(() => {
   const q = errorSearch.value.trim().toLowerCase()
   if (q === "") return variableErrors.value
   return variableErrors.value.filter((ve) => {
+    if (ve.title?.toLowerCase().includes(q)) return true
     if (ve.name?.toLowerCase().includes(q)) return true
     if (ve.message?.toLowerCase().includes(q)) return true
     return (

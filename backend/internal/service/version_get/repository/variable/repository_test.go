@@ -65,6 +65,7 @@ func (s *repositorySuite) TestRepository_ListByVersionID() {
 		return domain.Variable{
 			ID:         v.ID,
 			Name:       v.Name,
+			Title:      v.Title,
 			Type:       variable_domain.Type(v.Type),
 			Expression: v.Expression,
 			IsInput:    v.IsInput,

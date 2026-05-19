@@ -3,6 +3,8 @@ package domain
 import (
 	"errors"
 	"fmt"
+	"regexp"
+	"unicode/utf8"
 
 	error_domain "github.com/qsoulior/tech-generator/backend/internal/domain/error"
 	variable_domain "github.com/qsoulior/tech-generator/backend/internal/domain/variable"
@@ -15,6 +17,13 @@ var (
 	ErrProjectInvalid  = error_domain.NewBaseError("project is invalid")
 )
 
+var slugRegexp = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
+
+const (
+	slugMaxLen  = 100
+	titleMaxLen = 255
+)
+
 type Constraint struct {
 	Name       string
 	Expression string
@@ -23,6 +32,7 @@ type Constraint struct {
 
 type Variable struct {
 	Name        string
+	Title       string
 	Type        variable_domain.Type
 	Expression  *string
 	IsInput     bool
@@ -52,8 +62,19 @@ func (in TemplateImportIn) Validate() error {
 
 	for i, v := range in.Version.Variables {
 		if !v.Type.Valid() {
-			field := fmt.Sprintf("version.variables.%d.type", i)
-			return error_domain.NewValidationError(field, ErrValueInvalid)
+			return error_domain.NewValidationError(fmt.Sprintf("version.variables.%d.type", i), ErrValueInvalid)
+		}
+
+		if v.Name == "" || len(v.Name) > slugMaxLen || !slugRegexp.MatchString(v.Name) {
+			return error_domain.NewValidationError(fmt.Sprintf("version.variables.%d.name", i), ErrValueInvalid)
+		}
+
+		if v.Title == "" {
+			return error_domain.NewValidationError(fmt.Sprintf("version.variables.%d.title", i), ErrValueEmpty)
+		}
+
+		if utf8.RuneCountInString(v.Title) > titleMaxLen {
+			return error_domain.NewValidationError(fmt.Sprintf("version.variables.%d.title", i), ErrValueInvalid)
 		}
 	}
 

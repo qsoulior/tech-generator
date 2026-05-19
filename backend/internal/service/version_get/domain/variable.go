@@ -5,6 +5,7 @@ import variable_domain "github.com/qsoulior/tech-generator/backend/internal/doma
 type Variable struct {
 	ID          int64
 	Name        string
+	Title       string
 	Type        variable_domain.Type
 	Expression  *string
 	IsInput     bool

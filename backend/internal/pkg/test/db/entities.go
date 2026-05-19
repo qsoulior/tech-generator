@@ -53,6 +53,7 @@ type Variable struct {
 	ID         int64   `db:"id"`
 	VersionID  int64   `db:"version_id"`
 	Name       string  `db:"name"`
+	Title      string  `db:"title"`
 	Type       string  `db:"type" fake:"{randomstring:[integer,float,string]}"`
 	Expression *string `db:"expression"`
 	IsInput    bool    `db:"is_input"`

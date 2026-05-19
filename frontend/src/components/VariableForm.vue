@@ -3,6 +3,7 @@ import {
   NForm,
   NFormItem,
   NInput,
+  NInputGroup,
   NButton,
   NSelect,
   NTabs,
@@ -12,46 +13,40 @@ import {
   NCard,
   NIcon,
   NEmpty,
+  NText,
+  NTooltip,
+  useMessage,
 } from "naive-ui"
-import type { FormRules, FormInst, SelectOption, FormItemRule } from "naive-ui"
-import { ref } from "vue"
+import type { FormRules, FormInst, FormItemInst, SelectOption, FormItemRule } from "naive-ui"
+import { computed, ref, watch } from "vue"
 import IconDeleteOutlined from "@/components/icons/IconDeleteOutlined.vue"
 import IconAddOutlined from "@/components/icons/IconAddOutlined.vue"
+import IconCopyOutlined from "@/components/icons/IconCopyOutlined.vue"
+import IconSyncOutlined from "@/components/icons/IconSyncOutlined.vue"
+import { SLUG_PATTERN, SLUG_MAX_LEN, slugify } from "@/utils/slug"
 
-defineProps<{
+const props = defineProps<{
   submitText: string
+  occupiedSlugs: string[]
 }>()
 
 const emit = defineEmits<{
   submit: []
 }>()
 
+const message = useMessage()
 const formRef = ref<FormInst | null>(null)
+const slugFormItemRef = ref<FormItemInst | null>(null)
 
 const typeOptions: SelectOption[] = [
-  {
-    label: "Строка",
-    value: "string",
-  },
-  {
-    label: "Целое число",
-    value: "integer",
-  },
-  {
-    label: "Вещественное число",
-    value: "float",
-  },
+  { label: "Строка", value: "string" },
+  { label: "Целое число", value: "integer" },
+  { label: "Вещественное число", value: "float" },
 ]
 
 const isInputOptions: SelectOption[] = [
-  {
-    label: "Входная",
-    value: "input",
-  },
-  {
-    label: "Вычисляемая",
-    value: "computed",
-  },
+  { label: "Входная", value: "input" },
+  { label: "Вычисляемая", value: "computed" },
 ]
 
 interface ModelConstraint {
@@ -62,6 +57,7 @@ interface ModelConstraint {
 
 interface Model {
   name: string
+  title: string
   type: string
   expression: string
   inputType: string
@@ -70,10 +66,50 @@ interface Model {
 
 const modelRef = defineModel<Model>("model", { required: true })
 
+const placeholderSnippet = computed(() => `{{ .${modelRef.value.name} }}`)
+
+const autoSlug = computed(() => slugify(modelRef.value.title, props.occupiedSlugs))
+const isSlugAuto = computed(() => modelRef.value.name === autoSlug.value)
+
+watch(
+  () => modelRef.value.title,
+  (_, oldTitle) => {
+    const previousAuto = slugify(oldTitle, props.occupiedSlugs)
+    if (modelRef.value.name === "" || modelRef.value.name === previousAuto) {
+      modelRef.value.name = autoSlug.value
+    }
+  },
+)
+
+function regenerateSlug() {
+  modelRef.value.name = autoSlug.value
+  slugFormItemRef.value?.restoreValidation()
+}
+
+async function copySlug() {
+  try {
+    await navigator.clipboard.writeText(modelRef.value.name)
+    message.success("Идентификатор скопирован")
+  } catch {
+    message.error("Не удалось скопировать")
+  }
+}
+
 const rules: FormRules = {
-  name: {
+  title: {
     required: true,
     message: "Название не может быть пустым",
+  },
+  name: {
+    required: true,
+    validator: (_rule: FormItemRule, value: string) => {
+      if (value === "") return new Error("Идентификатор не может быть пустым")
+      if (value.length > SLUG_MAX_LEN) return new Error(`Идентификатор длиннее ${SLUG_MAX_LEN} символов`)
+      if (!SLUG_PATTERN.test(value)) return new Error("Только латиница, цифры и _ (не с цифры)")
+      if (props.occupiedSlugs.includes(value)) return new Error("Идентификатор уже используется")
+      return true
+    },
+    trigger: ["input", "blur"],
   },
   expression: {
     validator: (_rule: FormItemRule, value: string) => modelRef.value.inputType == "input" || value != "",
@@ -119,8 +155,38 @@ function handleDeleteClick(e: MouseEvent, index: number) {
   <n-form ref="formRef" :model="modelRef" :rules="rules">
     <n-tabs type="line" size="large">
       <n-tab-pane name="Переменная" display-directive="show">
-        <n-form-item path="name" label="Название">
-          <n-input v-model:value="modelRef.name" placeholder="Введите название переменной" />
+        <n-form-item path="title" label="Название">
+          <n-input v-model:value="modelRef.title" placeholder="Введите название переменной" />
+        </n-form-item>
+        <n-form-item ref="slugFormItemRef" path="name" label="Идентификатор">
+          <n-flex vertical :size="6" style="width: 100%">
+            <n-input-group>
+              <n-input v-model:value="modelRef.name" placeholder="slug" />
+              <n-tooltip>
+                <template #trigger>
+                  <n-button @click="copySlug">
+                    <template #icon>
+                      <n-icon><IconCopyOutlined /></n-icon>
+                    </template>
+                  </n-button>
+                </template>
+                Скопировать
+              </n-tooltip>
+              <n-tooltip>
+                <template #trigger>
+                  <n-button :disabled="isSlugAuto" @click="regenerateSlug">
+                    <template #icon>
+                      <n-icon><IconSyncOutlined /></n-icon>
+                    </template>
+                  </n-button>
+                </template>
+                Сгенерировать из названия
+              </n-tooltip>
+            </n-input-group>
+            <n-text depth="3" style="font-size: 0.75rem">
+              В шаблоне используйте плейсхолдер <code>{{ placeholderSnippet }}</code>
+            </n-text>
+          </n-flex>
         </n-form-item>
         <n-form-item path="type" label="Тип значения">
           <n-select v-model:value="modelRef.type" :options="typeOptions" />

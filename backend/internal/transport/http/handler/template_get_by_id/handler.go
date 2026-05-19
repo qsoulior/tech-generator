@@ -64,6 +64,7 @@ func convertVariablesToResponse(variables []version_get_domain.Variable) []api.T
 		item := api.TemplateGetByIDVersionVariablesItem{
 			ID:          v.ID,
 			Name:        v.Name,
+			Title:       v.Title,
 			Type:        api.TemplateGetByIDVersionVariablesItemType(v.Type),
 			IsInput:     v.IsInput,
 			Constraints: convertConstraintsToResponse(v.Constraints),

@@ -6,6 +6,7 @@ import (
 
 type Variable struct {
 	Name        string
+	Title       string
 	Type        variable_domain.Type
 	Expression  *string
 	IsInput     bool
@@ -15,6 +16,7 @@ type Variable struct {
 type VariableToCreate struct {
 	VersionID  int64
 	Name       string
+	Title      string
 	Type       variable_domain.Type
 	Expression *string
 	IsInput    bool

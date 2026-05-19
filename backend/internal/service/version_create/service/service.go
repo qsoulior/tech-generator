@@ -100,6 +100,7 @@ func (u *Service) createVariables(ctx context.Context, templateVersionID int64, 
 		return domain.VariableToCreate{
 			VersionID:  templateVersionID,
 			Name:       v.Name,
+			Title:      v.Title,
 			Type:       v.Type,
 			Expression: v.Expression,
 			IsInput:    v.IsInput,

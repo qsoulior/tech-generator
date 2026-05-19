@@ -85,6 +85,7 @@ interface Constraint {
 
 interface Variable {
   name: string
+  title: string
   type: string
   expression: string
   inputType: string
@@ -100,8 +101,44 @@ const filteredVariables = computed(() => {
   const query = variableSearch.value.trim().toLowerCase()
   const indexed = variables.value.map((variable, index) => ({ variable, index }))
   if (query === "") return indexed
-  return indexed.filter(({ variable }) => variable.name.toLowerCase().includes(query))
+  return indexed.filter(
+    ({ variable }) =>
+      variable.title.toLowerCase().includes(query) || variable.name.toLowerCase().includes(query),
+  )
 })
+
+const createOccupiedSlugs = computed(() => variables.value.map((v) => v.name))
+
+const updateOccupiedSlugs = computed(() =>
+  variables.value
+    .filter((_, index) => index !== variableUpdatingIndex.value)
+    .map((v) => v.name),
+)
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+function renameSlugInTemplate(oldSlug: string, newSlug: string, excludeIndex: number) {
+  const wordRe = new RegExp(`\\b${escapeRegExp(oldSlug)}\\b`, "g")
+  data.value = data.value.replace(wordRe, newSlug)
+
+  variables.value.forEach((variable, index) => {
+    if (index === excludeIndex) return
+    variable.expression = variable.expression.replace(wordRe, newSlug)
+  })
+}
+
+function rewriteOwnConstraints(variable: Variable, oldSlug: string, newSlug: string): Variable {
+  const wordRe = new RegExp(`\\b${escapeRegExp(oldSlug)}\\b`, "g")
+  return {
+    ...variable,
+    constraints: variable.constraints.map((c) => ({
+      ...c,
+      expression: c.expression.replace(wordRe, newSlug),
+    })),
+  }
+}
 
 const savedSnapshot = ref({ data: "", variables: "[]" })
 
@@ -123,6 +160,7 @@ function variableCreate(variable: Variable) {
 function variableUpdate(variable: Variable, index: number) {
   variableUpdating.value = {
     name: variable.name,
+    title: variable.title,
     type: variable.type,
     expression: variable.expression,
     inputType: variable.inputType,
@@ -137,9 +175,17 @@ function variableUpdate(variable: Variable, index: number) {
 }
 
 function handleVariableUpdate(variable: Variable) {
-  if (variableUpdatingIndex.value != undefined && variableUpdatingIndex.value < variables.value.length) {
-    variables.value[variableUpdatingIndex.value] = variable
+  const index = variableUpdatingIndex.value
+  if (index == undefined || index >= variables.value.length) return
+
+  const previous = variables.value[index]
+  let next = variable
+  if (previous != undefined && previous.name !== "" && previous.name !== variable.name) {
+    renameSlugInTemplate(previous.name, variable.name, index)
+    next = rewriteOwnConstraints(variable, previous.name, variable.name)
   }
+
+  variables.value[index] = next
 }
 
 function variableDelete(index: number) {
@@ -159,6 +205,7 @@ async function loadTemplate() {
     data.value = fromBase64(r.value.version.data)
     variables.value = r.value.version.variables.map((variable) => ({
       name: variable.name,
+      title: variable.title,
       type: variable.type,
       expression: variable.expression ?? "",
       inputType: variable.isInput ? "input" : "computed",
@@ -186,6 +233,7 @@ function handleExport() {
       data: toBase64(data.value),
       variables: variables.value.map<TemplateImportVariable>((variable) => ({
         name: variable.name,
+        title: variable.title,
         type: variable.type as TemplateImportVariable["type"],
         expression: variable.expression || undefined,
         isInput: variable.inputType == "input",
@@ -216,6 +264,7 @@ async function saveVersion() {
       data: toBase64(data.value),
       variables: variables.value.map<VersionCreateVariable>((variable) => ({
         name: variable.name,
+        title: variable.title,
         type: variable.type as VersionCreateVariable["type"],
         expression: variable.expression,
         isInput: variable.inputType == "input",
@@ -378,14 +427,14 @@ const toolbars: ToolbarNames[] = [
             <VariableListSearch v-model:value="variableSearch" />
             <n-button secondary class="full-width" @click="showCreateModal = true">Добавить переменную</n-button>
             <VariableCreateModal
-              :template-id="templateID"
               v-model:show-modal="showCreateModal"
+              :occupied-slugs="createOccupiedSlugs"
               @submit="variableCreate"
             />
             <VariableUpdateModal
-              :template-id="templateID"
               v-model:show-modal="showUpdateModal"
               v-model:variable="variableUpdating"
+              :occupied-slugs="updateOccupiedSlugs"
               @submit="handleVariableUpdate"
             />
           </n-flex>
@@ -400,6 +449,9 @@ const toolbars: ToolbarNames[] = [
               >
                 <n-flex vertical class="variable-row" :size="0" @click="variableUpdate(variable, index)">
                   <n-text>
+                    {{ variable.title }}
+                  </n-text>
+                  <n-text depth="3" code style="font-size: 0.75rem">
                     {{ variable.name }}
                   </n-text>
                   <n-text depth="3">
@@ -407,7 +459,6 @@ const toolbars: ToolbarNames[] = [
                     {{ typeToString.get(variable.type) }} · Ограничений:
                     {{ variable.constraints.length }}
                   </n-text>
-                  <n-text depth="3"> </n-text>
                 </n-flex>
                 <n-button secondary @click="variableDelete(index)">
                   <template #icon>
