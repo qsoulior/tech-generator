@@ -5,22 +5,17 @@ import (
 	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
-	trmsqlx "github.com/avito-tech/go-transaction-manager/drivers/sqlx/v2"
 	"github.com/jmoiron/sqlx"
 
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/task_create/domain"
 )
 
 type Repository struct {
-	db       *sqlx.DB
-	trGetter *trmsqlx.CtxGetter
+	db *sqlx.DB
 }
 
-func New(db *sqlx.DB, trGetter *trmsqlx.CtxGetter) *Repository {
-	return &Repository{
-		db:       db,
-		trGetter: trGetter,
-	}
+func New(db *sqlx.DB) *Repository {
+	return &Repository{db: db}
 }
 
 func (r *Repository) Insert(ctx context.Context, in domain.TaskCreateIn) (int64, error) {
@@ -40,7 +35,7 @@ func (r *Repository) Insert(ctx context.Context, in domain.TaskCreateIn) (int64,
 	query = fmt.Sprintf("-- %s\n%s", op, query)
 
 	var id int64
-	err = r.trGetter.DefaultTrOrDB(ctx, r.db).GetContext(ctx, &id, query, args...)
+	err = r.db.GetContext(ctx, &id, query, args...)
 	if err != nil {
 		return 0, fmt.Errorf("exec query %q: %w", op, err)
 	}

@@ -9,13 +9,11 @@ import (
 	"go.uber.org/mock/gomock"
 
 	user_domain "github.com/qsoulior/tech-generator/backend/internal/domain/user"
-	test_trm "github.com/qsoulior/tech-generator/backend/internal/pkg/test/trm"
 	"github.com/qsoulior/tech-generator/backend/internal/usecase/task_create/domain"
 )
 
 func TestUsecase_Handle_Success(t *testing.T) {
 	ctx := context.Background()
-	trCtx := context.WithValue(ctx, test_trm.TrKey{}, struct{}{})
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -23,7 +21,6 @@ func TestUsecase_Handle_Success(t *testing.T) {
 	versionRepo := NewMockversionRepository(ctrl)
 	taskRepo := NewMocktaskRepository(ctrl)
 	publisher := NewMockpublisher(ctrl)
-	trManager := test_trm.New()
 
 	in := domain.TaskCreateIn{
 		VersionID: 100,
@@ -38,17 +35,16 @@ func TestUsecase_Handle_Success(t *testing.T) {
 	}
 
 	versionRepo.EXPECT().GetByID(ctx, in.VersionID).Return(version, nil)
-	taskRepo.EXPECT().Insert(trCtx, in).Return(int64(50), nil)
-	publisher.EXPECT().PublishTaskCreated(trCtx, int64(50)).Return(nil)
+	taskRepo.EXPECT().Insert(ctx, in).Return(int64(50), nil)
+	publisher.EXPECT().PublishTaskCreated(ctx, int64(50)).Return(nil)
 
-	usecase := New(versionRepo, taskRepo, publisher, trManager)
+	usecase := New(versionRepo, taskRepo, publisher)
 	err := usecase.Handle(ctx, in)
 	require.NoError(t, err)
 }
 
 func TestUsecase_Handle_Error(t *testing.T) {
 	ctx := context.Background()
-	trCtx := context.WithValue(ctx, test_trm.TrKey{}, struct{}{})
 
 	testErr := errors.New("test error")
 
@@ -118,7 +114,7 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "taskRepo_Insert",
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository, publisher *Mockpublisher) {
 				versionRepo.EXPECT().GetByID(ctx, validIn.VersionID).Return(validVersion, nil)
-				taskRepo.EXPECT().Insert(trCtx, validIn).Return(int64(0), testErr)
+				taskRepo.EXPECT().Insert(ctx, validIn).Return(int64(0), testErr)
 			},
 			in:   validIn,
 			want: testErr,
@@ -127,8 +123,8 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			name: "publisher_PublishTaskCreated",
 			setup: func(versionRepo *MockversionRepository, taskRepo *MocktaskRepository, publisher *Mockpublisher) {
 				versionRepo.EXPECT().GetByID(ctx, validIn.VersionID).Return(validVersion, nil)
-				taskRepo.EXPECT().Insert(trCtx, validIn).Return(int64(50), nil)
-				publisher.EXPECT().PublishTaskCreated(trCtx, int64(50)).Return(testErr)
+				taskRepo.EXPECT().Insert(ctx, validIn).Return(int64(50), nil)
+				publisher.EXPECT().PublishTaskCreated(ctx, int64(50)).Return(testErr)
 			},
 			in:   validIn,
 			want: testErr,
@@ -143,10 +139,9 @@ func TestUsecase_Handle_Error(t *testing.T) {
 			versionRepo := NewMockversionRepository(ctrl)
 			taskRepo := NewMocktaskRepository(ctrl)
 			publisher := NewMockpublisher(ctrl)
-			trManager := test_trm.New()
 			tt.setup(versionRepo, taskRepo, publisher)
 
-			usecase := New(versionRepo, taskRepo, publisher, trManager)
+			usecase := New(versionRepo, taskRepo, publisher)
 			err := usecase.Handle(ctx, tt.in)
 			require.ErrorIs(t, err, tt.want)
 		})

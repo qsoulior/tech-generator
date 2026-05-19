@@ -1,8 +1,6 @@
 package task_create_usecase
 
 import (
-	trmsqlx "github.com/avito-tech/go-transaction-manager/drivers/sqlx/v2"
-	"github.com/avito-tech/go-transaction-manager/trm/v2/manager"
 	"github.com/jmoiron/sqlx"
 	"github.com/rabbitmq/amqp091-go"
 
@@ -14,8 +12,7 @@ import (
 
 func New(db *sqlx.DB, amqp *amqp091.Channel) *usecase.Usecase {
 	versionRepo := version_repository.New(db)
-	taskRepo := task_repository.New(db, trmsqlx.DefaultCtxGetter)
+	taskRepo := task_repository.New(db)
 	publisher := publisher.New(amqp)
-	trManager := manager.Must(trmsqlx.NewDefaultFactory(db))
-	return usecase.New(versionRepo, taskRepo, publisher, trManager)
+	return usecase.New(versionRepo, taskRepo, publisher)
 }
