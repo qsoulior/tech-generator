@@ -16,6 +16,7 @@ services:
       start_period: 10s
       timeout: 10s
       retries: 5
+
   rabbitmq:
     image: rabbitmq:4.2-management
     restart: unless-stopped

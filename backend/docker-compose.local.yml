@@ -1,0 +1,82 @@
+services:
+  db:
+    image: postgres:17.6-alpine3.22
+    restart: unless-stopped
+    ports:
+      - "15432:5432"
+    volumes:
+      - ./migrations/postgres:/docker-entrypoint-initdb.d:ro
+    environment:
+      POSTGRES_DB: master
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpassword
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -q -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 20s
+      start_period: 10s
+      timeout: 10s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:4.2-management
+    restart: unless-stopped
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: devuser
+      RABBITMQ_DEFAULT_PASS: devpassword
+    healthcheck:
+      test: rabbitmq-diagnostics -q status
+      interval: 10s
+      timeout: 30s
+      retries: 5
+
+  service:
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+    image: tech-generator-service:local
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SERVICE_HOST: 0.0.0.0
+      SERVICE_PORT: "3000"
+      SERVICE_ALLOWED_ORIGINS: http://localhost:5173
+      USER_TOKEN_EXPIRATION: 720h
+      ED25519_PRIVATE_KEY_PATH: /run/secrets/ed25519/ed25519_private.pem
+      ED25519_PUBLIC_KEY_PATH: /run/secrets/ed25519/ed25519_public.pem
+      PGHOST: db
+      PGPORT: "5432"
+      PGDATABASE: master
+      PGUSER: devuser
+      PGPASSWORD: devpassword
+      RABBITMQ_URL: amqp://devuser:devpassword@rabbitmq:5672/
+    volumes:
+      - ./keys:/run/secrets/ed25519:ro
+    ports:
+      - "3000:3000"
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: tech-generator-worker:local
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      PGHOST: db
+      PGPORT: "5432"
+      PGDATABASE: master
+      PGUSER: devuser
+      PGPASSWORD: devpassword
+      RABBITMQ_URL: amqp://devuser:devpassword@rabbitmq:5672/

@@ -1,0 +1,18 @@
+# Root prod compose.
+#
+# Объединяет backend и frontend prod-стеки в один проект (tech-generator).
+# Переменные окружения для каждой части резолвятся из backend/.env и
+# frontend/.env соответственно (по правилам docker compose include).
+#
+# Запуск:
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Обязательные переменные см. в backend/docker-compose.prod.yml
+# (POSTGRES_*, RABBITMQ_*, SERVICE_ALLOWED_ORIGINS) и
+# frontend/docker-compose.prod.yml (VITE_BACKEND_URL).
+
+name: tech-generator
+
+include:
+  - backend/docker-compose.prod.yml
+  - frontend/docker-compose.prod.yml

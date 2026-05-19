@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL:?VITE_BACKEND_URL is required}
+    image: tech-generator-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PUBLISHED_PORT:-8080}:80"

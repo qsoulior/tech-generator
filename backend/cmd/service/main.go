@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -92,7 +93,7 @@ func run() (code int) {
 	}))
 
 	err := godotenv.Overload()
-	if err != nil {
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		logger.Error("overload env", slog.String("err", err.Error()))
 		return 1
 	}

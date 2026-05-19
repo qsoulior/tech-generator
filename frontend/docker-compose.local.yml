@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_BACKEND_URL: http://localhost:3000
+    image: tech-generator-frontend:local
+    restart: unless-stopped
+    ports:
+      - "5173:80"

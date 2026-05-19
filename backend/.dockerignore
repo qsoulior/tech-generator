@@ -1,0 +1,10 @@
+.env
+.env.*
+keys/
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+.golangci.yml
+.git
+.gitignore
+**/*_test.go
