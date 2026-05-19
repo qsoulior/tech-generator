@@ -94,6 +94,52 @@ func (o OptDateTime) Or(d time.Time) time.Time {
 	return d
 }
 
+// NewOptInt returns new OptInt with value set to v.
+func NewOptInt(v int) OptInt {
+	return OptInt{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInt is optional int.
+type OptInt struct {
+	Value int
+	Set   bool
+}
+
+// IsSet returns true if OptInt was set.
+func (o OptInt) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInt) Reset() {
+	var v int
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInt) SetTo(v int) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInt) Get() (v int, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInt) Or(d int) int {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptInt64 returns new OptInt64 with value set to v.
 func NewOptInt64(v int64) OptInt64 {
 	return OptInt64{
@@ -272,6 +318,52 @@ func (o OptTaskGetByIDResponseTaskError) Get() (v TaskGetByIDResponseTaskError, 
 
 // Or returns value if set, or given parameter if does not.
 func (o OptTaskGetByIDResponseTaskError) Or(d TaskGetByIDResponseTaskError) TaskGetByIDResponseTaskError {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTaskGetByIDResponseTaskErrorTemplate returns new OptTaskGetByIDResponseTaskErrorTemplate with value set to v.
+func NewOptTaskGetByIDResponseTaskErrorTemplate(v TaskGetByIDResponseTaskErrorTemplate) OptTaskGetByIDResponseTaskErrorTemplate {
+	return OptTaskGetByIDResponseTaskErrorTemplate{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTaskGetByIDResponseTaskErrorTemplate is optional TaskGetByIDResponseTaskErrorTemplate.
+type OptTaskGetByIDResponseTaskErrorTemplate struct {
+	Value TaskGetByIDResponseTaskErrorTemplate
+	Set   bool
+}
+
+// IsSet returns true if OptTaskGetByIDResponseTaskErrorTemplate was set.
+func (o OptTaskGetByIDResponseTaskErrorTemplate) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTaskGetByIDResponseTaskErrorTemplate) Reset() {
+	var v TaskGetByIDResponseTaskErrorTemplate
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTaskGetByIDResponseTaskErrorTemplate) SetTo(v TaskGetByIDResponseTaskErrorTemplate) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTaskGetByIDResponseTaskErrorTemplate) Get() (v TaskGetByIDResponseTaskErrorTemplate, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTaskGetByIDResponseTaskErrorTemplate) Or(d TaskGetByIDResponseTaskErrorTemplate) TaskGetByIDResponseTaskErrorTemplate {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -772,13 +864,20 @@ func (s *TaskGetByIDResponseTask) SetUpdatedAt(val OptDateTime) {
 // Ошибка обработки задачи.
 type TaskGetByIDResponseTaskError struct {
 	// Сообщение ошибки.
-	Message        OptString                                        `json:"message"`
+	Message OptString `json:"message"`
+	// Локализация ошибки внутри текста шаблона.
+	Template       OptTaskGetByIDResponseTaskErrorTemplate          `json:"template"`
 	VariableErrors []TaskGetByIDResponseTaskErrorVariableErrorsItem `json:"variableErrors"`
 }
 
 // GetMessage returns the value of Message.
 func (s *TaskGetByIDResponseTaskError) GetMessage() OptString {
 	return s.Message
+}
+
+// GetTemplate returns the value of Template.
+func (s *TaskGetByIDResponseTaskError) GetTemplate() OptTaskGetByIDResponseTaskErrorTemplate {
+	return s.Template
 }
 
 // GetVariableErrors returns the value of VariableErrors.
@@ -791,9 +890,69 @@ func (s *TaskGetByIDResponseTaskError) SetMessage(val OptString) {
 	s.Message = val
 }
 
+// SetTemplate sets the value of Template.
+func (s *TaskGetByIDResponseTaskError) SetTemplate(val OptTaskGetByIDResponseTaskErrorTemplate) {
+	s.Template = val
+}
+
 // SetVariableErrors sets the value of VariableErrors.
 func (s *TaskGetByIDResponseTaskError) SetVariableErrors(val []TaskGetByIDResponseTaskErrorVariableErrorsItem) {
 	s.VariableErrors = val
+}
+
+// Локализация ошибки внутри текста шаблона.
+type TaskGetByIDResponseTaskErrorTemplate struct {
+	// Номер строки в шаблоне (начиная с 1).
+	Line int `json:"line"`
+	// Номер столбца в шаблоне (начиная с 1); отсутствует,
+	// если неизвестен.
+	Column OptInt `json:"column"`
+	// Содержимое строки шаблона, на которой произошла
+	// ошибка.
+	Snippet OptString `json:"snippet"`
+	// Подробное диагностическое сообщение из движка
+	// шаблонов.
+	Detail OptString `json:"detail"`
+}
+
+// GetLine returns the value of Line.
+func (s *TaskGetByIDResponseTaskErrorTemplate) GetLine() int {
+	return s.Line
+}
+
+// GetColumn returns the value of Column.
+func (s *TaskGetByIDResponseTaskErrorTemplate) GetColumn() OptInt {
+	return s.Column
+}
+
+// GetSnippet returns the value of Snippet.
+func (s *TaskGetByIDResponseTaskErrorTemplate) GetSnippet() OptString {
+	return s.Snippet
+}
+
+// GetDetail returns the value of Detail.
+func (s *TaskGetByIDResponseTaskErrorTemplate) GetDetail() OptString {
+	return s.Detail
+}
+
+// SetLine sets the value of Line.
+func (s *TaskGetByIDResponseTaskErrorTemplate) SetLine(val int) {
+	s.Line = val
+}
+
+// SetColumn sets the value of Column.
+func (s *TaskGetByIDResponseTaskErrorTemplate) SetColumn(val OptInt) {
+	s.Column = val
+}
+
+// SetSnippet sets the value of Snippet.
+func (s *TaskGetByIDResponseTaskErrorTemplate) SetSnippet(val OptString) {
+	s.Snippet = val
+}
+
+// SetDetail sets the value of Detail.
+func (s *TaskGetByIDResponseTaskErrorTemplate) SetDetail(val OptString) {
+	s.Detail = val
 }
 
 // Ошибка обработки переменных.

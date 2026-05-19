@@ -37,6 +37,12 @@ func TestHandler_TaskGetByID_Success(t *testing.T) {
 				},
 			},
 		},
+		Template: &task_domain.TemplateError{
+			Line:    2,
+			Column:  5,
+			Snippet: "broken {{ . test }}",
+			Detail:  `function "test" not defined`,
+		},
 	}
 	out := &domain.TaskGetByIDOut{
 		Task: domain.Task{
@@ -86,6 +92,19 @@ func TestHandler_TaskGetByID_Success(t *testing.T) {
 	require.Equal(t, int64(21), gotErr.VariableErrors[0].ConstraintErrors[0].ID)
 	require.Equal(t, "v1 > 100", gotErr.VariableErrors[0].ConstraintErrors[0].Expression)
 	require.Equal(t, []byte("payload"), resp.Result)
+
+	gotTemplate, ok := gotErr.Template.Get()
+	require.True(t, ok)
+	require.Equal(t, 2, gotTemplate.Line)
+	gotColumn, ok := gotTemplate.Column.Get()
+	require.True(t, ok)
+	require.Equal(t, 5, gotColumn)
+	gotSnippet, ok := gotTemplate.Snippet.Get()
+	require.True(t, ok)
+	require.Equal(t, "broken {{ . test }}", gotSnippet)
+	gotDetail, ok := gotTemplate.Detail.Get()
+	require.True(t, ok)
+	require.Equal(t, `function "test" not defined`, gotDetail)
 }
 
 func TestHandler_TaskGetByID_BaseError(t *testing.T) {

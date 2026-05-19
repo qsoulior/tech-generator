@@ -9,6 +9,7 @@ export type TaskGetTask = TaskGetResult["task"]
 export type TaskGetError = NonNullable<TaskGetTask["error"]>
 export type TaskGetVariableError = NonNullable<TaskGetError["variableErrors"]>[number]
 export type TaskGetConstraintError = NonNullable<TaskGetVariableError["constraintErrors"]>[number]
+export type TaskGetTemplateError = NonNullable<TaskGetError["template"]>
 export type TaskCreateInput = components["schemas"]["TaskCreateRequest"]
 
 export interface TaskListParams {

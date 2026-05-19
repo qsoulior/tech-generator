@@ -18,8 +18,7 @@ import {
   useMessage,
 } from "naive-ui"
 import { computed, onMounted, ref } from "vue"
-import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
-import RU from "@vavt/cm-extension/dist/locale/ru"
+import { MdEditor, type ToolbarNames } from "md-editor-v3"
 import "md-editor-v3/lib/style.css"
 import VariableListSearch from "@/components/VariableListSearch.vue"
 import VariableCreateModal from "@/components/VariableCreateModal.vue"
@@ -290,14 +289,6 @@ onMounted(async () => {
   await loadTemplate()
 })
 
-config({
-  editorConfig: {
-    languageUserDefined: {
-      ru: RU,
-    },
-  },
-})
-
 const toolbars: ToolbarNames[] = [
   "revoke",
   "next",
@@ -410,12 +401,7 @@ const toolbars: ToolbarNames[] = [
           </n-button>
           <n-tooltip>
             <template #trigger>
-              <n-button
-                size="small"
-                secondary
-                aria-label="Справка по функциям"
-                @click="showCheatsheet = true"
-              >
+              <n-button size="small" secondary aria-label="Справка по функциям" @click="showCheatsheet = true">
                 <template #icon>
                   <n-icon>
                     <IconBookOutlined />
@@ -450,12 +436,14 @@ const toolbars: ToolbarNames[] = [
             <VariableCreateModal
               v-model:show-modal="showCreateModal"
               :occupied-slugs="createOccupiedSlugs"
+              :available-slugs="createOccupiedSlugs"
               @submit="variableCreate"
             />
             <VariableUpdateModal
               v-model:show-modal="showUpdateModal"
               v-model:variable="variableUpdating"
               :occupied-slugs="updateOccupiedSlugs"
+              :available-slugs="updateOccupiedSlugs"
               @submit="handleVariableUpdate"
             />
           </n-flex>
@@ -488,16 +476,10 @@ const toolbars: ToolbarNames[] = [
                       <n-tag size="small" :bordered="false">
                         {{ typeToString.get(variable.type) }}
                       </n-tag>
-                      <n-tag size="small" :bordered="false">
-                        Ограничений: {{ variable.constraints.length }}
-                      </n-tag>
+                      <n-tag size="small" :bordered="false"> Ограничений: {{ variable.constraints.length }} </n-tag>
                     </n-flex>
                   </n-flex>
-                  <n-popconfirm
-                    positive-text="Да"
-                    negative-text="Нет"
-                    @positive-click="variableDelete(index)"
-                  >
+                  <n-popconfirm positive-text="Да" negative-text="Нет" @positive-click="variableDelete(index)">
                     <template #trigger>
                       <n-button
                         secondary

@@ -16,6 +16,7 @@ const variable = defineModel<Variable>("variable", {
 
 const props = defineProps<{
   occupiedSlugs: string[]
+  availableSlugs: string[]
 }>()
 
 const emit = defineEmits<{
@@ -50,6 +51,7 @@ function handleSubmit() {
       <VariableForm
         submit-text="Сохранить изменения"
         :occupied-slugs="props.occupiedSlugs"
+        :available-slugs="props.availableSlugs"
         v-model:model="variable"
         @submit="handleSubmit"
       />

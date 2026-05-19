@@ -24,11 +24,23 @@ var (
 type ProcessError struct {
 	Message        string          `json:"message,omitempty"`
 	VariableErrors []VariableError `json:"variable_errors,omitempty"`
+	Template       *TemplateError  `json:"template,omitempty"`
 }
 
 func (e *ProcessError) Error() string {
 	variableMessages := lo.Map(e.VariableErrors, func(ve VariableError, _ int) string { return ve.Error() })
 	return fmt.Sprintf("%s\n%s", e.Message, strings.Join(variableMessages, "\n"))
+}
+
+// TemplateError describes a specific location in the template source where
+// parsing or execution failed. Line is 1-based; Column is 1-based when known
+// and 0 otherwise. Snippet is the offending source line (without trailing
+// newline). Detail is the raw Go text/template diagnostic message.
+type TemplateError struct {
+	Line    int    `json:"line"`
+	Column  int    `json:"column,omitempty"`
+	Snippet string `json:"snippet,omitempty"`
+	Detail  string `json:"detail,omitempty"`
 }
 
 type VariableError struct {

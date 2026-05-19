@@ -77,7 +77,7 @@ const exprFormat: Section = {
     {
       signature: "round(x, n)",
       description: "Округление до n знаков после запятой.",
-      example: 'round(3.14159, 2) // 3.14',
+      example: "round(3.14159, 2) // 3.14",
     },
     {
       signature: "roundStep(x, step)",
@@ -260,7 +260,7 @@ const tplDates: Section = {
     {
       signature: '{{ dateModify "24h" now }}',
       description: "Сдвигает дату на указанный интервал (24h, -1h, 30m).",
-      example: '+24h → завтра в это же время',
+      example: "+24h → завтра в это же время",
     },
   ],
 }
@@ -282,7 +282,7 @@ const tplMath: Section = {
     },
     {
       signature: "{{ empty .x }}",
-      description: "Истина, если значение пустое (0, \"\", nil, пустой список).",
+      description: 'Истина, если значение пустое (0, "", nil, пустой список).',
       example: '.x = "" → true',
     },
     {
@@ -370,7 +370,8 @@ const interpolationSyntax = "{{ .имя }}"
         <n-tab-pane name="tpl" tab="Шаблон документа">
           <n-alert type="info" :show-icon="false" style="margin-bottom: 1rem">
             Используется в теле шаблона документа. Переменные доступны как
-            <n-text code>{{ interpolationSyntax }}</n-text>.
+            <n-text code>{{ interpolationSyntax }}</n-text
+            >.
           </n-alert>
           <n-scrollbar style="max-height: calc(100vh - 220px)">
             <n-flex vertical :size="24">

@@ -1,0 +1,12 @@
+.cm-tpl-placeholder {
+  background-color: rgba(64, 158, 255, 0.12);
+  border-radius: 3px;
+  color: #2080f0;
+}
+
+.cm-tpl-placeholder--invalid {
+  background-color: rgba(208, 48, 80, 0.16);
+  color: #d03050;
+  text-decoration: underline wavy currentColor;
+  text-underline-offset: 2px;
+}

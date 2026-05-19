@@ -88,9 +88,11 @@ func TestService_Handle_Error(t *testing.T) {
 	service := New()
 
 	tests := []struct {
-		name string
-		in   domain.DataProcessIn
-		want task_domain.ProcessError
+		name        string
+		in          domain.DataProcessIn
+		wantMessage string
+		wantLine    int
+		wantSnippet string
 	}{
 		{
 			name: "TemplateParse",
@@ -98,7 +100,9 @@ func TestService_Handle_Error(t *testing.T) {
 				Values: map[string]any{},
 				Data:   []byte("abc {{abc}}"),
 			},
-			want: task_domain.ProcessError{Message: task_domain.MessageTemplateParse},
+			wantMessage: task_domain.MessageTemplateParse,
+			wantLine:    1,
+			wantSnippet: "abc {{abc}}",
 		},
 		{
 			name: "EnvBlocked",
@@ -106,7 +110,9 @@ func TestService_Handle_Error(t *testing.T) {
 				Values: map[string]any{},
 				Data:   []byte(`{{ env "PATH" }}`),
 			},
-			want: task_domain.ProcessError{Message: task_domain.MessageTemplateParse},
+			wantMessage: task_domain.MessageTemplateParse,
+			wantLine:    1,
+			wantSnippet: `{{ env "PATH" }}`,
 		},
 		{
 			name: "ExpandEnvBlocked",
@@ -114,7 +120,19 @@ func TestService_Handle_Error(t *testing.T) {
 				Values: map[string]any{},
 				Data:   []byte(`{{ expandenv "$PATH" }}`),
 			},
-			want: task_domain.ProcessError{Message: task_domain.MessageTemplateParse},
+			wantMessage: task_domain.MessageTemplateParse,
+			wantLine:    1,
+			wantSnippet: `{{ expandenv "$PATH" }}`,
+		},
+		{
+			name: "TemplateParseOnSecondLine",
+			in: domain.DataProcessIn{
+				Values: map[string]any{},
+				Data:   []byte("first line\nbroken {{abc}}\nthird line"),
+			},
+			wantMessage: task_domain.MessageTemplateParse,
+			wantLine:    2,
+			wantSnippet: "broken {{abc}}",
 		},
 	}
 	for _, tt := range tests {
@@ -123,7 +141,11 @@ func TestService_Handle_Error(t *testing.T) {
 
 			var got *task_domain.ProcessError
 			require.ErrorAs(t, err, &got)
-			require.Equal(t, tt.want, *got)
+			require.Equal(t, tt.wantMessage, got.Message)
+			require.NotNil(t, got.Template, "expected template error to be populated")
+			require.Equal(t, tt.wantLine, got.Template.Line)
+			require.Equal(t, tt.wantSnippet, got.Template.Snippet)
+			require.NotEmpty(t, got.Template.Detail)
 		})
 	}
 }

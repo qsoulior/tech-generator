@@ -495,6 +495,17 @@ export interface components {
         error?: {
           /** @description Сообщение ошибки */
           message?: string
+          /** @description Локализация ошибки внутри текста шаблона */
+          template?: {
+            /** @description Номер строки в шаблоне (начиная с 1) */
+            line: number
+            /** @description Номер столбца в шаблоне (начиная с 1); отсутствует, если неизвестен */
+            column?: number
+            /** @description Содержимое строки шаблона, на которой произошла ошибка */
+            snippet?: string
+            /** @description Подробное диагностическое сообщение из движка шаблонов */
+            detail?: string
+          }
           variableErrors?: {
             /**
              * Format: int64

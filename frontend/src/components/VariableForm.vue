@@ -24,10 +24,12 @@ import IconAddOutlined from "@/components/icons/IconAddOutlined.vue"
 import IconCopyOutlined from "@/components/icons/IconCopyOutlined.vue"
 import IconSyncOutlined from "@/components/icons/IconSyncOutlined.vue"
 import { SLUG_PATTERN, SLUG_MAX_LEN, slugify } from "@/utils/slug"
+import { findUnknownIdentifiers } from "@/utils/exprValidation"
 
 const props = defineProps<{
   submitText: string
   occupiedSlugs: string[]
+  availableSlugs: string[]
 }>()
 
 const emit = defineEmits<{
@@ -112,8 +114,14 @@ const rules: FormRules = {
     trigger: ["input", "blur"],
   },
   expression: {
-    validator: (_rule: FormItemRule, value: string) => modelRef.value.inputType == "input" || value != "",
-    message: "Выражение не может быть пустым",
+    validator: (_rule: FormItemRule, value: string) => {
+      if (modelRef.value.inputType !== "computed") return true
+      if (value === "") return new Error("Выражение не может быть пустым")
+      const unknown = findUnknownIdentifiers(value, props.availableSlugs)
+      if (unknown.length > 0) return new Error(`Неизвестные идентификаторы: ${unknown.join(", ")}`)
+      return true
+    },
+    trigger: ["input", "blur"],
   },
 }
 
@@ -123,8 +131,13 @@ const rulesConstraintName = {
 }
 
 const rulesConstraintExpression = {
-  required: true,
-  message: "Выражение не может быть пустым",
+  validator: (_rule: FormItemRule, value: string) => {
+    if (value === "") return new Error("Выражение не может быть пустым")
+    const unknown = findUnknownIdentifiers(value, modelRef.value.name === "" ? [] : [modelRef.value.name])
+    if (unknown.length > 0) return new Error(`Неизвестные идентификаторы: ${unknown.join(", ")}`)
+    return true
+  },
+  trigger: ["input", "blur"],
 }
 
 function handleValidateClick(e: MouseEvent) {

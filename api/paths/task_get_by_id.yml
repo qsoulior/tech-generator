@@ -70,6 +70,24 @@ components:
                 message:
                   type: string
                   description: Сообщение ошибки
+                template:
+                  type: object
+                  description: Локализация ошибки внутри текста шаблона
+                  required:
+                    - line
+                  properties:
+                    line:
+                      type: integer
+                      description: Номер строки в шаблоне (начиная с 1)
+                    column:
+                      type: integer
+                      description: Номер столбца в шаблоне (начиная с 1); отсутствует, если неизвестен
+                    snippet:
+                      type: string
+                      description: Содержимое строки шаблона, на которой произошла ошибка
+                    detail:
+                      type: string
+                      description: Подробное диагностическое сообщение из движка шаблонов
                 variableErrors:
                   type: array
                   items:

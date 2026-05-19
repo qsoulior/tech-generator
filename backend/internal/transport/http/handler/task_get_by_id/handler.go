@@ -80,6 +80,30 @@ func convertTaskErrorToResponse(taskError task_domain.ProcessError) api.TaskGetB
 		item.Message.SetTo(taskError.Message)
 	}
 
+	if taskError.Template != nil {
+		item.Template.SetTo(convertTemplateErrorToResponse(*taskError.Template))
+	}
+
+	return item
+}
+
+func convertTemplateErrorToResponse(templateError task_domain.TemplateError) api.TaskGetByIDResponseTaskErrorTemplate {
+	item := api.TaskGetByIDResponseTaskErrorTemplate{
+		Line: templateError.Line,
+	}
+
+	if templateError.Column > 0 {
+		item.Column.SetTo(templateError.Column)
+	}
+
+	if templateError.Snippet != "" {
+		item.Snippet.SetTo(templateError.Snippet)
+	}
+
+	if templateError.Detail != "" {
+		item.Detail.SetTo(templateError.Detail)
+	}
+
 	return item
 }
 

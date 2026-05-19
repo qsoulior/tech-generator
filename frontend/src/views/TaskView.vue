@@ -15,12 +15,12 @@ import {
   NAlert,
 } from "naive-ui"
 import { onMounted, ref, computed, watch, type Component } from "vue"
-import { MdEditor, config, type ToolbarNames } from "md-editor-v3"
-import RU from "@vavt/cm-extension/dist/locale/ru"
+import { MdEditor, type ToolbarNames } from "md-editor-v3"
 import "md-editor-v3/lib/style.css"
 import AppHeader from "@/components/AppHeader.vue"
 import TaskErrorListItem from "@/components/TaskErrorListItem.vue"
 import TaskErrorListSearch from "@/components/TaskErrorListSearch.vue"
+import TaskErrorTemplate from "@/components/TaskErrorTemplate.vue"
 import IconDownloadOutlined from "@/components/icons/IconDownloadOutlined.vue"
 import IconClockCircleOutlined from "@/components/icons/IconClockCircleOutlined.vue"
 import IconSyncOutlined from "@/components/icons/IconSyncOutlined.vue"
@@ -80,7 +80,10 @@ const pendingMessage = computed(() => {
 
 const hasSystemMessage = computed(() => error.value?.message != null && error.value.message !== "")
 const variableErrors = computed<TaskGetVariableError[]>(() => error.value?.variableErrors ?? [])
-const hasErrorDetails = computed(() => hasSystemMessage.value || variableErrors.value.length > 0)
+const templateError = computed(() => error.value?.template ?? null)
+const hasErrorDetails = computed(
+  () => hasSystemMessage.value || variableErrors.value.length > 0 || templateError.value != null,
+)
 
 const errorSearch = ref("")
 const { page, pageSize, totalPages, pageSizes } = usePagination("ошибок", 10)
@@ -163,14 +166,6 @@ onMounted(async () => {
   await loadTask()
 })
 
-config({
-  editorConfig: {
-    languageUserDefined: {
-      ru: RU,
-    },
-  },
-})
-
 const toolbars: ToolbarNames[] = ["preview", "previewOnly"]
 </script>
 
@@ -212,7 +207,12 @@ const toolbars: ToolbarNames[] = ["preview", "previewOnly"]
         />
         <div v-else-if="error != null" class="error-scroll">
           <n-flex vertical align="center" class="error-content">
-            <n-alert v-if="hasSystemMessage" type="error" style="width: 100%">
+            <TaskErrorTemplate
+              v-if="templateError != null"
+              :message="error.message ?? 'Ошибка шаблона'"
+              :template-error="templateError"
+            />
+            <n-alert v-else-if="hasSystemMessage" type="error" style="width: 100%">
               <div class="system-error-message">{{ error.message }}</div>
             </n-alert>
             <template v-if="variableErrors.length > 0">
