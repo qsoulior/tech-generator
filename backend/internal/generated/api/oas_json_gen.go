@@ -1454,6 +1454,12 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) encodeFields(e *jx.Enco
 		e.Str(s.Title)
 	}
 	{
+		if s.Value.Set {
+			e.FieldStart("value")
+			s.Value.Encode(e)
+		}
+	}
+	{
 		if s.Message.Set {
 			e.FieldStart("message")
 			s.Message.Encode(e)
@@ -1471,12 +1477,13 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) encodeFields(e *jx.Enco
 	}
 }
 
-var jsonFieldsNameOfTaskGetByIDResponseTaskErrorVariableErrorsItem = [5]string{
+var jsonFieldsNameOfTaskGetByIDResponseTaskErrorVariableErrorsItem = [6]string{
 	0: "id",
 	1: "name",
 	2: "title",
-	3: "message",
-	4: "constraintErrors",
+	3: "value",
+	4: "message",
+	5: "constraintErrors",
 }
 
 // Decode decodes TaskGetByIDResponseTaskErrorVariableErrorsItem from json.
@@ -1523,6 +1530,16 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) Decode(d *jx.Decoder) e
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "value":
+			if err := func() error {
+				s.Value.Reset()
+				if err := s.Value.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"value\"")
 			}
 		case "message":
 			if err := func() error {
@@ -1625,6 +1642,10 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) enc
 		e.Str(s.Name)
 	}
 	{
+		e.FieldStart("expression")
+		e.Str(s.Expression)
+	}
+	{
 		if s.Message.Set {
 			e.FieldStart("message")
 			s.Message.Encode(e)
@@ -1632,10 +1653,11 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) enc
 	}
 }
 
-var jsonFieldsNameOfTaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem = [3]string{
+var jsonFieldsNameOfTaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem = [4]string{
 	0: "id",
 	1: "name",
-	2: "message",
+	2: "expression",
+	3: "message",
 }
 
 // Decode decodes TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem from json.
@@ -1671,6 +1693,18 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) Dec
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
+		case "expression":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Expression = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"expression\"")
+			}
 		case "message":
 			if err := func() error {
 				s.Message.Reset()
@@ -1691,7 +1725,7 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) Dec
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

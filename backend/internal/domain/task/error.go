@@ -35,6 +35,7 @@ type VariableError struct {
 	ID               int64             `json:"id"`
 	Name             string            `json:"name"`
 	Title            string            `json:"title"`
+	Value            string            `json:"value,omitempty"`
 	Message          string            `json:"message,omitempty"`
 	ConstraintErrors []ConstraintError `json:"constraint_errors,omitempty"`
 }
@@ -45,9 +46,10 @@ func (e *VariableError) Error() string {
 }
 
 type ConstraintError struct {
-	ID      int64  `json:"id"`
-	Name    string `json:"name"`
-	Message string `json:"message,omitempty"`
+	ID         int64  `json:"id"`
+	Name       string `json:"name"`
+	Expression string `json:"expression"`
+	Message    string `json:"message,omitempty"`
 }
 
 func (e *ConstraintError) Error() string {

@@ -15,11 +15,7 @@ import {
   useMessage,
 } from "naive-ui"
 import { onMounted, ref } from "vue"
-import {
-  templateDefaultList,
-  templateCreateFromDefault,
-  type TemplateDefaultListItem,
-} from "@/api/template"
+import { templateDefaultList, templateCreateFromDefault, type TemplateDefaultListItem } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
 import { usePagination } from "@/composables/usePagination"
 import IconSearchOutlined from "@/components/icons/IconSearchOutlined.vue"
@@ -144,12 +140,7 @@ async function onCreate() {
       </n-flex>
       <n-flex v-else vertical size="small">
         <n-empty v-if="templates.length === 0" description="Шаблоны не найдены" />
-        <n-card
-          v-for="template in templates"
-          :key="template.id"
-          style="cursor: pointer"
-          @click="onSelect(template)"
-        >
+        <n-card v-for="template in templates" :key="template.id" style="cursor: pointer" @click="onSelect(template)">
           <n-flex vertical size="small">
             <n-text strong>{{ template.name }}</n-text>
             <n-text depth="3">Добавлен: {{ new Date(template.createdAt).toLocaleDateString() }}</n-text>

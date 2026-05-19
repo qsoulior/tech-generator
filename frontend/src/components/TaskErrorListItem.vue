@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const constraintErrorsCount = computed(() => props.variableError.constraintErrors?.length ?? 0)
 const hasMessage = computed(() => props.variableError.message != null && props.variableError.message !== "")
+const hasValue = computed(() => props.variableError.value != null && props.variableError.value !== "")
 </script>
 
 <template>
@@ -28,16 +29,24 @@ const hasMessage = computed(() => props.variableError.message != null && props.v
           <n-alert v-if="hasMessage" type="error">
             <div class="message">{{ variableError.message }}</div>
           </n-alert>
+          <n-flex v-if="hasValue" align="baseline" :size="6" class="value-row">
+            <n-text depth="3">Значение:</n-text>
+            <n-text code>{{ variableError.value }}</n-text>
+          </n-flex>
           <n-table v-if="constraintErrorsCount > 0" :single-line="false" size="small">
             <thead>
               <tr>
                 <th>Ограничение</th>
+                <th>Выражение</th>
                 <th>Ошибка</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="constraintError in variableError.constraintErrors" :key="constraintError.id">
                 <td>{{ constraintError.name }}</td>
+                <td>
+                  <n-text code>{{ constraintError.expression }}</n-text>
+                </td>
                 <td>{{ constraintError.message }}</td>
               </tr>
             </tbody>
@@ -57,5 +66,9 @@ const hasMessage = computed(() => props.variableError.message != null && props.v
 .message {
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.value-row {
+  margin-bottom: 0.25rem;
 }
 </style>

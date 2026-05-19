@@ -804,6 +804,9 @@ type TaskGetByIDResponseTaskErrorVariableErrorsItem struct {
 	Name string `json:"name"`
 	// Человекочитаемое название переменной.
 	Title string `json:"title"`
+	// Вычисленное значение переменной, на котором
+	// сработала проверка ограничений.
+	Value OptString `json:"value"`
 	// Сообщение ошибки.
 	Message          OptString                                                            `json:"message"`
 	ConstraintErrors []TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem `json:"constraintErrors"`
@@ -822,6 +825,11 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) GetName() string {
 // GetTitle returns the value of Title.
 func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) GetTitle() string {
 	return s.Title
+}
+
+// GetValue returns the value of Value.
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) GetValue() OptString {
+	return s.Value
 }
 
 // GetMessage returns the value of Message.
@@ -849,6 +857,11 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) SetTitle(val string) {
 	s.Title = val
 }
 
+// SetValue sets the value of Value.
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) SetValue(val OptString) {
+	s.Value = val
+}
+
 // SetMessage sets the value of Message.
 func (s *TaskGetByIDResponseTaskErrorVariableErrorsItem) SetMessage(val OptString) {
 	s.Message = val
@@ -865,6 +878,8 @@ type TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem struct {
 	ID int64 `json:"id"`
 	// Название ограничения.
 	Name string `json:"name"`
+	// Выражение ограничения.
+	Expression string `json:"expression"`
 	// Сообщение ошибки.
 	Message OptString `json:"message"`
 }
@@ -877,6 +892,11 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) Get
 // GetName returns the value of Name.
 func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) GetName() string {
 	return s.Name
+}
+
+// GetExpression returns the value of Expression.
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) GetExpression() string {
+	return s.Expression
 }
 
 // GetMessage returns the value of Message.
@@ -892,6 +912,11 @@ func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) Set
 // SetName sets the value of Name.
 func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) SetName(val string) {
 	s.Name = val
+}
+
+// SetExpression sets the value of Expression.
+func (s *TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem) SetExpression(val string) {
+	s.Expression = val
 }
 
 // SetMessage sets the value of Message.

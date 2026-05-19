@@ -214,18 +214,21 @@ func TestService_Handle_Error(t *testing.T) {
 			want: task_domain.ProcessError{
 				VariableErrors: []task_domain.VariableError{
 					{
-						ID:   1,
-						Name: "var1",
+						ID:    1,
+						Name:  "var1",
+						Value: "100",
 						ConstraintErrors: []task_domain.ConstraintError{
 							{
-								ID:      1,
-								Name:    "expr1",
-								Message: task_domain.MessageConstraintCompile,
+								ID:         1,
+								Name:       "expr1",
+								Expression: "invalid",
+								Message:    task_domain.MessageConstraintCompile,
 							},
 							{
-								ID:      2,
-								Name:    "expr2",
-								Message: task_domain.MessageConstraintCompile,
+								ID:         2,
+								Name:       "expr2",
+								Expression: "invalid",
+								Message:    task_domain.MessageConstraintCompile,
 							},
 						},
 					},
@@ -268,18 +271,21 @@ func TestService_Handle_Error(t *testing.T) {
 			want: task_domain.ProcessError{
 				VariableErrors: []task_domain.VariableError{
 					{
-						ID:   1,
-						Name: "var1",
+						ID:    1,
+						Name:  "var1",
+						Value: "100",
 						ConstraintErrors: []task_domain.ConstraintError{
 							{
-								ID:      1,
-								Name:    "expr1",
-								Message: task_domain.MessageConstraintCheck,
+								ID:         1,
+								Name:       "expr1",
+								Expression: "var1 > 200",
+								Message:    task_domain.MessageConstraintCheck,
 							},
 							{
-								ID:      3,
-								Name:    "expr3",
-								Message: task_domain.MessageConstraintCheck,
+								ID:         3,
+								Name:       "expr3",
+								Expression: "var1 > 400",
+								Message:    task_domain.MessageConstraintCheck,
 							},
 						},
 					},

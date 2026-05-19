@@ -102,17 +102,14 @@ const filteredVariables = computed(() => {
   const indexed = variables.value.map((variable, index) => ({ variable, index }))
   if (query === "") return indexed
   return indexed.filter(
-    ({ variable }) =>
-      variable.title.toLowerCase().includes(query) || variable.name.toLowerCase().includes(query),
+    ({ variable }) => variable.title.toLowerCase().includes(query) || variable.name.toLowerCase().includes(query),
   )
 })
 
 const createOccupiedSlugs = computed(() => variables.value.map((v) => v.name))
 
 const updateOccupiedSlugs = computed(() =>
-  variables.value
-    .filter((_, index) => index !== variableUpdatingIndex.value)
-    .map((v) => v.name),
+  variables.value.filter((_, index) => index !== variableUpdatingIndex.value).map((v) => v.name),
 )
 
 function escapeRegExp(value: string): string {

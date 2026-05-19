@@ -2,6 +2,7 @@ package variable_process_service
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -154,7 +155,13 @@ func processVariable(variable domain.Variable, values map[string]any) (any, *tas
 
 	constraintErrors := processConstraints(variable.Name, value, variable.Constraints)
 	if len(constraintErrors) != 0 {
-		return nil, &task_domain.VariableError{ID: variable.ID, Name: variable.Name, Title: variable.Title, ConstraintErrors: constraintErrors}
+		return nil, &task_domain.VariableError{
+			ID:               variable.ID,
+			Name:             variable.Name,
+			Title:            variable.Title,
+			Value:            fmt.Sprintf("%v", value),
+			ConstraintErrors: constraintErrors,
+		}
 	}
 
 	return value, nil
@@ -200,21 +207,21 @@ func processConstraint(name string, value any, constraint domain.Constraint) *ta
 
 	program, err := expr.Compile(constraint.Expression, expr.Env(env), expr.AsBool())
 	if err != nil {
-		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintCompile}
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Expression: constraint.Expression, Message: task_domain.MessageConstraintCompile}
 	}
 
 	check, err := expr.Run(program, env)
 	if err != nil {
-		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintExec}
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Expression: constraint.Expression, Message: task_domain.MessageConstraintExec}
 	}
 
 	result, ok := check.(bool)
 	if !ok {
-		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintExec}
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Expression: constraint.Expression, Message: task_domain.MessageConstraintExec}
 	}
 
 	if !result {
-		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Message: task_domain.MessageConstraintCheck}
+		return &task_domain.ConstraintError{ID: constraint.ID, Name: constraint.Name, Expression: constraint.Expression, Message: task_domain.MessageConstraintCheck}
 	}
 
 	return nil

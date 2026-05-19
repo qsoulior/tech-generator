@@ -93,9 +93,8 @@ const filteredVariableErrors = computed<TaskGetVariableError[]>(() => {
     if (ve.name?.toLowerCase().includes(q)) return true
     if (ve.message?.toLowerCase().includes(q)) return true
     return (
-      ve.constraintErrors?.some(
-        (ce) => ce.name?.toLowerCase().includes(q) || ce.message?.toLowerCase().includes(q),
-      ) ?? false
+      ve.constraintErrors?.some((ce) => ce.name?.toLowerCase().includes(q) || ce.message?.toLowerCase().includes(q)) ??
+      false
     )
   })
 })

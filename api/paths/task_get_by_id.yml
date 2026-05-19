@@ -90,6 +90,9 @@ components:
                       title:
                         type: string
                         description: Человекочитаемое название переменной
+                      value:
+                        type: string
+                        description: Вычисленное значение переменной, на котором сработала проверка ограничений
                       message:
                         type: string
                         description: Сообщение ошибки
@@ -101,6 +104,7 @@ components:
                           required:
                             - id
                             - name
+                            - expression
                           properties:
                             id:
                               type: integer
@@ -109,6 +113,9 @@ components:
                             name:
                               type: string
                               description: Название ограничения
+                            expression:
+                              type: string
+                              description: Выражение ограничения
                             message:
                               type: string
                               description: Сообщение ошибки

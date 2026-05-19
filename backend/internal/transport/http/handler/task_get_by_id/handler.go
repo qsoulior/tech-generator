@@ -92,6 +92,10 @@ func convertVariableErrorsToResponse(variableErrors []task_domain.VariableError)
 			ConstraintErrors: convertConstraintErrorsToResponse(v.ConstraintErrors),
 		}
 
+		if v.Value != "" {
+			item.Value.SetTo(v.Value)
+		}
+
 		if v.Message != "" {
 			item.Message.SetTo(v.Message)
 		}
@@ -103,8 +107,9 @@ func convertVariableErrorsToResponse(variableErrors []task_domain.VariableError)
 func convertConstraintErrorsToResponse(constraintErrors []task_domain.ConstraintError) []api.TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem {
 	return lo.Map(constraintErrors, func(c task_domain.ConstraintError, _ int) api.TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem {
 		item := api.TaskGetByIDResponseTaskErrorVariableErrorsItemConstraintErrorsItem{
-			ID:   c.ID,
-			Name: c.Name,
+			ID:         c.ID,
+			Name:       c.Name,
+			Expression: c.Expression,
 		}
 
 		if c.Message != "" {

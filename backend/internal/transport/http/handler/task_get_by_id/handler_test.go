@@ -30,9 +30,10 @@ func TestHandler_TaskGetByID_Success(t *testing.T) {
 			{
 				ID:      11,
 				Name:    "v1",
+				Value:   "42",
 				Message: "bad",
 				ConstraintErrors: []task_domain.ConstraintError{
-					{ID: 21, Name: "c1", Message: "broken"},
+					{ID: 21, Name: "c1", Expression: "v1 > 100", Message: "broken"},
 				},
 			},
 		},
@@ -78,8 +79,12 @@ func TestHandler_TaskGetByID_Success(t *testing.T) {
 	require.Len(t, gotErr.VariableErrors, 1)
 	require.Equal(t, int64(11), gotErr.VariableErrors[0].ID)
 	require.Equal(t, "v1", gotErr.VariableErrors[0].Name)
+	gotValue, ok := gotErr.VariableErrors[0].Value.Get()
+	require.True(t, ok)
+	require.Equal(t, "42", gotValue)
 	require.Len(t, gotErr.VariableErrors[0].ConstraintErrors, 1)
 	require.Equal(t, int64(21), gotErr.VariableErrors[0].ConstraintErrors[0].ID)
+	require.Equal(t, "v1 > 100", gotErr.VariableErrors[0].ConstraintErrors[0].Expression)
 	require.Equal(t, []byte("payload"), resp.Result)
 }
 
