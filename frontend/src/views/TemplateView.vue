@@ -30,10 +30,12 @@ import IconPlayCircleOutlined from "@/components/icons/IconPlayCircleOutlined.vu
 import IconUnorderedListOutlined from "@/components/icons/IconUnorderedListOutlined.vue"
 import IconDownloadOutlined from "@/components/icons/IconDownloadOutlined.vue"
 import IconBookOutlined from "@/components/icons/IconBookOutlined.vue"
+import IconUserOutlined from "@/components/icons/IconUserOutlined.vue"
 import TaskCreateModal from "@/components/TaskCreateModal.vue"
 import TemplateUpdateModal from "@/components/TemplateUpdateModal.vue"
 import AppHeader from "@/components/AppHeader.vue"
 import ExprCheatsheet from "@/components/ExprCheatsheet.vue"
+import UsersManageModal from "@/components/UsersManageModal.vue"
 import { versionCreate, type VersionCreateVariable } from "@/api/version"
 import type { TemplateImportPayload, TemplateImportVariable } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
@@ -61,6 +63,7 @@ const showUpdateModal = ref(false)
 const showTaskCreateModal = ref(false)
 const showTemplateUpdateModal = ref(false)
 const showCheatsheet = ref(false)
+const showUsersModal = ref(false)
 
 const inputTypeToString = new Map([
   ["input", "Входная"],
@@ -340,6 +343,14 @@ const toolbars: ToolbarNames[] = [
           </n-text>
         </n-flex>
         <n-flex align="center" :size="8" :wrap="false">
+          <n-button size="small" secondary @click="showUsersModal = true">
+            <template #icon>
+              <n-icon>
+                <IconUserOutlined />
+              </n-icon>
+            </template>
+            Доступ
+          </n-button>
           <n-button size="small" secondary @click="showTemplateUpdateModal = true">
             <template #icon>
               <n-icon>
@@ -415,6 +426,7 @@ const toolbars: ToolbarNames[] = [
       </n-flex>
     </n-layout-header>
     <ExprCheatsheet v-model:show="showCheatsheet" />
+    <UsersManageModal v-model:show="showUsersModal" kind="template" :entity-id="templateID" />
     <TemplateUpdateModal
       v-model:show-modal="showTemplateUpdateModal"
       :template-id="templateID"

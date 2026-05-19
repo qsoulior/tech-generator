@@ -6,6 +6,10 @@ export type ProjectListItem = ProjectListResult["projects"][number]
 export type ProjectGetResult = components["schemas"]["ProjectGetByIDResponse"]
 export type ProjectCreateInput = components["schemas"]["ProjectCreateRequest"]
 export type ProjectUpdateInput = components["schemas"]["ProjectUpdateRequest"]
+export type ProjectUsersResult = components["schemas"]["ProjectUsersResponse"]
+export type ProjectUsersItem = ProjectUsersResult["users"][number]
+export type ProjectUserRole = ProjectUsersItem["role"]
+export type ProjectUpdateUsersInput = components["schemas"]["ProjectUpdateUsersRequest"]
 
 export interface ProjectListParams {
   page: number
@@ -38,4 +42,12 @@ export function projectUpdate(id: number, input: ProjectUpdateInput): Promise<vo
 
 export function projectDelete(id: number): Promise<void> {
   return apiDelete<void>(`/project/delete/${id}`)
+}
+
+export function projectUsers(projectID: number): Promise<ProjectUsersResult> {
+  return apiGet<ProjectUsersResult>(`/project/users/${projectID}`)
+}
+
+export function projectUpdateUsers(projectID: number, input: ProjectUpdateUsersInput): Promise<void> {
+  return apiPost<void>(`/project/update_users/${projectID}`, input)
 }

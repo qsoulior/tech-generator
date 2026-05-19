@@ -13,6 +13,10 @@ paths:
     $ref: "./paths/project_list.yml#/paths/projectList"
   /project/update/{projectID}:
     $ref: "./paths/project_update_by_id.yml#/paths/projectUpdateByID"
+  /project/update_users/{projectID}:
+    $ref: "./paths/project_update_users.yml#/paths/projectUpdateUsers"
+  /project/users/{projectID}:
+    $ref: "./paths/project_users.yml#/paths/projectUsers"
   /task/create:
     $ref: "./paths/task_create.yml#/paths/taskCreate"
   /task/get/{taskID}:
@@ -37,10 +41,16 @@ paths:
     $ref: "./paths/template_list.yml#/paths/templateList"
   /template/update/{templateID}:
     $ref: "./paths/template_update_by_id.yml#/paths/templateUpdateByID"
+  /template/update_users/{templateID}:
+    $ref: "./paths/template_update_users.yml#/paths/templateUpdateUsers"
+  /template/users/{templateID}:
+    $ref: "./paths/template_users.yml#/paths/templateUsers"
   /user/create:
     $ref: "./paths/user_create.yml#/paths/userCreate"
   /user/get:
     $ref: "./paths/user_get_by_id.yml#/paths/userGetByID"
+  /user/list:
+    $ref: "./paths/user_list.yml#/paths/userList"
   /user/token/create:
     $ref: "./paths/user_token_create.yml#/paths/userTokenCreate"
   /user/token/delete:

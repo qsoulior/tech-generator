@@ -175,35 +175,125 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 
-				case 'u': // Prefix: "update/"
+				case 'u': // Prefix: "u"
 
-					if l := len("update/"); len(elem) >= l && elem[0:l] == "update/" {
+					if l := len("u"); len(elem) >= l && elem[0:l] == "u" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
-					// Param: "projectID"
-					// Leaf parameter, slashes are prohibited
-					idx := strings.IndexByte(elem, '/')
-					if idx >= 0 {
+					if len(elem) == 0 {
 						break
 					}
-					args[0] = elem
-					elem = ""
+					switch elem[0] {
+					case 'p': // Prefix: "pdate"
 
-					if len(elem) == 0 {
-						// Leaf node.
-						switch r.Method {
-						case "POST":
-							s.handleProjectUpdateByIDRequest([1]string{
-								args[0],
-							}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "POST")
+						if l := len("pdate"); len(elem) >= l && elem[0:l] == "pdate" {
+							elem = elem[l:]
+						} else {
+							break
 						}
 
-						return
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "projectID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleProjectUpdateByIDRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						case '_': // Prefix: "_users/"
+
+							if l := len("_users/"); len(elem) >= l && elem[0:l] == "_users/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "projectID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleProjectUpdateUsersRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						}
+
+					case 's': // Prefix: "sers/"
+
+						if l := len("sers/"); len(elem) >= l && elem[0:l] == "sers/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "projectID"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleProjectUsersRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET")
+							}
+
+							return
+						}
+
 					}
 
 				}
@@ -550,35 +640,125 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							return
 						}
 
-					case 'u': // Prefix: "update/"
+					case 'u': // Prefix: "u"
 
-						if l := len("update/"); len(elem) >= l && elem[0:l] == "update/" {
+						if l := len("u"); len(elem) >= l && elem[0:l] == "u" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "templateID"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
+						if len(elem) == 0 {
 							break
 						}
-						args[0] = elem
-						elem = ""
+						switch elem[0] {
+						case 'p': // Prefix: "pdate"
 
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "POST":
-								s.handleTemplateUpdateByIDRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "POST")
+							if l := len("pdate"); len(elem) >= l && elem[0:l] == "pdate" {
+								elem = elem[l:]
+							} else {
+								break
 							}
 
-							return
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "templateID"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleTemplateUpdateByIDRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+							case '_': // Prefix: "_users/"
+
+								if l := len("_users/"); len(elem) >= l && elem[0:l] == "_users/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "templateID"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleTemplateUpdateUsersRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+							}
+
+						case 's': // Prefix: "sers/"
+
+							if l := len("sers/"); len(elem) >= l && elem[0:l] == "sers/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "templateID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleTemplateUsersRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
 						}
 
 					}
@@ -630,6 +810,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						switch r.Method {
 						case "GET":
 							s.handleUserGetByIDRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
+				case 'l': // Prefix: "list"
+
+					if l := len("list"); len(elem) >= l && elem[0:l] == "list" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleUserListRequest([0]string{}, elemIsEscaped, w, r)
 						default:
 							s.notAllowed(w, r, "GET")
 						}
@@ -1009,38 +1209,134 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 					}
 
-				case 'u': // Prefix: "update/"
+				case 'u': // Prefix: "u"
 
-					if l := len("update/"); len(elem) >= l && elem[0:l] == "update/" {
+					if l := len("u"); len(elem) >= l && elem[0:l] == "u" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
-					// Param: "projectID"
-					// Leaf parameter, slashes are prohibited
-					idx := strings.IndexByte(elem, '/')
-					if idx >= 0 {
+					if len(elem) == 0 {
 						break
 					}
-					args[0] = elem
-					elem = ""
+					switch elem[0] {
+					case 'p': // Prefix: "pdate"
 
-					if len(elem) == 0 {
-						// Leaf node.
-						switch method {
-						case "POST":
-							r.name = ProjectUpdateByIDOperation
-							r.summary = "Обновить проект"
-							r.operationID = "projectUpdateByID"
-							r.operationGroup = "ProjectUpdateByID"
-							r.pathPattern = "/project/update/{projectID}"
-							r.args = args
-							r.count = 1
-							return r, true
-						default:
-							return
+						if l := len("pdate"); len(elem) >= l && elem[0:l] == "pdate" {
+							elem = elem[l:]
+						} else {
+							break
 						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "projectID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = ProjectUpdateByIDOperation
+									r.summary = "Обновить проект"
+									r.operationID = "projectUpdateByID"
+									r.operationGroup = "ProjectUpdateByID"
+									r.pathPattern = "/project/update/{projectID}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case '_': // Prefix: "_users/"
+
+							if l := len("_users/"); len(elem) >= l && elem[0:l] == "_users/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "projectID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = ProjectUpdateUsersOperation
+									r.summary = "Обновить список пользователей проекта"
+									r.operationID = "projectUpdateUsers"
+									r.operationGroup = "ProjectUpdateUsers"
+									r.pathPattern = "/project/update_users/{projectID}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					case 's': // Prefix: "sers/"
+
+						if l := len("sers/"); len(elem) >= l && elem[0:l] == "sers/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "projectID"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = ProjectUsersOperation
+								r.summary = "Получить список пользователей с доступом к проекту"
+								r.operationID = "projectUsers"
+								r.operationGroup = "ProjectUsers"
+								r.pathPattern = "/project/users/{projectID}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
 					}
 
 				}
@@ -1432,38 +1728,134 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							}
 						}
 
-					case 'u': // Prefix: "update/"
+					case 'u': // Prefix: "u"
 
-						if l := len("update/"); len(elem) >= l && elem[0:l] == "update/" {
+						if l := len("u"); len(elem) >= l && elem[0:l] == "u" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "templateID"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
+						if len(elem) == 0 {
 							break
 						}
-						args[0] = elem
-						elem = ""
+						switch elem[0] {
+						case 'p': // Prefix: "pdate"
 
-						if len(elem) == 0 {
-							// Leaf node.
-							switch method {
-							case "POST":
-								r.name = TemplateUpdateByIDOperation
-								r.summary = "Обновить шаблон"
-								r.operationID = "templateUpdateByID"
-								r.operationGroup = "TemplateUpdateByID"
-								r.pathPattern = "/template/update/{templateID}"
-								r.args = args
-								r.count = 1
-								return r, true
-							default:
-								return
+							if l := len("pdate"); len(elem) >= l && elem[0:l] == "pdate" {
+								elem = elem[l:]
+							} else {
+								break
 							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "templateID"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = TemplateUpdateByIDOperation
+										r.summary = "Обновить шаблон"
+										r.operationID = "templateUpdateByID"
+										r.operationGroup = "TemplateUpdateByID"
+										r.pathPattern = "/template/update/{templateID}"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case '_': // Prefix: "_users/"
+
+								if l := len("_users/"); len(elem) >= l && elem[0:l] == "_users/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "templateID"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = TemplateUpdateUsersOperation
+										r.summary = "Обновить список пользователей шаблона"
+										r.operationID = "templateUpdateUsers"
+										r.operationGroup = "TemplateUpdateUsers"
+										r.pathPattern = "/template/update_users/{templateID}"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							}
+
+						case 's': // Prefix: "sers/"
+
+							if l := len("sers/"); len(elem) >= l && elem[0:l] == "sers/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "templateID"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = TemplateUsersOperation
+									r.summary = "Получить список пользователей с доступом к шаблону"
+									r.operationID = "templateUsers"
+									r.operationGroup = "TemplateUsers"
+									r.pathPattern = "/template/users/{templateID}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
 						}
 
 					}
@@ -1524,6 +1916,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.operationID = "userGetByID"
 							r.operationGroup = "UserGetByID"
 							r.pathPattern = "/user/get"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+				case 'l': // Prefix: "list"
+
+					if l := len("list"); len(elem) >= l && elem[0:l] == "list" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = UserListOperation
+							r.summary = "Получить список пользователей"
+							r.operationID = "userList"
+							r.operationGroup = "UserList"
+							r.pathPattern = "/user/list"
 							r.args = args
 							r.count = 0
 							return r, true

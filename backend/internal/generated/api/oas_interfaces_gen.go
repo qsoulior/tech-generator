@@ -21,6 +21,14 @@ type ProjectUpdateByIDRes interface {
 	projectUpdateByIDRes()
 }
 
+type ProjectUpdateUsersRes interface {
+	projectUpdateUsersRes()
+}
+
+type ProjectUsersRes interface {
+	projectUsersRes()
+}
+
 type TaskCreateRes interface {
 	taskCreateRes()
 }
@@ -69,12 +77,24 @@ type TemplateUpdateByIDRes interface {
 	templateUpdateByIDRes()
 }
 
+type TemplateUpdateUsersRes interface {
+	templateUpdateUsersRes()
+}
+
+type TemplateUsersRes interface {
+	templateUsersRes()
+}
+
 type UserCreateRes interface {
 	userCreateRes()
 }
 
 type UserGetByIDRes interface {
 	userGetByIDRes()
+}
+
+type UserListRes interface {
+	userListRes()
 }
 
 type UserTokenCreateRes interface {

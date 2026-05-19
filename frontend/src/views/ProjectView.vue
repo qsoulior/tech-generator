@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NText } from "naive-ui"
+import { NLayout, NLayoutContent, NFlex, NPagination, NButton, NText, NIcon } from "naive-ui"
 import { onMounted, ref } from "vue"
 import TemplateListItem from "@/components/TemplateListItem.vue"
 import TemplateListSearch from "@/components/TemplateListSearch.vue"
 import AppHeader from "@/components/AppHeader.vue"
 import TemplateCreateModal from "@/components/TemplateCreateModal.vue"
+import UsersManageModal from "@/components/UsersManageModal.vue"
+import IconAddOutlined from "@/components/icons/IconAddOutlined.vue"
+import IconUserOutlined from "@/components/icons/IconUserOutlined.vue"
 import { templateList as fetchTemplates } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
 import { usePagination } from "@/composables/usePagination"
@@ -21,6 +24,7 @@ const totalTemplates = ref(0)
 const templateName = ref<string>("")
 
 const showModal = ref(false)
+const showUsersModal = ref(false)
 
 interface Template {
   id: number
@@ -92,9 +96,29 @@ function onUpdateTemplate(id: number, name: string) {
       <n-layout-content content-class="layout-content" embedded style="height: 100%">
         <n-flex vertical align="center" style="max-width: 50rem; margin: auto">
           <TemplateListSearch v-model:value="templateName" @submit="onSubmitSearch" />
-          <n-button secondary style="width: 100%" @click="showModal = true">Добавить шаблон</n-button>
           <TemplateCreateModal :project-id="projectID" v-model:show-modal="showModal" @submit="onSubmitModal" />
-          <n-text depth="3" style="width: 100%">Всего: {{ totalTemplates }}</n-text>
+          <UsersManageModal v-model:show="showUsersModal" kind="project" :entity-id="projectID" />
+          <n-flex align="center" justify="space-between" :wrap="false" style="width: 100%">
+            <n-text depth="3">Всего: {{ totalTemplates }}</n-text>
+            <n-flex :size="8" :wrap="false">
+              <n-button secondary @click="showModal = true">
+                <template #icon>
+                  <n-icon>
+                    <IconAddOutlined />
+                  </n-icon>
+                </template>
+                Шаблон
+              </n-button>
+              <n-button secondary @click="showUsersModal = true">
+                <template #icon>
+                  <n-icon>
+                    <IconUserOutlined />
+                  </n-icon>
+                </template>
+                Доступ
+              </n-button>
+            </n-flex>
+          </n-flex>
           <TemplateListItem
             v-for="template in templates"
             :project-id="projectID"

@@ -6,6 +6,8 @@ import (
 	project_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_get_by_id"
 	project_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_list"
 	project_update_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_update"
+	project_update_users_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_update_users"
+	project_users_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_users"
 	task_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_create"
 	task_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_get_by_id"
 	task_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_list"
@@ -18,7 +20,10 @@ import (
 	template_import_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_import"
 	template_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_list"
 	template_update_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_update"
+	template_update_users_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_update_users"
+	template_users_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_users"
 	user_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_create"
+	user_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_list"
 	user_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_get_by_id"
 	user_token_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_token_create"
 	user_token_delete_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_token_delete"
@@ -33,6 +38,8 @@ type Handler struct {
 	*ProjectGetByIDHandler
 	*ProjectListHandler
 	*ProjectUpdateHandler
+	*ProjectUpdateUsersHandler
+	*ProjectUsersHandler
 	*TaskCreateHandler
 	*TaskGetByIDHandler
 	*TaskListHandler
@@ -45,8 +52,11 @@ type Handler struct {
 	*TemplateImportHandler
 	*TemplateListHandler
 	*TemplateUpdateHandler
+	*TemplateUpdateUsersHandler
+	*TemplateUsersHandler
 	*UserCreateHandler
 	*UserGetByIDHandler
+	*UserListHandler
 	*UserTokenCreateHandler
 	*UserTokenDeleteHandler
 	*VersionCreateHandler
@@ -60,6 +70,8 @@ type (
 	ProjectGetByIDHandler            = project_get_by_id_handler.Handler
 	ProjectListHandler               = project_list_handler.Handler
 	ProjectUpdateHandler             = project_update_handler.Handler
+	ProjectUpdateUsersHandler        = project_update_users_handler.Handler
+	ProjectUsersHandler              = project_users_handler.Handler
 	TaskCreateHandler                = task_create_handler.Handler
 	TaskGetByIDHandler               = task_get_by_id_handler.Handler
 	TaskListHandler                  = task_list_handler.Handler
@@ -72,8 +84,11 @@ type (
 	TemplateImportHandler            = template_import_handler.Handler
 	TemplateListHandler              = template_list_handler.Handler
 	TemplateUpdateHandler            = template_update_handler.Handler
+	TemplateUpdateUsersHandler       = template_update_users_handler.Handler
+	TemplateUsersHandler             = template_users_handler.Handler
 	UserCreateHandler                = user_create_handler.Handler
 	UserGetByIDHandler               = user_get_by_id_handler.Handler
+	UserListHandler                  = user_list_handler.Handler
 	UserTokenCreateHandler           = user_token_create_handler.Handler
 	UserTokenDeleteHandler           = user_token_delete_handler.Handler
 	VersionCreateHandler             = version_create_handler.Handler

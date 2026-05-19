@@ -27,6 +27,10 @@ func New(templateRepo templateRepository, templateUserRepo templateUserRepositor
 }
 
 func (u *Usecase) Handle(ctx context.Context, in domain.TemplateUserUpdateIn) error {
+	if err := in.Validate(); err != nil {
+		return err
+	}
+
 	// get template
 	template, err := u.templateRepo.GetByID(ctx, in.TemplateID)
 	if err != nil {

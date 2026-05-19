@@ -29,6 +29,8 @@ func (*Error) projectDeleteByIDRes()         {}
 func (*Error) projectGetByIDRes()            {}
 func (*Error) projectListRes()               {}
 func (*Error) projectUpdateByIDRes()         {}
+func (*Error) projectUpdateUsersRes()        {}
+func (*Error) projectUsersRes()              {}
 func (*Error) taskCreateRes()                {}
 func (*Error) taskGetByIDRes()               {}
 func (*Error) taskListRes()                  {}
@@ -41,8 +43,11 @@ func (*Error) templateGetMetaByIDRes()       {}
 func (*Error) templateImportRes()            {}
 func (*Error) templateListRes()              {}
 func (*Error) templateUpdateByIDRes()        {}
+func (*Error) templateUpdateUsersRes()       {}
+func (*Error) templateUsersRes()             {}
 func (*Error) userCreateRes()                {}
 func (*Error) userGetByIDRes()               {}
+func (*Error) userListRes()                  {}
 func (*Error) userTokenCreateRes()           {}
 func (*Error) versionCreateFromRes()         {}
 func (*Error) versionCreateRes()             {}
@@ -619,6 +624,223 @@ func (s *ProjectUpdateRequest) GetName() string {
 // SetName sets the value of Name.
 func (s *ProjectUpdateRequest) SetName(val string) {
 	s.Name = val
+}
+
+// ProjectUpdateUsersNoContent is response for ProjectUpdateUsers operation.
+type ProjectUpdateUsersNoContent struct{}
+
+func (*ProjectUpdateUsersNoContent) projectUpdateUsersRes() {}
+
+// Ref: #/components/schemas/ProjectUpdateUsersRequest
+type ProjectUpdateUsersRequest struct {
+	// Список пользователей проекта.
+	Users []ProjectUpdateUsersRequestUsersItem `json:"users"`
+}
+
+// GetUsers returns the value of Users.
+func (s *ProjectUpdateUsersRequest) GetUsers() []ProjectUpdateUsersRequestUsersItem {
+	return s.Users
+}
+
+// SetUsers sets the value of Users.
+func (s *ProjectUpdateUsersRequest) SetUsers(val []ProjectUpdateUsersRequestUsersItem) {
+	s.Users = val
+}
+
+// Пользователь проекта.
+type ProjectUpdateUsersRequestUsersItem struct {
+	// ID пользователя.
+	ID int64 `json:"id"`
+	// Роль пользователя в проекте.
+	Role ProjectUpdateUsersRequestUsersItemRole `json:"role"`
+}
+
+// GetID returns the value of ID.
+func (s *ProjectUpdateUsersRequestUsersItem) GetID() int64 {
+	return s.ID
+}
+
+// GetRole returns the value of Role.
+func (s *ProjectUpdateUsersRequestUsersItem) GetRole() ProjectUpdateUsersRequestUsersItemRole {
+	return s.Role
+}
+
+// SetID sets the value of ID.
+func (s *ProjectUpdateUsersRequestUsersItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetRole sets the value of Role.
+func (s *ProjectUpdateUsersRequestUsersItem) SetRole(val ProjectUpdateUsersRequestUsersItemRole) {
+	s.Role = val
+}
+
+// Роль пользователя в проекте.
+type ProjectUpdateUsersRequestUsersItemRole string
+
+const (
+	ProjectUpdateUsersRequestUsersItemRoleRead     ProjectUpdateUsersRequestUsersItemRole = "read"
+	ProjectUpdateUsersRequestUsersItemRoleWrite    ProjectUpdateUsersRequestUsersItemRole = "write"
+	ProjectUpdateUsersRequestUsersItemRoleMaintain ProjectUpdateUsersRequestUsersItemRole = "maintain"
+)
+
+// AllValues returns all ProjectUpdateUsersRequestUsersItemRole values.
+func (ProjectUpdateUsersRequestUsersItemRole) AllValues() []ProjectUpdateUsersRequestUsersItemRole {
+	return []ProjectUpdateUsersRequestUsersItemRole{
+		ProjectUpdateUsersRequestUsersItemRoleRead,
+		ProjectUpdateUsersRequestUsersItemRoleWrite,
+		ProjectUpdateUsersRequestUsersItemRoleMaintain,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ProjectUpdateUsersRequestUsersItemRole) MarshalText() ([]byte, error) {
+	switch s {
+	case ProjectUpdateUsersRequestUsersItemRoleRead:
+		return []byte(s), nil
+	case ProjectUpdateUsersRequestUsersItemRoleWrite:
+		return []byte(s), nil
+	case ProjectUpdateUsersRequestUsersItemRoleMaintain:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ProjectUpdateUsersRequestUsersItemRole) UnmarshalText(data []byte) error {
+	switch ProjectUpdateUsersRequestUsersItemRole(data) {
+	case ProjectUpdateUsersRequestUsersItemRoleRead:
+		*s = ProjectUpdateUsersRequestUsersItemRoleRead
+		return nil
+	case ProjectUpdateUsersRequestUsersItemRoleWrite:
+		*s = ProjectUpdateUsersRequestUsersItemRoleWrite
+		return nil
+	case ProjectUpdateUsersRequestUsersItemRoleMaintain:
+		*s = ProjectUpdateUsersRequestUsersItemRoleMaintain
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/ProjectUsersResponse
+type ProjectUsersResponse struct {
+	// Список пользователей проекта.
+	Users []ProjectUsersResponseUsersItem `json:"users"`
+}
+
+// GetUsers returns the value of Users.
+func (s *ProjectUsersResponse) GetUsers() []ProjectUsersResponseUsersItem {
+	return s.Users
+}
+
+// SetUsers sets the value of Users.
+func (s *ProjectUsersResponse) SetUsers(val []ProjectUsersResponseUsersItem) {
+	s.Users = val
+}
+
+func (*ProjectUsersResponse) projectUsersRes() {}
+
+// Пользователь проекта.
+type ProjectUsersResponseUsersItem struct {
+	// ID пользователя.
+	ID int64 `json:"id"`
+	// Имя пользователя.
+	Name string `json:"name"`
+	// Электронный адрес пользователя.
+	Email string `json:"email"`
+	// Роль пользователя в проекте.
+	Role ProjectUsersResponseUsersItemRole `json:"role"`
+}
+
+// GetID returns the value of ID.
+func (s *ProjectUsersResponseUsersItem) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *ProjectUsersResponseUsersItem) GetName() string {
+	return s.Name
+}
+
+// GetEmail returns the value of Email.
+func (s *ProjectUsersResponseUsersItem) GetEmail() string {
+	return s.Email
+}
+
+// GetRole returns the value of Role.
+func (s *ProjectUsersResponseUsersItem) GetRole() ProjectUsersResponseUsersItemRole {
+	return s.Role
+}
+
+// SetID sets the value of ID.
+func (s *ProjectUsersResponseUsersItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *ProjectUsersResponseUsersItem) SetName(val string) {
+	s.Name = val
+}
+
+// SetEmail sets the value of Email.
+func (s *ProjectUsersResponseUsersItem) SetEmail(val string) {
+	s.Email = val
+}
+
+// SetRole sets the value of Role.
+func (s *ProjectUsersResponseUsersItem) SetRole(val ProjectUsersResponseUsersItemRole) {
+	s.Role = val
+}
+
+// Роль пользователя в проекте.
+type ProjectUsersResponseUsersItemRole string
+
+const (
+	ProjectUsersResponseUsersItemRoleRead     ProjectUsersResponseUsersItemRole = "read"
+	ProjectUsersResponseUsersItemRoleWrite    ProjectUsersResponseUsersItemRole = "write"
+	ProjectUsersResponseUsersItemRoleMaintain ProjectUsersResponseUsersItemRole = "maintain"
+)
+
+// AllValues returns all ProjectUsersResponseUsersItemRole values.
+func (ProjectUsersResponseUsersItemRole) AllValues() []ProjectUsersResponseUsersItemRole {
+	return []ProjectUsersResponseUsersItemRole{
+		ProjectUsersResponseUsersItemRoleRead,
+		ProjectUsersResponseUsersItemRoleWrite,
+		ProjectUsersResponseUsersItemRoleMaintain,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ProjectUsersResponseUsersItemRole) MarshalText() ([]byte, error) {
+	switch s {
+	case ProjectUsersResponseUsersItemRoleRead:
+		return []byte(s), nil
+	case ProjectUsersResponseUsersItemRoleWrite:
+		return []byte(s), nil
+	case ProjectUsersResponseUsersItemRoleMaintain:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ProjectUsersResponseUsersItemRole) UnmarshalText(data []byte) error {
+	switch ProjectUsersResponseUsersItemRole(data) {
+	case ProjectUsersResponseUsersItemRoleRead:
+		*s = ProjectUsersResponseUsersItemRoleRead
+		return nil
+	case ProjectUsersResponseUsersItemRoleWrite:
+		*s = ProjectUsersResponseUsersItemRoleWrite
+		return nil
+	case ProjectUsersResponseUsersItemRoleMaintain:
+		*s = ProjectUsersResponseUsersItemRoleMaintain
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 type Sorting struct {
@@ -2151,6 +2373,209 @@ func (s *TemplateUpdateRequest) SetName(val string) {
 	s.Name = val
 }
 
+// TemplateUpdateUsersNoContent is response for TemplateUpdateUsers operation.
+type TemplateUpdateUsersNoContent struct{}
+
+func (*TemplateUpdateUsersNoContent) templateUpdateUsersRes() {}
+
+// Ref: #/components/schemas/TemplateUpdateUsersRequest
+type TemplateUpdateUsersRequest struct {
+	// Список пользователей шаблона.
+	Users []TemplateUpdateUsersRequestUsersItem `json:"users"`
+}
+
+// GetUsers returns the value of Users.
+func (s *TemplateUpdateUsersRequest) GetUsers() []TemplateUpdateUsersRequestUsersItem {
+	return s.Users
+}
+
+// SetUsers sets the value of Users.
+func (s *TemplateUpdateUsersRequest) SetUsers(val []TemplateUpdateUsersRequestUsersItem) {
+	s.Users = val
+}
+
+// Пользователь шаблона.
+type TemplateUpdateUsersRequestUsersItem struct {
+	// ID пользователя.
+	ID int64 `json:"id"`
+	// Роль пользователя в шаблоне.
+	Role TemplateUpdateUsersRequestUsersItemRole `json:"role"`
+}
+
+// GetID returns the value of ID.
+func (s *TemplateUpdateUsersRequestUsersItem) GetID() int64 {
+	return s.ID
+}
+
+// GetRole returns the value of Role.
+func (s *TemplateUpdateUsersRequestUsersItem) GetRole() TemplateUpdateUsersRequestUsersItemRole {
+	return s.Role
+}
+
+// SetID sets the value of ID.
+func (s *TemplateUpdateUsersRequestUsersItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetRole sets the value of Role.
+func (s *TemplateUpdateUsersRequestUsersItem) SetRole(val TemplateUpdateUsersRequestUsersItemRole) {
+	s.Role = val
+}
+
+// Роль пользователя в шаблоне.
+type TemplateUpdateUsersRequestUsersItemRole string
+
+const (
+	TemplateUpdateUsersRequestUsersItemRoleRead  TemplateUpdateUsersRequestUsersItemRole = "read"
+	TemplateUpdateUsersRequestUsersItemRoleWrite TemplateUpdateUsersRequestUsersItemRole = "write"
+)
+
+// AllValues returns all TemplateUpdateUsersRequestUsersItemRole values.
+func (TemplateUpdateUsersRequestUsersItemRole) AllValues() []TemplateUpdateUsersRequestUsersItemRole {
+	return []TemplateUpdateUsersRequestUsersItemRole{
+		TemplateUpdateUsersRequestUsersItemRoleRead,
+		TemplateUpdateUsersRequestUsersItemRoleWrite,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s TemplateUpdateUsersRequestUsersItemRole) MarshalText() ([]byte, error) {
+	switch s {
+	case TemplateUpdateUsersRequestUsersItemRoleRead:
+		return []byte(s), nil
+	case TemplateUpdateUsersRequestUsersItemRoleWrite:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *TemplateUpdateUsersRequestUsersItemRole) UnmarshalText(data []byte) error {
+	switch TemplateUpdateUsersRequestUsersItemRole(data) {
+	case TemplateUpdateUsersRequestUsersItemRoleRead:
+		*s = TemplateUpdateUsersRequestUsersItemRoleRead
+		return nil
+	case TemplateUpdateUsersRequestUsersItemRoleWrite:
+		*s = TemplateUpdateUsersRequestUsersItemRoleWrite
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/TemplateUsersResponse
+type TemplateUsersResponse struct {
+	// Список пользователей шаблона.
+	Users []TemplateUsersResponseUsersItem `json:"users"`
+}
+
+// GetUsers returns the value of Users.
+func (s *TemplateUsersResponse) GetUsers() []TemplateUsersResponseUsersItem {
+	return s.Users
+}
+
+// SetUsers sets the value of Users.
+func (s *TemplateUsersResponse) SetUsers(val []TemplateUsersResponseUsersItem) {
+	s.Users = val
+}
+
+func (*TemplateUsersResponse) templateUsersRes() {}
+
+// Пользователь шаблона.
+type TemplateUsersResponseUsersItem struct {
+	// ID пользователя.
+	ID int64 `json:"id"`
+	// Имя пользователя.
+	Name string `json:"name"`
+	// Электронный адрес пользователя.
+	Email string `json:"email"`
+	// Роль пользователя в шаблоне.
+	Role TemplateUsersResponseUsersItemRole `json:"role"`
+}
+
+// GetID returns the value of ID.
+func (s *TemplateUsersResponseUsersItem) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *TemplateUsersResponseUsersItem) GetName() string {
+	return s.Name
+}
+
+// GetEmail returns the value of Email.
+func (s *TemplateUsersResponseUsersItem) GetEmail() string {
+	return s.Email
+}
+
+// GetRole returns the value of Role.
+func (s *TemplateUsersResponseUsersItem) GetRole() TemplateUsersResponseUsersItemRole {
+	return s.Role
+}
+
+// SetID sets the value of ID.
+func (s *TemplateUsersResponseUsersItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *TemplateUsersResponseUsersItem) SetName(val string) {
+	s.Name = val
+}
+
+// SetEmail sets the value of Email.
+func (s *TemplateUsersResponseUsersItem) SetEmail(val string) {
+	s.Email = val
+}
+
+// SetRole sets the value of Role.
+func (s *TemplateUsersResponseUsersItem) SetRole(val TemplateUsersResponseUsersItemRole) {
+	s.Role = val
+}
+
+// Роль пользователя в шаблоне.
+type TemplateUsersResponseUsersItemRole string
+
+const (
+	TemplateUsersResponseUsersItemRoleRead  TemplateUsersResponseUsersItemRole = "read"
+	TemplateUsersResponseUsersItemRoleWrite TemplateUsersResponseUsersItemRole = "write"
+)
+
+// AllValues returns all TemplateUsersResponseUsersItemRole values.
+func (TemplateUsersResponseUsersItemRole) AllValues() []TemplateUsersResponseUsersItemRole {
+	return []TemplateUsersResponseUsersItemRole{
+		TemplateUsersResponseUsersItemRoleRead,
+		TemplateUsersResponseUsersItemRoleWrite,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s TemplateUsersResponseUsersItemRole) MarshalText() ([]byte, error) {
+	switch s {
+	case TemplateUsersResponseUsersItemRoleRead:
+		return []byte(s), nil
+	case TemplateUsersResponseUsersItemRoleWrite:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *TemplateUsersResponseUsersItemRole) UnmarshalText(data []byte) error {
+	switch TemplateUsersResponseUsersItemRole(data) {
+	case TemplateUsersResponseUsersItemRoleRead:
+		*s = TemplateUsersResponseUsersItemRoleRead
+		return nil
+	case TemplateUsersResponseUsersItemRoleWrite:
+		*s = TemplateUsersResponseUsersItemRoleWrite
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // UserCreateCreated is response for UserCreate operation.
 type UserCreateCreated struct{}
 
@@ -2249,6 +2674,88 @@ func (s *UserGetByIDResponse) SetCreatedAt(val time.Time) {
 }
 
 func (*UserGetByIDResponse) userGetByIDRes() {}
+
+// Ref: #/components/schemas/UserListResponse
+type UserListResponse struct {
+	// Список пользователей.
+	Users []UserListResponseUsersItem `json:"users"`
+	// Общее количество пользователей.
+	TotalUsers int64 `json:"totalUsers"`
+	// Общее количество страниц.
+	TotalPages int64 `json:"totalPages"`
+}
+
+// GetUsers returns the value of Users.
+func (s *UserListResponse) GetUsers() []UserListResponseUsersItem {
+	return s.Users
+}
+
+// GetTotalUsers returns the value of TotalUsers.
+func (s *UserListResponse) GetTotalUsers() int64 {
+	return s.TotalUsers
+}
+
+// GetTotalPages returns the value of TotalPages.
+func (s *UserListResponse) GetTotalPages() int64 {
+	return s.TotalPages
+}
+
+// SetUsers sets the value of Users.
+func (s *UserListResponse) SetUsers(val []UserListResponseUsersItem) {
+	s.Users = val
+}
+
+// SetTotalUsers sets the value of TotalUsers.
+func (s *UserListResponse) SetTotalUsers(val int64) {
+	s.TotalUsers = val
+}
+
+// SetTotalPages sets the value of TotalPages.
+func (s *UserListResponse) SetTotalPages(val int64) {
+	s.TotalPages = val
+}
+
+func (*UserListResponse) userListRes() {}
+
+// Пользователь.
+type UserListResponseUsersItem struct {
+	// ID пользователя.
+	ID int64 `json:"id"`
+	// Имя пользователя.
+	Name string `json:"name"`
+	// Электронный адрес пользователя.
+	Email string `json:"email"`
+}
+
+// GetID returns the value of ID.
+func (s *UserListResponseUsersItem) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *UserListResponseUsersItem) GetName() string {
+	return s.Name
+}
+
+// GetEmail returns the value of Email.
+func (s *UserListResponseUsersItem) GetEmail() string {
+	return s.Email
+}
+
+// SetID sets the value of ID.
+func (s *UserListResponseUsersItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *UserListResponseUsersItem) SetName(val string) {
+	s.Name = val
+}
+
+// SetEmail sets the value of Email.
+func (s *UserListResponseUsersItem) SetEmail(val string) {
+	s.Email = val
+}
 
 // UserTokenCreateCreated is response for UserTokenCreate operation.
 type UserTokenCreateCreated struct {

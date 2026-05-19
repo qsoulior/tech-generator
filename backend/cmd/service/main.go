@@ -23,6 +23,8 @@ import (
 	project_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_get_by_id"
 	project_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_list"
 	project_update_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_update"
+	project_update_users_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_update_users"
+	project_users_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/project_users"
 	task_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_create"
 	task_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_get_by_id"
 	task_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/task_list"
@@ -35,7 +37,10 @@ import (
 	template_import_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_import"
 	template_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_list"
 	template_update_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_update"
+	template_update_users_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_update_users"
+	template_users_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/template_users"
 	user_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_create"
+	user_list_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_list"
 	user_get_by_id_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_get_by_id"
 	user_token_create_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_token_create"
 	user_token_delete_handler "github.com/qsoulior/tech-generator/backend/internal/transport/http/handler/user_token_delete"
@@ -48,6 +53,8 @@ import (
 	project_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_get_by_id"
 	project_list_by_user_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_list_by_user"
 	project_update_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_update"
+	project_user_list_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_user_list"
+	project_user_update_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/project_user_update"
 	task_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_create"
 	task_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_get_by_id"
 	task_list_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/task_list"
@@ -60,7 +67,10 @@ import (
 	template_list_by_user_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_list_by_user"
 	template_list_default_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_list_default"
 	template_update_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_update"
+	template_user_list_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_user_list"
+	template_user_update_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/template_user_update"
 	user_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_create"
+	user_list_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_list"
 	user_get_by_id_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_get_by_id"
 	user_token_create_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_token_create"
 	user_token_parse_usecase "github.com/qsoulior/tech-generator/backend/internal/usecase/user_token_parse"
@@ -155,6 +165,8 @@ func run() (code int) {
 	projectGetByIDUsecase := project_get_by_id_usecase.New(db)
 	projectListUsecase := project_list_by_user_usecase.New(db)
 	projectUpdateUsecase := project_update_usecase.New(db)
+	projectUserListUsecase := project_user_list_usecase.New(db)
+	projectUserUpdateUsecase := project_user_update_usecase.New(db)
 	taskCreateUsecase := task_create_usecase.New(db, ch)
 	taskGetByIDUsecase := task_get_by_id_usecase.New(db)
 	taskListUsecase := task_list_usecase.New(db)
@@ -167,8 +179,11 @@ func run() (code int) {
 	templateImportUsecase := template_import_usecase.New(db)
 	templateListUsecase := template_list_by_user_usecase.New(db)
 	templateUpdateUsecase := template_update_usecase.New(db)
+	templateUserListUsecase := template_user_list_usecase.New(db)
+	templateUserUpdateUsecase := template_user_update_usecase.New(db)
 	userCreateUsecase := user_create_usecase.New(db)
 	userGetByIDUsecase := user_get_by_id_usecase.New(db)
+	userListUsecase := user_list_usecase.New(db)
 	userTokenCreateUsecase := user_token_create_usecase.New(db, privateKey, cfg)
 	userTokenParseUsecase := user_token_parse_usecase.New(publicKey)
 	versionCreateUsecase := version_create_usecase.New(db)
@@ -181,6 +196,8 @@ func run() (code int) {
 		ProjectGetByIDHandler:            project_get_by_id_handler.New(projectGetByIDUsecase),
 		ProjectListHandler:               project_list_handler.New(projectListUsecase),
 		ProjectUpdateHandler:             project_update_handler.New(projectUpdateUsecase),
+		ProjectUpdateUsersHandler:        project_update_users_handler.New(projectUserUpdateUsecase),
+		ProjectUsersHandler:              project_users_handler.New(projectUserListUsecase),
 		TaskCreateHandler:                task_create_handler.New(taskCreateUsecase),
 		TaskGetByIDHandler:               task_get_by_id_handler.New(taskGetByIDUsecase),
 		TaskListHandler:                  task_list_handler.New(taskListUsecase),
@@ -193,8 +210,11 @@ func run() (code int) {
 		TemplateImportHandler:            template_import_handler.New(templateImportUsecase),
 		TemplateListHandler:              template_list_handler.New(templateListUsecase),
 		TemplateUpdateHandler:            template_update_handler.New(templateUpdateUsecase),
+		TemplateUpdateUsersHandler:       template_update_users_handler.New(templateUserUpdateUsecase),
+		TemplateUsersHandler:             template_users_handler.New(templateUserListUsecase),
 		UserCreateHandler:                user_create_handler.New(userCreateUsecase),
 		UserGetByIDHandler:               user_get_by_id_handler.New(userGetByIDUsecase),
+		UserListHandler:                  user_list_handler.New(userListUsecase),
 		UserTokenCreateHandler:           user_token_create_handler.New(userTokenCreateUsecase),
 		UserTokenDeleteHandler:           user_token_delete_handler.New(),
 		VersionCreateHandler:             version_create_handler.New(versionCreateUsecase),

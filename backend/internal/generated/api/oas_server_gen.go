@@ -13,6 +13,8 @@ type Handler interface {
 	ProjectGetByIDHandler
 	ProjectListHandler
 	ProjectUpdateByIDHandler
+	ProjectUpdateUsersHandler
+	ProjectUsersHandler
 	TaskCreateHandler
 	TaskGetByIDHandler
 	TaskListHandler
@@ -25,8 +27,11 @@ type Handler interface {
 	TemplateImportHandler
 	TemplateListHandler
 	TemplateUpdateByIDHandler
+	TemplateUpdateUsersHandler
+	TemplateUsersHandler
 	UserCreateHandler
 	UserGetByIDHandler
+	UserListHandler
 	UserTokenCreateHandler
 	UserTokenDeleteHandler
 	VersionCreateHandler
@@ -92,6 +97,30 @@ type ProjectUpdateByIDHandler interface {
 	//
 	// POST /project/update/{projectID}
 	ProjectUpdateByID(ctx context.Context, req *ProjectUpdateRequest, params ProjectUpdateByIDParams) (ProjectUpdateByIDRes, error)
+}
+
+// ProjectUpdateUsersHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: ProjectUpdateUsers
+type ProjectUpdateUsersHandler interface {
+	// ProjectUpdateUsers implements projectUpdateUsers operation.
+	//
+	// Обновить список пользователей проекта.
+	//
+	// POST /project/update_users/{projectID}
+	ProjectUpdateUsers(ctx context.Context, req *ProjectUpdateUsersRequest, params ProjectUpdateUsersParams) (ProjectUpdateUsersRes, error)
+}
+
+// ProjectUsersHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: ProjectUsers
+type ProjectUsersHandler interface {
+	// ProjectUsers implements projectUsers operation.
+	//
+	// Получить список пользователей с доступом к проекту.
+	//
+	// GET /project/users/{projectID}
+	ProjectUsers(ctx context.Context, params ProjectUsersParams) (ProjectUsersRes, error)
 }
 
 // TaskCreateHandler handles operations described by OpenAPI v3 specification.
@@ -238,6 +267,30 @@ type TemplateUpdateByIDHandler interface {
 	TemplateUpdateByID(ctx context.Context, req *TemplateUpdateRequest, params TemplateUpdateByIDParams) (TemplateUpdateByIDRes, error)
 }
 
+// TemplateUpdateUsersHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: TemplateUpdateUsers
+type TemplateUpdateUsersHandler interface {
+	// TemplateUpdateUsers implements templateUpdateUsers operation.
+	//
+	// Обновить список пользователей шаблона.
+	//
+	// POST /template/update_users/{templateID}
+	TemplateUpdateUsers(ctx context.Context, req *TemplateUpdateUsersRequest, params TemplateUpdateUsersParams) (TemplateUpdateUsersRes, error)
+}
+
+// TemplateUsersHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: TemplateUsers
+type TemplateUsersHandler interface {
+	// TemplateUsers implements templateUsers operation.
+	//
+	// Получить список пользователей с доступом к шаблону.
+	//
+	// GET /template/users/{templateID}
+	TemplateUsers(ctx context.Context, params TemplateUsersParams) (TemplateUsersRes, error)
+}
+
 // UserCreateHandler handles operations described by OpenAPI v3 specification.
 //
 // x-ogen-operation-group: UserCreate
@@ -260,6 +313,18 @@ type UserGetByIDHandler interface {
 	//
 	// GET /user/get
 	UserGetByID(ctx context.Context, params UserGetByIDParams) (UserGetByIDRes, error)
+}
+
+// UserListHandler handles operations described by OpenAPI v3 specification.
+//
+// x-ogen-operation-group: UserList
+type UserListHandler interface {
+	// UserList implements userList operation.
+	//
+	// Получить список пользователей.
+	//
+	// GET /user/list
+	UserList(ctx context.Context, params UserListParams) (UserListRes, error)
 }
 
 // UserTokenCreateHandler handles operations described by OpenAPI v3 specification.

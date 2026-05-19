@@ -20,6 +20,10 @@ export type TemplateDefaultListResult = components["schemas"]["TemplateDefaultLi
 export type TemplateDefaultListItem = TemplateDefaultListResult["templates"][number]
 export type TemplateCreateFromDefaultInput = components["schemas"]["TemplateCreateFromDefaultRequest"]
 export type TemplateCreateFromDefaultResult = components["schemas"]["TemplateCreateFromDefaultResponse"]
+export type TemplateUsersResult = components["schemas"]["TemplateUsersResponse"]
+export type TemplateUsersItem = TemplateUsersResult["users"][number]
+export type TemplateUserRole = TemplateUsersItem["role"]
+export type TemplateUpdateUsersInput = components["schemas"]["TemplateUpdateUsersRequest"]
 
 export interface TemplateListParams {
   projectID: number
@@ -84,4 +88,12 @@ export function templateCreateFromDefault(
   input: TemplateCreateFromDefaultInput,
 ): Promise<TemplateCreateFromDefaultResult> {
   return apiPost<TemplateCreateFromDefaultResult>(`/template/create_from_default`, input)
+}
+
+export function templateUsers(templateID: number): Promise<TemplateUsersResult> {
+  return apiGet<TemplateUsersResult>(`/template/users/${templateID}`)
+}
+
+export function templateUpdateUsers(templateID: number, input: TemplateUpdateUsersInput): Promise<void> {
+  return apiPost<void>(`/template/update_users/${templateID}`, input)
 }

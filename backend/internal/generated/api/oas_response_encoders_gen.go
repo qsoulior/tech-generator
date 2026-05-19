@@ -153,6 +153,69 @@ func encodeProjectUpdateByIDResponse(response ProjectUpdateByIDRes, w http.Respo
 	}
 }
 
+func encodeProjectUpdateUsersResponse(response ProjectUpdateUsersRes, w http.ResponseWriter) error {
+	switch response := response.(type) {
+	case *ProjectUpdateUsersNoContent:
+		w.WriteHeader(204)
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeProjectUsersResponse(response ProjectUsersRes, w http.ResponseWriter) error {
+	switch response := response.(type) {
+	case *ProjectUsersResponse:
+		if err := func() error {
+			if err := response.Validate(); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrap(err, "validate")
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeTaskCreateResponse(response TaskCreateRes, w http.ResponseWriter) error {
 	switch response := response.(type) {
 	case *TaskCreateCreated:
@@ -537,6 +600,69 @@ func encodeTemplateUpdateByIDResponse(response TemplateUpdateByIDRes, w http.Res
 	}
 }
 
+func encodeTemplateUpdateUsersResponse(response TemplateUpdateUsersRes, w http.ResponseWriter) error {
+	switch response := response.(type) {
+	case *TemplateUpdateUsersNoContent:
+		w.WriteHeader(204)
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeTemplateUsersResponse(response TemplateUsersRes, w http.ResponseWriter) error {
+	switch response := response.(type) {
+	case *TemplateUsersResponse:
+		if err := func() error {
+			if err := response.Validate(); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrap(err, "validate")
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeUserCreateResponse(response UserCreateRes, w http.ResponseWriter) error {
 	switch response := response.(type) {
 	case *UserCreateCreated:
@@ -564,6 +690,45 @@ func encodeUserCreateResponse(response UserCreateRes, w http.ResponseWriter) err
 func encodeUserGetByIDResponse(response UserGetByIDRes, w http.ResponseWriter) error {
 	switch response := response.(type) {
 	case *UserGetByIDResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeUserListResponse(response UserListRes, w http.ResponseWriter) error {
+	switch response := response.(type) {
+	case *UserListResponse:
+		if err := func() error {
+			if err := response.Validate(); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrap(err, "validate")
+		}
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 

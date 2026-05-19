@@ -106,6 +106,17 @@ func TestUsecase_Handle_Error(t *testing.T) {
 		want  string
 	}{
 		{
+			name: "domain_ErrRoleInvalid",
+			in: domain.TemplateUserUpdateIn{
+				UserID:     1,
+				TemplateID: 10,
+				Users:      []domain.TemplateUser{{ID: 2, Role: user_domain.RoleMaintain}},
+			},
+			setup: func(templateRepo *MocktemplateRepository, templateUserRepo *MocktemplateUserRepository, userRepo *MockuserRepository) {
+			},
+			want: domain.ErrRoleInvalid.Error(),
+		},
+		{
 			name: "templateRepo_GetByID",
 			in: domain.TemplateUserUpdateIn{
 				UserID:     1,
