@@ -130,12 +130,14 @@ func getWherePred(filter domain.TemplateListByUserFilter) sq.Sqlizer {
 }
 
 func getOrderByPred(sorting *sorting_domain.Sorting) string {
+	const defaultOrder = "COALESCE(updated_at, created_at) DESC, id DESC"
+
 	if sorting == nil {
-		return "id DESC"
+		return defaultOrder
 	}
 
 	if _, ok := sortingAttributes[sorting.Attribute]; !ok {
-		return "id DESC"
+		return defaultOrder
 	}
 
 	return fmt.Sprintf("%s %s", sorting.Attribute, sorting.Direction)

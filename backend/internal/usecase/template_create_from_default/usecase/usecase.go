@@ -107,6 +107,7 @@ func convertVariables(variables []version_get_domain.Variable) []version_create_
 	return lo.Map(variables, func(v version_get_domain.Variable, _ int) version_create_domain.Variable {
 		return version_create_domain.Variable{
 			Name:        v.Name,
+			Title:       v.Title,
 			Type:        v.Type,
 			Expression:  v.Expression,
 			IsInput:     v.IsInput,

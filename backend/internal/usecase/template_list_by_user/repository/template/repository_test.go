@@ -101,7 +101,7 @@ func (s *repositorySuite) TestRepository_ListByUserID() {
 			}
 		}),
 	)
-	slices.SortFunc(wantTemplates, func(a, b domain.Template) int { return int(b.ID - a.ID) })
+	slices.SortFunc(wantTemplates, defaultTemplateOrder)
 
 	in := domain.TemplateListByUserIn{
 		Page:    1,
@@ -218,11 +218,9 @@ func (s *repositorySuite) TestRepository_ListByUserID_Sorting() {
 		comparator func(a, b domain.Template) int
 	}{
 		{
-			name:    "Default",
-			sorting: nil,
-			comparator: func(a, b domain.Template) int {
-				return int(b.ID - a.ID)
-			},
+			name:       "Default",
+			sorting:    nil,
+			comparator: defaultTemplateOrder,
 		},
 		{
 			name: "Invalid",
@@ -230,9 +228,7 @@ func (s *repositorySuite) TestRepository_ListByUserID_Sorting() {
 				Attribute: "invalid",
 				Direction: "ASC",
 			},
-			comparator: func(a, b domain.Template) int {
-				return int(b.ID - a.ID)
-			},
+			comparator: defaultTemplateOrder,
 		},
 		{
 			name: "TemplateName_ASC",
@@ -307,7 +303,7 @@ func (s *repositorySuite) TestRepository_ListByUserID_Pagination() {
 			UpdatedAt:  lo.ToPtr(t.UpdatedAt.Truncate(1 * time.Microsecond)),
 		}
 	})
-	slices.SortFunc(wantTemplates, func(a, b domain.Template) int { return int(b.ID - a.ID) })
+	slices.SortFunc(wantTemplates, defaultTemplateOrder)
 
 	tests := []struct {
 		name string
@@ -358,4 +354,22 @@ func (s *repositorySuite) TestRepository_ListByUserID_Pagination() {
 			require.Equal(t, tt.want, got)
 		})
 	}
+}
+
+func defaultTemplateOrder(a, b domain.Template) int {
+	aTime := a.CreatedAt
+	if a.UpdatedAt != nil {
+		aTime = *a.UpdatedAt
+	}
+	bTime := b.CreatedAt
+	if b.UpdatedAt != nil {
+		bTime = *b.UpdatedAt
+	}
+	if aTime.After(bTime) {
+		return -1
+	}
+	if aTime.Before(bTime) {
+		return 1
+	}
+	return int(b.ID - a.ID)
 }

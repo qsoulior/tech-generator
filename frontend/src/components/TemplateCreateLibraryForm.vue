@@ -12,12 +12,14 @@ import {
   NEmpty,
   NForm,
   NFormItem,
+  NTooltip,
   useMessage,
 } from "naive-ui"
 import { onMounted, ref } from "vue"
 import { templateDefaultList, templateCreateFromDefault, type TemplateDefaultListItem } from "@/api/template"
 import { useApiCall } from "@/composables/useApiCall"
 import { usePagination } from "@/composables/usePagination"
+import { formatRelativeTime } from "@/utils/relativeTime"
 import IconSearchOutlined from "@/components/icons/IconSearchOutlined.vue"
 
 const apiCall = useApiCall()
@@ -143,7 +145,24 @@ async function onCreate() {
         <n-card v-for="template in templates" :key="template.id" style="cursor: pointer" @click="onSelect(template)">
           <n-flex vertical size="small">
             <n-text strong>{{ template.name }}</n-text>
-            <n-text depth="3">Добавлен: {{ new Date(template.createdAt).toLocaleDateString() }}</n-text>
+            <n-text depth="3">
+              Добавлен:
+              <n-tooltip trigger="hover">
+                <template #trigger>
+                  <span class="time">{{ formatRelativeTime(new Date(template.createdAt)) }}</span>
+                </template>
+                {{ new Date(template.createdAt).toLocaleString() }}
+              </n-tooltip>
+              · Обновлён:
+              <n-tooltip trigger="hover">
+                <template #trigger>
+                  <span class="time">{{
+                    formatRelativeTime(new Date(template.updatedAt ?? template.createdAt))
+                  }}</span>
+                </template>
+                {{ new Date(template.updatedAt ?? template.createdAt).toLocaleString() }}
+              </n-tooltip>
+            </n-text>
           </n-flex>
         </n-card>
       </n-flex>
@@ -181,3 +200,10 @@ async function onCreate() {
     </n-flex>
   </template>
 </template>
+
+<style scoped>
+.time {
+  border-bottom: 1px dashed currentColor;
+  cursor: help;
+}
+</style>
